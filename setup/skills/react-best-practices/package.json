@@ -1,0 +1,12 @@
+{
+  "name": "@vibe-skeleton/react-best-practices",
+  "version": "0.1.0",
+  "description": "React and Next.js performance optimization coding standards",
+  "scripts": {
+    "build": "node ../../tools/coding-standards-builder/src/build.js .",
+    "validate": "node ../../tools/coding-standards-builder/src/validate.js .",
+    "extract-tests": "node ../../tools/coding-standards-builder/src/extract-tests.js .",
+    "dev": "npm run validate && npm run build"
+  },
+  "keywords": ["react", "nextjs", "performance", "coding-standards", "ai", "agents"]
+}

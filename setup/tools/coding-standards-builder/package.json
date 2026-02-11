@@ -1,0 +1,14 @@
+{
+  "name": "@vibe-skeleton/coding-standards-builder",
+  "version": "0.1.0",
+  "description": "Build tools for compiling coding standards rules into AGENTS.md",
+  "type": "module",
+  "main": "src/build.js",
+  "scripts": {
+    "build": "node src/build.js",
+    "validate": "node src/validate.js",
+    "extract-tests": "node src/extract-tests.js"
+  },
+  "keywords": ["coding-standards", "ai", "agents", "build-tools"],
+  "license": "MIT"
+}

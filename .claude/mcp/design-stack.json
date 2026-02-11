@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/mcp-config.json",
+  "description": "MCP servers for brand, design, and UI development",
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-context-mcp"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      },
+      "description": "Read Figma designs and provide context to AI"
+    },
+    "cursor-figma": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/cursor-talk-to-figma-mcp"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      },
+      "description": "Read and modify Figma designs programmatically"
+    },
+    "magic": {
+      "command": "npx",
+      "args": ["-y", "@21st-dev/magic-mcp"],
+      "description": "Generate UI components like magic from descriptions"
+    },
+    "browser": {
+      "command": "npx",
+      "args": ["-y", "mcp-chrome"],
+      "description": "Browser automation for visual testing and screenshots"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "description": "Up-to-date Tailwind and component library documentation"
+    },
+    "firecrawl": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp-server"],
+      "env": {
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+      },
+      "description": "Web scraping for design inspiration and research"
+    }
+  }
+}

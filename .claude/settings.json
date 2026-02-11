@@ -1,0 +1,35 @@
+{
+  "model": "sonnet",
+  "cleanupPeriodDays": 365,
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(fd *)",
+      "Bash(rg *)"
+    ],
+    "deny": []
+  },
+  "extraKnownMarketplaces": {
+    "everything-claude-code": {
+      "source": "github",
+      "repo": "affaan-m/everything-claude-code"
+    }
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "terminal-notifier -title 'Claude Code' -subtitle 'Session Complete' -message \"Finished working in $(basename $PWD)\" -sound default -timeout 10"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,215 @@
+# Windsurf Rules
+
+This file provides comprehensive guidance to Windsurf when working with code in this repository.
+
+## Core Directives
+
+Follow the policies in `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md`.
+Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
+
+---
+
+## AI Guidance
+
+### Primary Rules
+
+1. **Plan Mode First**: Always enter plan mode before making changes
+2. **Ask Before Acting**: Ask all intake questions before writing code
+3. **Minimal Changes**: Make small, well-scoped, reviewable changes
+4. **Preserve Behavior**: Don't change existing code unless explicitly asked
+5. **Document Changes**: Update docs when user-facing behavior changes
+6. **No Secrets**: Never commit credentials, API keys, or sensitive data
+
+### Behavioral Guidelines
+
+- Do not jump into implementation without questions
+- Default to providing information over taking action
+- Ask for clarification when intent is ambiguous
+- Only proceed with edits when explicitly requested
+
+---
+
+## Plan Mode Intake Questions (Required)
+
+### Phase -1: Project Identity (ALWAYS FIRST)
+
+**Capture these 5 items before ANY other questions:**
+
+| # | Field | Required |
+|---|-------|----------|
+| 1 | **Application Name** - What is the name of the app/product? | ✅ |
+| 2 | **Company Name** - What is the company/organization name? | ✅ |
+| 3 | **Author Name** - Who is the primary author/creator? | ✅ |
+| 4 | **License Type** - Proprietary (default), MIT, Apache 2.0, etc.? | ✅ |
+| 5 | **Contact Email** - What is the primary contact email? | ✅ |
+
+### Phase 0+: Discovery Questions (After Identity)
+
+| # | Question |
+|---|----------|
+| 6 | **Outcome**: What outcome should the user see when this is done? |
+| 7 | **Stack**: Which stack is required: Laravel app, Next.js app, or WordPress plugin? |
+| 8 | **Deployment**: Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? |
+| 9 | **Scope**: What is in scope vs. explicitly out of scope? |
+| 10 | **Constraints**: Are there constraints (deadlines, tech choices, must-not-change areas)? |
+| 11 | **Acceptance**: What are the acceptance criteria and how will we verify success? |
+| 12 | **Testing**: What tests or checks are expected? |
+
+### Workflow Order
+
+```
+Project Identity → Brand Discovery → Technology Discovery → 
+Conception → Requirements → Architecture → Development → Deploy
+```
+
+See `docs/PROJECT_IDENTITY.md` for identity templates.
+
+---
+
+## Memory Bank System
+
+Always check these files for relevant information before starting work:
+
+### Core Context Files
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE-activeContext.md` | Current session state, goals, progress |
+| `CLAUDE-patterns.md` | Established code patterns and conventions |
+| `CLAUDE-decisions.md` | Architecture decisions and rationale |
+| `CLAUDE-troubleshooting.md` | Common issues and proven solutions |
+| `CLAUDE-config-variables.md` | Configuration variables reference |
+
+### Memory Bank Rules
+
+- **Check First**: Always reference active context before starting work
+- **Update Progress**: Keep activeContext updated with progress
+- **Log Solutions**: Add solutions to troubleshooting when fixing bugs
+- **Never Commit**: Don't include memory bank files in git commits
+
+---
+
+## Workflow Phases
+
+### Phase 1: Discovery
+1. Read the issue/request
+2. Examine current code
+3. Check CLAUDE-activeContext.md
+4. Enter PLAN MODE
+5. Ask ALL intake questions
+6. DO NOT modify files until answered
+
+### Phase 2: Planning
+1. Propose minimal, testable change
+2. Define acceptance criteria
+3. Confirm deployment target
+4. Document in activeContext
+5. Wait for approval
+
+### Phase 3: Implementation
+1. Apply small, focused commits
+2. Match existing code style
+3. Preserve existing behavior
+4. Follow patterns from CLAUDE-patterns.md
+5. Update tests as needed
+
+### Phase 4: Verification
+1. Run relevant tests
+2. Verify acceptance criteria
+3. Update documentation
+4. Log issues in troubleshooting
+5. Update progress in activeContext
+
+---
+
+## Code Quality Standards
+
+### Architecture
+- Respect module boundaries
+- Avoid tight coupling
+- Prefer composition over inheritance
+- Keep side effects contained
+
+### Quality
+- Add tests for new behavior
+- Avoid flaky tests
+- Match existing code style
+- Run tests before submitting
+
+### Security
+- Never commit secrets
+- Use environment variables
+- Validate user input
+- Add sensitive files to .gitignore
+
+---
+
+## Command Reference
+
+### Fast Commands (Use These)
+```bash
+fd . -t f              # List all files
+rg "search_term"       # Search content
+fd "filename"          # Find by name
+```
+
+### Banned Commands
+- ❌ tree, find, grep -r, ls -R
+
+---
+
+## Git Standards
+
+### Conventional Commits
+```
+feat: New feature
+fix: Bug fix
+docs: Documentation
+style: Formatting
+refactor: Code restructure
+test: Tests
+chore: Maintenance
+```
+
+### Rules
+- Small, focused commits
+- Clear messages
+- Never commit secrets
+- Never commit CLAUDE-*.md files
+
+---
+
+## Quick Reference
+
+### Before Every Task
+- [ ] Read CLAUDE-activeContext.md
+- [ ] Enter Plan Mode
+- [ ] Ask intake questions
+- [ ] Wait for approval
+
+### During Implementation
+- [ ] Small commits
+- [ ] Match patterns
+- [ ] Update tests
+- [ ] Update docs
+
+### Before Committing
+- [ ] Run tests
+- [ ] Check for secrets
+- [ ] Update CHANGELOG
+- [ ] Use conventional commits
+
+---
+
+## Project Documentation
+
+| File | Purpose |
+|------|---------|
+| `docs/AGENT_HANDBOOK.md` | Source of truth |
+| `docs/WORKFLOW.md` | Build process |
+| `docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
+| `TECHSTACK.md` | Tech stack |
+
+---
+
+*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*

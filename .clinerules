@@ -1,0 +1,202 @@
+# Cline Rules
+
+This file provides comprehensive guidance to Cline when working with code in this repository.
+
+## Core Directive
+
+Read and use `@CLAUDE.md` for primary instruction.
+Follow `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md` for policies.
+
+---
+
+## AI Guidance
+
+### Primary Rules
+
+1. **Plan Mode First**: Always enter plan mode before making changes
+2. **Ask Before Acting**: Ask all intake questions before writing code
+3. **Minimal Changes**: Make small, well-scoped, reviewable changes
+4. **Preserve Behavior**: Don't change existing code unless explicitly asked
+5. **Document Changes**: Update docs when user-facing behavior changes
+6. **No Secrets**: Never commit credentials, API keys, or sensitive data
+
+### Investigation Before Answering
+
+Never speculate about code you have not opened. If the user references a specific file, you MUST read the file before answering. Investigate and read relevant files BEFORE answering questions about the codebase.
+
+---
+
+## Plan Mode Intake Questions (Required)
+
+### Phase -1: Project Identity (ALWAYS FIRST)
+
+**Capture these 5 items before ANY other questions:**
+
+| # | Field | Required |
+|---|-------|----------|
+| 1 | **Application Name** - What is the name of the app/product? | ✅ |
+| 2 | **Company Name** - What is the company/organization name? | ✅ |
+| 3 | **Author Name** - Who is the primary author/creator? | ✅ |
+| 4 | **License Type** - Proprietary (default), MIT, Apache 2.0, etc.? | ✅ |
+| 5 | **Contact Email** - What is the primary contact email? | ✅ |
+
+### Phase 0+: Discovery Questions (After Identity)
+
+| # | Question |
+|---|----------|
+| 6 | What outcome should the user see when this is done? |
+| 7 | Which stack is required: Laravel app, Next.js app, or WordPress plugin? |
+| 8 | Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? |
+| 9 | What is in scope vs. explicitly out of scope? |
+| 10 | Are there constraints (deadlines, tech choices, must-not-change areas)? |
+| 11 | What are the acceptance criteria and how will we verify success? |
+| 12 | What tests or checks are expected? |
+
+### Workflow Order
+
+```
+Project Identity → Brand Discovery → Technology Discovery → 
+Conception → Requirements → Architecture → Development → Deploy
+```
+
+See `docs/PROJECT_IDENTITY.md` for identity templates.
+
+---
+
+## Memory Bank System
+
+### Core Context Files
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE-activeContext.md` | Current session state, goals, progress |
+| `CLAUDE-patterns.md` | Established code patterns and conventions |
+| `CLAUDE-decisions.md` | Architecture decisions and rationale |
+| `CLAUDE-troubleshooting.md` | Common issues and proven solutions |
+| `CLAUDE-config-variables.md` | Configuration variables reference |
+
+### Memory Bank Rules
+
+- **Check First**: Always reference active context before starting work
+- **Update Progress**: Keep activeContext updated with progress
+- **Log Solutions**: Add solutions to troubleshooting when fixing bugs
+- **Never Commit**: Don't include memory bank files in git commits
+
+---
+
+## Workflow Phases
+
+### Phase 1: Discovery
+1. Read the issue/request
+2. Check `@CLAUDE-activeContext.md`
+3. Enter PLAN MODE
+4. Ask ALL intake questions
+5. Wait for answers before proceeding
+
+### Phase 2: Planning
+1. Propose minimal, testable change
+2. Define acceptance criteria
+3. Confirm deployment target
+4. Wait for user approval
+
+### Phase 3: Implementation
+1. Apply small, focused commits
+2. Match existing code style
+3. Preserve existing behavior
+4. Update tests as needed
+
+### Phase 4: Verification
+1. Run relevant tests
+2. Verify acceptance criteria
+3. Update documentation
+4. Update progress in activeContext
+
+---
+
+## Code Quality Standards
+
+### Architecture
+- Respect module boundaries
+- Avoid tight coupling
+- Prefer composition over inheritance
+- Keep side effects contained
+
+### Quality
+- Add tests for new behavior
+- Match existing code style
+- Run tests before committing
+
+### Security
+- Never commit secrets
+- Use environment variables
+- Add sensitive files to .gitignore
+
+---
+
+## Command Reference
+
+### Fast Commands (Use These)
+```bash
+fd . -t f              # List all files
+rg "search_term"       # Search content
+fd "filename"          # Find by name
+```
+
+### Banned Commands
+- ❌ tree, find, grep -r, ls -R
+
+---
+
+## Git Standards
+
+### Conventional Commits
+```
+feat: New feature
+fix: Bug fix
+docs: Documentation
+refactor: Code restructure
+test: Tests
+chore: Maintenance
+```
+
+### Commit Rules
+- Small, focused commits
+- Clear messages
+- Never commit secrets
+- Never commit CLAUDE-*.md files
+
+---
+
+## Quick Reference
+
+### Before Every Task
+- [ ] Check `@CLAUDE-activeContext.md`
+- [ ] Enter Plan Mode
+- [ ] Ask intake questions
+- [ ] Wait for approval
+
+### During Implementation
+- [ ] Small commits
+- [ ] Match patterns
+- [ ] Update tests
+
+### Before Committing
+- [ ] Run tests
+- [ ] Check for secrets
+- [ ] Use conventional commits
+
+---
+
+## Project Documentation
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Primary instructions |
+| `docs/AGENT_HANDBOOK.md` | Source of truth |
+| `docs/WORKFLOW.md` | Build process |
+| `docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
+| `TECHSTACK.md` | Tech stack |
+
+---
+
+*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
