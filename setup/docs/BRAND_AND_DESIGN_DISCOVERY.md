@@ -1,8 +1,8 @@
-# Brand & Design Discovery Guide
+# Brand & Design Discovery — Ops Agenda
 
-> **Establishing Visual Identity, Brand Guidelines, and Design System Before Development**
+> **Establishing Visual Identity, Brand Guidelines, and Design System for Ops Agenda**
 
-This guide ensures every project has a solid brand foundation before any code is written. It covers brand discovery, design systems, asset management, and integration with design tools.
+This guide ensures Ops Agenda has a solid brand foundation before development begins. It covers brand discovery, design systems, asset management, and integration with design tools.
 
 ---
 
@@ -535,7 +535,7 @@ assets/
 ```markdown
 ## Recommended Figma Structure
 
-📁 [Project Name] Design System
+📁 Ops Agenda Design System
 ├── 📄 Cover
 ├── 📄 Brand Guidelines
 │   ├── Logo Usage
@@ -554,9 +554,11 @@ assets/
 │   ├── Sidebars
 │   └── Content Blocks
 └── 📄 Pages
-    ├── Home
-    ├── Dashboard
-    ├── Profile
+    ├── Dashboard (Daily Ops Brief)
+    ├── Priority Inbox
+    ├── Calendar Timeline
+    ├── Weekly Outlook
+    ├── Onboarding
     └── Settings
 ```
 

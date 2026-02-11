@@ -1,402 +1,317 @@
-# Build with Quality - Usage Examples
+# Build with Quality — Ops Agenda Usage Examples
 
-This guide shows how to invoke the **Build with Quality** skill for different project types. Each example is a ready-to-use prompt you can paste into Claude Code.
+This guide shows how to invoke the **Build with Quality** skill for Ops Agenda features. Each example is a ready-to-use prompt you can paste into Claude Code.
 
 ## Quick Reference
 
-| Project Type | Complexity | Estimated Agents | Key Quality Focus |
-|--------------|------------|------------------|-------------------|
-| [Todo App](#example-1-todo-app-beginner) | Beginner | 20-30 | TDD basics, CRUD |
-| [REST API](#example-2-rest-api-intermediate) | Intermediate | 40-50 | Security, contracts |
-| [E-commerce](#example-3-e-commerce-platform-advanced) | Advanced | 80-100 | Full stack, payments |
-| [CLI Tool](#example-4-cli-tool-intermediate) | Intermediate | 30-40 | Edge cases, UX |
-| [Real-time Chat](#example-5-real-time-chat-app-advanced) | Advanced | 60-80 | WebSockets, scale |
+| Feature | Complexity | Key Quality Focus |
+|---------|------------|-------------------|
+| [Daily Ops Brief](#example-1-daily-ops-brief) | Advanced | AI output validation, performance |
+| [M365 Email Sync](#example-2-microsoft-365-email-sync) | Intermediate | OAuth, data handling, retry logic |
+| [AI Priority Classification](#example-3-ai-priority-classification) | Intermediate | JSON schema, confidence scores |
+| [Calendar Intelligence](#example-4-calendar-intelligence) | Intermediate | Multi-calendar, conflict detection |
+| [Due-Out Detection](#example-5-due-out-detection) | Intermediate | Deadline extraction, confidence |
 
 ---
 
-## Example 1: Todo App (Beginner)
+## Example 1: Daily Ops Brief
 
-**Use case:** Learning the skill with a simple CRUD application.
+**Use case:** Building the north star feature — the synthesized daily agenda.
 
 ```markdown
-# Build with Quality - Claude Flow V3 Swarm
+# Build with Quality — Claude Flow V3 Swarm
 
 ## Skill Activation
 build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
 Config: skill.yaml
 
 ## Project Context
-- **Name:** SimpleTodo
-- **Type:** web-app
-- **Stack:** React + TypeScript + Vite + localStorage
-- **Description:** A minimalist todo application for learning TDD
+- **Name:** Ops Agenda
+- **Type:** web-app (SaaS)
+- **Stack:** [Project tech stack]
+- **Description:** Daily Ops Brief — synthesized daily operational agenda
 
 ## Task
-Build a todo app with add, complete, and delete functionality
+Build the Daily Ops Brief generation pipeline that produces a structured
+daily agenda from email and calendar data.
 
 ## Acceptance Criteria
-- [ ] Add new todos with text input
-- [ ] Mark todos as complete (strikethrough)
-- [ ] Delete todos
-- [ ] Persist to localStorage
-- [ ] Filter by: All, Active, Completed
+- [ ] Brief narrative summary of the day
+- [ ] Timeline agenda from calendar events
+- [ ] Top 3 priorities extracted from email and calendar
+- [ ] Due-outs with dates and confidence scores
+- [ ] Meetings requiring prep clearly marked
+- [ ] Recommended focus blocks
+- [ ] Loads in under 2 seconds
+- [ ] Can be scanned in under 30 seconds
+- [ ] Always shows Top 3 priorities
 
 ## Methodology
-- **DDD:** Todo aggregate (id, text, completed, createdAt)
-- **ADR:** Document state management choice (useState vs useReducer)
-- **TDD:** Test each CRUD operation before implementing
+- **DDD:**
+  - Bounded Context: BriefGeneration
+  - Aggregates: DailyBrief (id, date, userId, narrative, timeline,
+    priorities, dueOuts, prepMeetings, focusBlocks)
+  - Domain Events: BriefGenerated, BriefViewed
+- **TDD:** Test each brief component before implementing
 
-## Quality Gates (Relaxed for Learning)
-- Coverage: 70% minimum
-- Security: Basic XSS prevention
-- Accessibility: WCAG A (keyboard navigation)
+## Quality Gates
+- Coverage: 85% overall, 95% brief generation logic
+- Security: No raw email bodies in brief output
+- Performance: Brief generation < 5s, dashboard render < 2s
+- AI Output: JSON-only, schema-validated, confidence scores on all items
 
 ## Execute
-1. Create Todo component with TDD
-2. Implement CRUD operations
-3. Add localStorage persistence
-4. Build filter functionality
-5. Verify all tests pass
+1. Define DailyBrief aggregate and schema
+2. Build priority extraction from email metadata
+3. Build timeline from calendar events
+4. Build due-out detection integration
+5. Build narrative summary generation
+6. Build brief assembly and caching
+7. Build dashboard rendering
+8. Verify performance targets
 
-Deliver working todo app with tests.
+Deliver working Daily Ops Brief with full test coverage.
 ```
 
 ---
 
-## Example 2: REST API (Intermediate)
+## Example 2: Microsoft 365 Email Sync
 
-**Use case:** Building a production-ready API with authentication.
+**Use case:** Integrating with Microsoft Graph API for email data.
 
 ```markdown
-# Build with Quality - Claude Flow V3 Swarm
+# Build with Quality — Claude Flow V3 Swarm
 
 ## Skill Activation
 build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
 Config: skill.yaml
 
 ## Project Context
-- **Name:** TaskAPI
-- **Type:** api
-- **Stack:** Node.js + Express + TypeScript + Prisma + PostgreSQL
-- **Description:** RESTful API for task management with JWT authentication
+- **Name:** Ops Agenda
+- **Type:** api (SaaS backend)
+- **Stack:** [Project tech stack]
+- **Description:** Microsoft 365 email sync via Microsoft Graph API
 
 ## Task
-Build a complete REST API with users, projects, and tasks
+Build the M365 email sync module with OAuth, incremental sync, and
+change notification webhooks.
 
 ## Acceptance Criteria
-- [ ] User registration and login (JWT)
-- [ ] CRUD for projects (owned by users)
-- [ ] CRUD for tasks (belong to projects)
-- [ ] Role-based access (admin, member)
-- [ ] Rate limiting (100 req/min)
-- [ ] OpenAPI documentation
+- [ ] OAuth 2.0 flow for Microsoft 365 connection
+- [ ] Initial sync of inbox metadata (no raw bodies stored)
+- [ ] Incremental sync for new/changed emails
+- [ ] Microsoft Graph change notification webhook endpoint
+- [ ] Idempotent sync operations with retry logic
+- [ ] Least-privilege scopes (Mail.Read)
+- [ ] OAuth tokens encrypted at rest
+- [ ] Graceful degradation on API failures
 
 ## Methodology
 - **DDD:**
-  - Bounded Contexts: Identity, ProjectManagement
-  - Aggregates: User, Project, Task
-  - Domain Events: UserRegistered, TaskCompleted
-- **ADR:**
-  - ADR-001: JWT vs Session authentication
-  - ADR-002: Prisma vs TypeORM
-- **TDD:** Test each endpoint before implementation
+  - Bounded Context: M365Integration
+  - Aggregates: SyncState (userId, lastSyncToken, status),
+    EmailMetadata (id, subject, sender, date, flags)
+  - Domain Events: SyncStarted, SyncCompleted, EmailReceived
+- **TDD:** Test OAuth flow, sync logic, webhook handling
 
 ## Quality Gates
-- Coverage: 85% overall, 95% auth flows
-- Security: 0 critical (OWASP top 10)
-- Contracts: OpenAPI schema validation
-
-## Swarm Emphasis
-```yaml
-agents:
-  priority:
-    - security-architect (auth design)
-    - integration-test-generator (API tests)
-    - contract-validator (OpenAPI)
-  security_focus:
-    - SQL injection
-    - JWT vulnerabilities
-    - Rate limiting bypass
-```
+- Coverage: 85% overall, 95% OAuth and sync flows
+- Security: 0 critical (OAuth token handling, webhook validation)
+- Data: No raw email bodies persisted — metadata only
+- Reliability: Idempotent operations, retry with exponential backoff
 
 ## Execute
-Phase 1: Design auth system with security-architect
-Phase 2: TDD for User aggregate and auth endpoints
-Phase 3: TDD for Project and Task aggregates
-Phase 4: Integration tests for all flows
-Phase 5: Security scan and contract validation
+1. Implement OAuth 2.0 authorization code flow
+2. Build initial inbox sync with metadata extraction
+3. Build incremental sync with delta tokens
+4. Build webhook endpoint for change notifications
+5. Implement retry logic and error handling
+6. Verify token encryption and scope restrictions
 
-Deliver production-ready API with full test coverage.
+Deliver production-ready M365 email sync with compliance.
 ```
 
 ---
 
-## Example 3: E-commerce Platform (Advanced)
+## Example 3: AI Priority Classification
 
-**Use case:** Full-stack application with payments and complex business logic.
-
-```markdown
-# Build with Quality - Claude Flow V3 Swarm
-
-## Skill Activation
-build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
-Config: skill.yaml - FULL CAPABILITY MODE
-
-## Project Context
-- **Name:** ShopFlow
-- **Type:** web-app
-- **Stack:** Next.js 14 + TypeScript + Prisma + PostgreSQL + Stripe + Redis
-- **Description:** E-commerce platform with cart, checkout, and order management
-
-## Task
-Build complete e-commerce with product catalog, cart, checkout, and orders
-
-## Acceptance Criteria
-- [ ] Product catalog with search and filters
-- [ ] Shopping cart (persistent across sessions)
-- [ ] Stripe checkout integration
-- [ ] Order history and status tracking
-- [ ] Admin dashboard for inventory
-- [ ] Email notifications (order confirmation)
-
-## Methodology
-- **DDD:**
-  - Core Domain: Orders, Payments
-  - Supporting: Catalog, Inventory, Notifications
-  - Bounded Contexts: Shopping, Fulfillment, Admin
-  - Aggregates:
-    - Product (id, name, price, inventory)
-    - Cart (id, items[], userId)
-    - Order (id, items[], status, payment)
-  - Domain Events:
-    - ProductAddedToCart
-    - OrderPlaced
-    - PaymentCompleted
-    - OrderShipped
-- **ADR:**
-  - ADR-001: Stripe vs PayPal
-  - ADR-002: Server Components vs Client for catalog
-  - ADR-003: Redis for cart persistence
-  - ADR-004: Optimistic vs pessimistic inventory
-- **TDD:** Full red-green-refactor for each aggregate
-
-## Quality Gates (Production Critical)
-- Coverage: 90% overall, 100% payment flows
-- Security: 0 any severity, PCI-DSS compliance
-- Accessibility: WCAG AA, keyboard checkout
-- Chaos: 90% graceful degradation (Stripe outage)
-
-## Swarm Configuration
-```yaml
-domains:
-  development: 4 concurrent (architect, coder, reviewer, browser-agent)
-  quality: 4 concurrent (full test suite)
-  security: 2 concurrent (PCI focus)
-max_agents: 100
-topology: hierarchical-mesh
-```
-
-## Execute
-Phase 1: DDD modeling with architect
-  - Define all bounded contexts
-  - Create context map
-  - Document ADRs
-Phase 2: Catalog domain (TDD)
-  - Product listing, search, filters
-  - Unit + integration tests
-Phase 3: Cart domain (TDD)
-  - Add/remove items, persistence
-  - Redis integration tests
-Phase 4: Checkout domain (TDD)
-  - Stripe integration
-  - Payment flow tests (mock + real)
-Phase 5: Order domain (TDD)
-  - Status management
-  - Email notifications
-Phase 6: Quality validation
-  - E2E tests (Playwright)
-  - Security scan (PCI)
-  - Chaos testing (payment failures)
-  - Accessibility audit
-
-Deliver production-ready e-commerce with full quality assurance.
-```
-
----
-
-## Example 4: CLI Tool (Intermediate)
-
-**Use case:** Command-line application with good UX and error handling.
+**Use case:** Building the AI pipeline for email priority scoring.
 
 ```markdown
-# Build with Quality - Claude Flow V3 Swarm
+# Build with Quality — Claude Flow V3 Swarm
 
 ## Skill Activation
 build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
 Config: skill.yaml
 
 ## Project Context
-- **Name:** projgen
-- **Type:** cli
-- **Stack:** Node.js + TypeScript + Commander.js + Inquirer
-- **Description:** Project scaffolding CLI that generates boilerplate
+- **Name:** Ops Agenda
+- **Type:** api (SaaS backend)
+- **Stack:** [Project tech stack]
+- **Description:** AI-driven email priority classification (P1, P2, P3, FYSA)
 
 ## Task
-Build a CLI that scaffolds new projects from templates
+Build the AI priority classification pipeline that scores emails and
+provides explainable priority assignments.
 
 ## Acceptance Criteria
-- [ ] `projgen init` - interactive project setup
-- [ ] `projgen add <template>` - add component templates
-- [ ] `projgen list` - show available templates
-- [ ] `projgen config` - manage settings
-- [ ] Support: React, Vue, Node API, CLI templates
-- [ ] Colored output and progress indicators
+- [ ] Classify emails as P1, P2, P3, or FYSA
+- [ ] Clear explanation of why each email is prioritized
+- [ ] Confidence score for each classification
+- [ ] User can override priority (correction logged)
+- [ ] AI corrections improve prioritization over time
+- [ ] JSON-only structured output, schema-validated
+- [ ] No autonomous actions — classification only
 
 ## Methodology
 - **DDD:**
-  - Aggregates: Template, Project, Config
-  - Value Objects: TemplatePath, ProjectName
-- **ADR:**
-  - ADR-001: Commander vs Yargs
-  - ADR-002: Template engine (Handlebars vs EJS)
-- **TDD:** Test each command before implementing
+  - Bounded Context: AIClassification
+  - Aggregates: PriorityAssignment (emailId, priority, confidence,
+    explanation, userOverride)
+  - Domain Events: EmailClassified, PriorityOverridden
+- **TDD:** Test classification logic, override handling, correction logging
 
 ## Quality Gates
-- Coverage: 85% overall, 100% command handlers
-- Security: Path traversal prevention, no arbitrary code exec
-- Edge cases: Invalid inputs, missing files, permissions
-
-## Swarm Emphasis
-```yaml
-agents:
-  priority:
-    - integration-test-generator (CLI commands)
-    - edge-case coverage
-    - error handling validation
-  security_focus:
-    - command injection
-    - path traversal
-    - symlink attacks
-```
+- Coverage: 85% overall, 100% classification logic
+- AI Output: JSON schema validated on every response
+- Confidence: Score required for each analysis
+- Security: No raw email content in logs
 
 ## Execute
-Phase 1: Core command structure with TDD
-Phase 2: Template engine implementation
-Phase 3: Interactive prompts (Inquirer)
-Phase 4: Integration tests for all commands
-Phase 5: Edge case and error handling tests
+1. Define priority schema and classification rules
+2. Build LLM prompt for email analysis
+3. Build JSON output validation layer
+4. Build confidence scoring
+5. Build user override and correction logging
+6. Build feedback loop for improvement tracking
 
-Deliver polished CLI with excellent error messages.
+Deliver AI classification pipeline with explainable outputs.
 ```
 
 ---
 
-## Example 5: Real-time Chat App (Advanced)
+## Example 4: Calendar Intelligence
 
-**Use case:** WebSocket-based application with scaling considerations.
+**Use case:** Multi-calendar support with prep indicators and conflict detection.
 
 ```markdown
-# Build with Quality - Claude Flow V3 Swarm
+# Build with Quality — Claude Flow V3 Swarm
 
 ## Skill Activation
 build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
-Config: skill.yaml - FULL CAPABILITY MODE
+Config: skill.yaml
 
 ## Project Context
-- **Name:** ChatFlow
-- **Type:** web-app
-- **Stack:** Next.js + TypeScript + Socket.io + Redis + PostgreSQL
-- **Description:** Real-time chat with rooms, typing indicators, and message history
+- **Name:** Ops Agenda
+- **Type:** web-app (SaaS)
+- **Stack:** [Project tech stack]
+- **Description:** Calendar intelligence with prep indicators and conflict detection
 
 ## Task
-Build real-time chat with rooms, presence, and message persistence
+Build the calendar intelligence module that processes multiple M365
+calendars into an annotated timeline.
 
 ## Acceptance Criteria
-- [ ] User authentication (OAuth: Google, GitHub)
-- [ ] Create/join chat rooms
-- [ ] Real-time messaging (WebSocket)
-- [ ] Typing indicators
-- [ ] Online/offline presence
-- [ ] Message history with pagination
-- [ ] File sharing (images)
-- [ ] Mobile responsive
+- [ ] Multiple calendars supported via Microsoft Graph
+- [ ] Meetings annotated with prep-required indicators
+- [ ] Calendar conflicts surfaced visually
+- [ ] Timeline accurately reflects all calendars
+- [ ] Prep-required meetings clearly marked
+- [ ] Data integrates into Daily Ops Brief timeline
 
 ## Methodology
 - **DDD:**
-  - Bounded Contexts: Identity, Messaging, Presence
-  - Aggregates:
-    - User (id, name, avatar, status)
-    - Room (id, name, members[], messages[])
-    - Message (id, content, sender, timestamp)
-  - Domain Events:
-    - UserJoinedRoom
-    - MessageSent
-    - UserStartedTyping
-    - UserWentOffline
-- **ADR:**
-  - ADR-001: Socket.io vs native WebSocket
-  - ADR-002: Redis pub/sub for horizontal scaling
-  - ADR-003: Message storage (PostgreSQL vs MongoDB)
-  - ADR-004: Presence heartbeat interval
-- **TDD:** Full cycle for each feature
+  - Bounded Context: CalendarIntelligence
+  - Aggregates: CalendarTimeline (userId, date, events[]),
+    CalendarEvent (id, title, start, end, calendar, prepRequired, conflicts[])
+  - Domain Events: CalendarSynced, ConflictDetected, PrepFlagged
+- **TDD:** Test multi-calendar merge, conflict detection, prep flagging
 
 ## Quality Gates
-- Coverage: 85% overall, 95% WebSocket handlers
-- Security: 0 critical, XSS in messages, auth bypass
-- Accessibility: WCAG AA, screen reader support
-- Chaos: Connection drops, Redis failover, high load
-
-## Swarm Configuration
-```yaml
-domains:
-  development: 4 concurrent
-  quality: 4 concurrent
-  security: 2 concurrent
-chaos:
-  network_resilience: 80%  # WebSocket reconnection
-  resource_exhaustion: 75% # Memory with many connections
-  graceful_degradation: 85% # Redis failover
-```
+- Coverage: 85% overall, 95% conflict detection
+- Performance: Calendar sync non-blocking, timeline render < 1s
 
 ## Execute
-Phase 1: Architecture with DDD
-  - Define bounded contexts
-  - Document ADRs for real-time decisions
-Phase 2: Auth system (TDD)
-  - OAuth integration
-  - Session management
-Phase 3: Room management (TDD)
-  - Create, join, leave
-  - Member list
-Phase 4: Real-time messaging (TDD)
-  - Socket.io handlers
-  - Message persistence
-  - Typing indicators
-Phase 5: Presence system (TDD)
-  - Online/offline status
-  - Heartbeat mechanism
-Phase 6: Quality validation
-  - E2E tests with multiple clients
-  - Load testing (100 concurrent users)
-  - Chaos testing (disconnections)
-  - Security scan
+1. Build Microsoft Graph calendar sync (multiple calendars)
+2. Build calendar event merge and deduplication
+3. Build conflict detection algorithm
+4. Build prep-required indicator logic
+5. Build timeline rendering component
+6. Verify integration with Daily Ops Brief
 
-Deliver scalable real-time chat with production quality.
+Deliver calendar intelligence with multi-calendar support.
+```
+
+---
+
+## Example 5: Due-Out Detection
+
+**Use case:** Extracting deadlines and action items from email metadata.
+
+```markdown
+# Build with Quality — Claude Flow V3 Swarm
+
+## Skill Activation
+build-with-quality v1.0.0 (111+ agents, hierarchical-mesh)
+Config: skill.yaml
+
+## Project Context
+- **Name:** Ops Agenda
+- **Type:** api (SaaS backend)
+- **Stack:** [Project tech stack]
+- **Description:** Due-out detection engine for deadlines and action items
+
+## Task
+Build the due-out detection engine that identifies items requiring user
+action by a defined or inferred deadline.
+
+## Acceptance Criteria
+- [ ] Detect explicit deadlines in email metadata/summaries
+- [ ] Detect explicit action requests
+- [ ] Flag unanswered emails after configurable time threshold
+- [ ] Due-outs visible in Daily Ops Brief
+- [ ] Due date clearly displayed
+- [ ] Confidence score shown for each due-out
+- [ ] JSON-only output, schema-validated
+
+## Methodology
+- **DDD:**
+  - Bounded Context: DueOutDetection
+  - Aggregates: DueOut (id, emailId, description, dueDate,
+    confidence, source, status)
+  - Domain Events: DueOutDetected, DueOutCompleted, DueOutOverdue
+- **TDD:** Test each detection rule before implementing
+
+## Quality Gates
+- Coverage: 85% overall, 95% detection rules
+- AI Output: Confidence score required for each due-out
+- Data: No raw email bodies — work from metadata and AI summaries
+
+## Execute
+1. Define due-out schema and detection rules
+2. Build explicit deadline extraction
+3. Build action request detection
+4. Build unanswered email flagging (configurable threshold)
+5. Build confidence scoring for inferred deadlines
+6. Verify integration with Daily Ops Brief
+
+Deliver due-out detection with confidence scoring.
 ```
 
 ---
 
 ## Quick Start Templates
 
-### Minimal (Any Project)
+### Minimal (Any Ops Agenda Feature)
 
 ```markdown
 Build with Quality skill (v1.0.0).
 
-Project: [NAME] | Stack: [TECH] | Task: [DESCRIPTION]
+Project: Ops Agenda | Stack: [TECH] | Task: [DESCRIPTION]
 
 Methodology: DDD + ADR + TDD
 Quality: 85% coverage, security scan, WCAG AA
+Constraint: No raw email bodies stored, JSON-only AI output
 
 Execute and deliver tested code.
 ```
@@ -404,9 +319,9 @@ Execute and deliver tested code.
 ### Rapid Prototype (Reduced Gates)
 
 ```markdown
-Build with Quality skill - PROTOTYPE MODE.
+Build with Quality skill — PROTOTYPE MODE.
 
-Project: [NAME] | Stack: [TECH] | Task: [DESCRIPTION]
+Project: Ops Agenda | Stack: [TECH] | Task: [DESCRIPTION]
 
 Quality gates (relaxed):
 - Coverage: 60%
@@ -420,44 +335,30 @@ Focus on working implementation, tests for core paths only.
 ### Production Critical (Maximum Gates)
 
 ```markdown
-Build with Quality skill - PRODUCTION MODE.
+Build with Quality skill — PRODUCTION MODE.
 
-Project: [NAME] | Stack: [TECH] | Task: [DESCRIPTION]
+Project: Ops Agenda | Stack: [TECH] | Task: [DESCRIPTION]
 
 Quality gates (strict):
 - Coverage: 95% overall, 100% critical paths
-- Security: 0 any severity
+- Security: 0 any severity, SOC 2 compliance
 - Accessibility: WCAG AAA
 - Chaos: 90% all categories
-- Mutation testing: 80% mutation score
+- Data: Verify no raw email body storage
+- AI: Verify all outputs schema-validated with confidence scores
 
 Full quality validation required before delivery.
 ```
 
 ---
 
-## Skill Configuration Reference
-
-All examples use settings from [`config/skill.yaml`](./config/skill.yaml):
-
-| Setting | Default | Customize In Prompt |
-|---------|---------|---------------------|
-| Coverage minimum | 85% | "Coverage: 70%" |
-| Security threshold | 0 critical/high | "Security: critical only" |
-| Accessibility level | AA | "Accessibility: WCAG A" |
-| TDD enforcement | Required | "TDD: optional" |
-| Chaos testing | Enabled | "Chaos: skip" |
-
----
-
 ## References
 
-- [BUILD-WITH-QUALITY-PROMPT.md](./BUILD-WITH-QUALITY-PROMPT.md) - Full activation prompt
-- [config/skill.yaml](./config/skill.yaml) - Skill configuration
-- [Claude Flow V3](https://github.com/ruvnet/claude-flow/tree/main/v3) - Development agents
-- [Agentic QE](https://github.com/proffesor-for-testing/agentic-qe) - Quality agents
+- [BUILD-WITH-QUALITY-PROMPT.md](./BUILD-WITH-QUALITY-PROMPT.md) — Full activation prompt
+- [AGENT_HANDBOOK.md](./AGENT_HANDBOOK.md) — Development governance
+- [TECHNOLOGY_DISCOVERY.md](./TECHNOLOGY_DISCOVERY.md) — Tech requirements
 
 ---
 
 *Version: 1.0.0*
-*Last Updated: 2026-01-31*
+*Last Updated: 2026-02-11*

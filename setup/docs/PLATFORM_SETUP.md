@@ -1,6 +1,6 @@
-# Platform Setup Guides
+# Platform Setup Guides — Ops Agenda
 
-> **Detailed setup instructions for each AI coding assistant**
+> **Setup instructions for each AI coding assistant used with Ops Agenda**
 
 ---
 
@@ -22,7 +22,7 @@
 
 ### Overview
 
-Claude Code has the **most complete feature support** for this boilerplate, including subagents, skills, commands, and MCP servers.
+Claude Code has the **most complete feature support** for Ops Agenda development, including subagents, skills, commands, and MCP servers.
 
 ### Required Files
 
@@ -676,7 +676,7 @@ Legend: ✅ Full | ⚠️ Partial | ❌ None | * = Separate prefix (GEMINI-)
 - [ ] Read `AGENT_HANDBOOK.md`
 - [ ] Read `WORKFLOW.md`
 - [ ] Check `CLAUDE-activeContext.md` (if exists)
-- [ ] Understand tech stack from `TECHSTACK.md`
+- [ ] Understand tech requirements from `TECHNOLOGY_DISCOVERY.md`
 
 ---
 

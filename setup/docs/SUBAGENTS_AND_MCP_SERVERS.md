@@ -1,8 +1,8 @@
-# Subagents and MCP Servers Guide
+# Subagents and MCP Servers — Ops Agenda
 
-> **Comprehensive catalog of subagents and MCP servers for AI-assisted web/mobile development**
+> **Catalog of subagents and MCP servers for Ops Agenda development**
 
-This guide documents subagents and MCP (Model Context Protocol) servers that can enhance AI coding assistants across platforms for planning, execution, testing, and security audits.
+This guide documents subagents and MCP (Model Context Protocol) servers that can enhance AI coding assistants for Ops Agenda development across platforms.
 
 ---
 
@@ -436,61 +436,46 @@ touch .cline/mcp_settings.json
 
 ---
 
-## Recommended Stack by Project Type
+## Recommended MCP Stack for Ops Agenda
 
-### Web Application (React/Next.js + Supabase)
+### Core (Required)
+
+```jsonc
+{
+  "mcpServers": {
+    "github": { /* GitHub MCP — PR, issues, code management */ },
+    "playwright": { /* E2E testing — dashboard flows, onboarding */ },
+    "context7": { /* Up-to-date docs for Microsoft Graph API, etc. */ }
+  }
+}
+```
+
+### Extended (Recommended)
 
 ```jsonc
 {
   "mcpServers": {
     "github": { /* ... */ },
-    "supabase": { /* ... */ },
     "playwright": { /* ... */ },
-    "figma": { /* ... */ },
-    "sentry": { /* ... */ },
-    "vercel": { /* ... */ }
+    "context7": { /* ... */ },
+    "sentry": { /* Error tracking — production monitoring */ },
+    "sonarqube": { /* Code quality — coverage, tech debt */ },
+    "postman": { /* API testing — M365 Graph API, internal APIs */ },
+    "figma": { /* Design integration — UI components */ }
   }
 }
 ```
 
-### Mobile Application (React Native)
+### Security Audit
 
 ```jsonc
 {
   "mcpServers": {
     "github": { /* ... */ },
-    "figma": { /* ... */ },
-    "firebase": { /* ... */ },
-    "sentry": { /* ... */ },
-    "postman": { /* ... */ }
-  }
-}
-```
-
-### Enterprise Application (Laravel/WordPress)
-
-```jsonc
-{
-  "mcpServers": {
-    "github": { /* ... */ },
-    "jira": { /* ... */ },
-    "sonarqube": { /* ... */ },
-    "docker": { /* ... */ },
-    "sentry": { /* ... */ }
-  }
-}
-```
-
-### Security-Focused Project
-
-```jsonc
-{
-  "mcpServers": {
-    "github": { /* ... */ },
-    "hexstrike": { /* ... */ },
-    "semgrep": { /* ... */ },
-    "snyk": { /* ... */ },
-    "sonarqube": { /* ... */ }
+    "hexstrike": { /* Security scanning */ },
+    "semgrep": { /* SAST for OAuth, token handling */ },
+    "snyk": { /* Dependency vulnerabilities */ },
+    "sonarqube": { /* Code quality and security */ }
   }
 }
 ```

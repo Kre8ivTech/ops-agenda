@@ -1,8 +1,8 @@
-# Vibe Coding Workflow - Master Guide
+# Vibe Coding Workflow — Ops Agenda
 
-> **Comprehensive documentation for the AI Project Governance Starter boilerplate**
+> **Comprehensive workflow documentation for Ops Agenda AI-assisted development**
 
-This guide establishes the complete workflow for AI-assisted ("vibe") coding across multiple IDEs, LLMs, and AI tools. Use this as your primary reference for setting up, operating, and maintaining AI-driven development workflows.
+This guide establishes the complete workflow for AI-assisted development on Ops Agenda across multiple IDEs, LLMs, and AI tools. Use this as your primary reference for setting up, operating, and maintaining development workflows.
 
 ---
 
@@ -25,7 +25,7 @@ This guide establishes the complete workflow for AI-assisted ("vibe") coding acr
 
 ### Purpose
 
-This boilerplate provides **governance templates for AI-assisted development** with:
+This project provides **governance and workflow documentation for Ops Agenda development** with:
 
 - Standardized agent behavior rules
 - Consistent workflows across AI tools
@@ -113,11 +113,9 @@ Load these based on the task:
 
 | File | Domain |
 |------|--------|
-| `CLAUDE-cloudflare.md` | Cloudflare Workers/Pages projects |
-| `CLAUDE-wordpress.md` | WordPress plugin development |
-| `CLAUDE-vercel.md` | Vercel deployment |
-| `CLAUDE-whm.md` | WHM/cPanel server management |
-| `CLAUDE-convex.md` | Convex backend |
+| `CLAUDE-config-variables.md` | Configuration and environment variables |
+
+Domain-specific context files will be created as needed during Ops Agenda development.
 
 ### Reading Rules
 
@@ -287,12 +285,11 @@ Both reference `AGENT_HANDBOOK.md` as the source of truth.
 | # | Question | Purpose |
 |---|----------|---------|
 | 1 | What outcome should the user see when this is done? | Define success criteria |
-| 2 | Which stack is required: Laravel app, Next.js app, or WordPress plugin? | Technology selection |
-| 3 | Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? | Infrastructure decisions |
-| 4 | What is in scope vs. explicitly out of scope? | Boundary definition |
-| 5 | Are there constraints (deadlines, tech choices, must-not-change areas)? | Risk identification |
-| 6 | What are the acceptance criteria and how will we verify success? | Quality gates |
-| 7 | What tests or checks are expected? | Verification strategy |
+| 2 | Which Ops Agenda module does this change target? (Daily Ops Brief, Priority Inbox, Calendar Intelligence, Due-Out Detection, Draft Reply, Weekly Outlook, M365 Sync, AI Pipeline, Onboarding) | Module identification |
+| 3 | What is in scope vs. explicitly out of scope? | Boundary definition |
+| 4 | Are there constraints (deadlines, compliance, must-not-change areas)? | Risk identification |
+| 5 | What are the acceptance criteria and how will we verify success? | Quality gates |
+| 6 | What tests or checks are expected? | Verification strategy |
 
 ### Extended Questions (Optional)
 
@@ -541,12 +538,7 @@ Located in `../examples/CLAUDE.md Collection/orchestrators/`:
 
 Framework-specific experts:
 
-- **Django**: `django-backend-expert.md`, `django-api-developer.md`, `django-orm-expert.md`
-- **Rails**: `rails-backend-expert.md`, `rails-api-developer.md`, `rails-activerecord-expert.md`
-- **Laravel**: `laravel-backend-expert.md`, `laravel-eloquent-expert.md`
-- **React**: `react-component-architect.md`, `react-nextjs-expert.md`
-- **Vue**: `vue-component-architect.md`, `vue-nuxt-expert.md`, `vue-state-manager.md`
-- **Universal**: `backend-developer.md`, `frontend-developer.md`, `api-architect.md`
+Agent personas will be configured based on the finalized Ops Agenda tech stack during the Architecture phase. Available agents include backend, frontend, API, and universal personas.
 
 ### Claude Code Subagents
 
@@ -699,7 +691,7 @@ Legend: ✅ Full | ⚠️ Partial | ❌ None
 
 ### For New Projects
 
-- [ ] Copy this boilerplate to project root
+- [ ] Clone the Ops Agenda repository
 - [ ] Customize `TECHSTACK.md` for your stack
 - [ ] Update `.env.example` with required variables
 - [ ] Create initial `CLAUDE-activeContext.md`
