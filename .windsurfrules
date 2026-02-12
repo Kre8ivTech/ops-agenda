@@ -4,7 +4,7 @@ This file provides comprehensive guidance to Windsurf when working with code in 
 
 ## Core Directives
 
-Follow the policies in `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md`.
+Follow the policies in `setup/docs/AGENT_HANDBOOK.md` and `setup/docs/WORKFLOW.md`.
 Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
 
 ---
@@ -48,8 +48,8 @@ Start in **plan mode**, ask the required intake questions, and wait for answers 
 | # | Question |
 |---|----------|
 | 6 | **Outcome**: What outcome should the user see when this is done? |
-| 7 | **Stack**: Which stack is required: Laravel app, Next.js app, or WordPress plugin? |
-| 8 | **Deployment**: Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? |
+| 7 | **Module**: Which Ops Agenda module does this task target? (Daily Ops Brief, Priority Inbox, Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding) |
+| 8 | **Integration**: Does this change affect the Microsoft Graph integration, the AI pipeline, or both? |
 | 9 | **Scope**: What is in scope vs. explicitly out of scope? |
 | 10 | **Constraints**: Are there constraints (deadlines, tech choices, must-not-change areas)? |
 | 11 | **Acceptance**: What are the acceptance criteria and how will we verify success? |
@@ -62,7 +62,7 @@ Project Identity → Brand Discovery → Technology Discovery →
 Conception → Requirements → Architecture → Development → Deploy
 ```
 
-See `docs/PROJECT_IDENTITY.md` for identity templates.
+See `setup/docs/PROJECT_IDENTITY.md` for identity templates.
 
 ---
 
@@ -205,11 +205,11 @@ chore: Maintenance
 
 | File | Purpose |
 |------|---------|
-| `docs/AGENT_HANDBOOK.md` | Source of truth |
-| `docs/WORKFLOW.md` | Build process |
-| `docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
+| `setup/docs/AGENT_HANDBOOK.md` | Source of truth |
+| `setup/docs/WORKFLOW.md` | Build process |
+| `setup/docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
 | `TECHSTACK.md` | Tech stack |
 
 ---
 
-*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
+*For complete documentation, see `setup/docs/VIBE_CODING_WORKFLOW.md`*
