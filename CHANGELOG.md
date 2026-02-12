@@ -7,6 +7,10 @@ This project adheres to the **Keep a Changelog** format and uses
 ## [Unreleased]
 
 ### Changed
+- **TECHSTACK.md**: Finalized architecture — Next.js, Supabase, OpenAI, Vercel, Inngest, Upstash Redis, Supabase Storage
+- **.env.example**: Added Supabase, Inngest, Upstash provider-specific environment variables
+- **TECHNOLOGY_DISCOVERY.md**: Marked completion checklist as fully complete
+- **CLAUDE.md**: Added finalized tech stack to Project Overview
 - **setup/docs**: Tailored all 14 governance documents from generic boilerplate to Ops Agenda-specific content (modules, PRD constraints, M365 integration, AI pipeline requirements, SOC 2 compliance)
 - **README.md**: Replaced generic "AI Project Governance Starter" with Ops Agenda project README (mission, modules, tech stack, getting started)
 - **TECHSTACK.md**: Replaced WordPress/Next.js CMS stack with Ops Agenda technology requirements (Next.js, M365 Graph API, PostgreSQL, AI/LLM)

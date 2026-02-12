@@ -255,8 +255,8 @@ Before proceeding to Architecture phase:
 
 - [x] Application type selected: SaaS
 - [x] All required capabilities identified (see section 3)
-- [ ] Tech stack finalized (Architecture phase)
-- [ ] Hosting/infrastructure decided (Architecture phase)
+- [x] Tech stack finalized: Next.js, Supabase, OpenAI, Vercel, Inngest, Upstash
+- [x] Hosting/infrastructure decided: Vercel + Supabase + Inngest + Upstash
 - [x] Integrations documented: Microsoft 365, AI/LLM, Payments
 - [x] Non-functional requirements captured
 - [x] Extensibility requirements captured
