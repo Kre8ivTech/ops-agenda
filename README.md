@@ -15,6 +15,27 @@ This repository provides a **comprehensive framework** for AI-assisted ("vibe") 
 
 ---
 
+## 📑 Table of Contents
+
+1. [Quick Start](#-quick-start)
+2. [Execution Guide: Conception to Production](#-execution-guide-conception-to-production)
+   - [Phase -1: Project Identity](#phase--1-project-identity-always-first)
+   - [Phase 0: Brand & Design Discovery](#phase-0-brand--design-discovery)
+   - [Phase 0.5: Technology Discovery](#phase-05-technology-discovery)
+   - [Phase 1-9: Development Lifecycle](#phase-1-project-conception)
+3. [Project Structure](#-project-structure)
+4. [Agent System](#-agent-system)
+5. [MCP Server Configuration](#-mcp-server-configuration)
+6. [Memory Bank System](#-memory-bank-system)
+7. [Documentation Index](#-documentation-index)
+8. [Skills & Commands](#️-skills--commands)
+9. [Quick Commands](#-quick-commands)
+10. [Phase Checklist](#-phase-checklist)
+11. [AI Prompts Reference](#-ai-prompts-reference)
+12. [Golden Rules](#-golden-rules)
+
+---
+
 ## 🚀 Quick Start
 
 ### Step 1: Copy to Your Project
@@ -835,6 +856,77 @@ Located in `.claude/mcp/`, pre-configured for common workflows:
 
 ---
 
+## 💾 Memory Bank System
+
+The memory bank system maintains context and continuity across AI sessions using specialized markdown files.
+
+### Core Memory Bank Files
+
+| File | Purpose | Update Frequency |
+|------|---------|------------------|
+| **CLAUDE-activeContext.md** | Current session state, goals, progress, blockers | Every session |
+| **CLAUDE-patterns.md** | Established code patterns and conventions | When patterns evolve |
+| **CLAUDE-decisions.md** | Architecture decisions and rationale | When decisions made |
+| **CLAUDE-troubleshooting.md** | Known issues, root causes, and solutions | When bugs fixed |
+| **CLAUDE-config-variables.md** | Configuration reference and documentation | When config changes |
+| **CLAUDE-temp.md** | Temporary scratch pad for working notes | Only when referenced |
+
+### Memory Bank Rules
+
+✅ **DO:**
+- Check memory bank files at the start of every session
+- Update actively as work progresses
+- Preserve history and lessons learned
+- Use the `memory-bank-synchronizer` agent periodically
+
+❌ **DON'T:**
+- Commit memory bank files to version control (unless explicitly asked)
+- Delete achievements or historical context
+- Let memory bank get out of sync with actual code
+
+### Creating Memory Bank Files
+
+**Active Context Template:**
+```markdown
+# Active Context
+
+## Current Session
+- **Date**: 2025-01-15
+- **Goal**: Implement user authentication
+- **Branch**: feature/auth-system
+
+## Progress
+- [x] Set up database schema
+- [x] Create user model
+- [ ] Implement login endpoint
+- [ ] Add JWT token generation
+
+## Blockers
+- Need confirmation on password hashing algorithm
+
+## Decisions Made
+- Using bcrypt for password hashing (ADR-003)
+- JWT tokens expire after 24 hours
+
+## Next Steps
+1. Complete login endpoint implementation
+2. Write integration tests
+3. Update API documentation
+```
+
+### Platform Support
+
+| Platform | Memory Bank Prefix | Auto-Sync Support |
+|----------|-------------------|-------------------|
+| Claude Code | `CLAUDE-` | ✅ Yes (via subagent) |
+| Cursor | `CLAUDE-` | ⚠️ Manual |
+| Gemini CLI | `GEMINI-` | ⚠️ Manual |
+| Others | `CLAUDE-` | ⚠️ Manual |
+
+**📖 See:** Memory Bank section in `setup/docs/VIBE_CODING_WORKFLOW.md` for complete guidance
+
+---
+
 ## 📚 Documentation Index
 
 ### Core Workflow Documentation
@@ -930,6 +1022,80 @@ npm run lint
 # Check coverage
 npm run test:coverage
 ```
+
+---
+
+## 🛠️ Skills & Commands
+
+### Claude Code Skills
+
+Located in `.claude/skills/`:
+
+| Skill | Purpose | How to Use |
+|-------|---------|------------|
+| **claude-docs-consultant** | Fetch official Claude Code documentation | Automatically fetches relevant docs when working with Claude features |
+
+**Usage:**
+```
+I need to implement a custom skill for [purpose].
+Can you consult the official documentation?
+```
+
+### Slash Commands
+
+Located in `.claude/commands/`:
+
+#### Core Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/anthropic/apply-thinking-to` | Apply extended thinking to a problem |
+| `/anthropic/convert-to-todowrite-tasklist-prompt` | Convert requirements to task list |
+| `/anthropic/update-memory-bank` | Update memory bank files |
+
+#### Architecture Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/architecture/explain-architecture-pattern` | Explain architecture patterns in codebase |
+
+#### Security Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/security/check-best-practices` | Check for security best practices |
+| `/security/secure-prompts` | Design secure prompts |
+| `/security/security-audit` | Perform comprehensive security audit |
+
+#### Refactoring Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/refactor/refactor-code` | Analyze and refactor code |
+
+#### Prompt Engineering Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/promptengineering/batch-operations-prompt` | Generate batch operation prompts |
+| `/promptengineering/convert-to-test-driven-prompt` | Convert to TDD-focused prompts |
+
+### Quick Shortcuts (Sabrina's Guide)
+
+Keyboard shortcuts for rapid development:
+
+| Shortcut | Action | Use When |
+|----------|--------|----------|
+| `QNEW` | Understand best practices | Starting new feature |
+| `QPLAN` | Analyze plan consistency | Before implementation |
+| `QCODE` | Implement and verify | During development |
+| `QCHECK` | Full code review checklist | Before committing |
+| `QCHECKF` | Function checklist only | Reviewing specific functions |
+| `QCHECKT` | Test checklist only | Reviewing tests |
+| `QUX` | UX testing scenarios | User experience validation |
+| `QGIT` | Commit with conventional format | Ready to commit |
+
+**📖 See:** `setup/docs/VIBE_CODING_WORKFLOW.md` for complete commands reference
 
 ---
 
