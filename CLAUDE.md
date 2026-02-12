@@ -60,7 +60,30 @@ When working on Claude Code features (hooks, skills, subagents, MCP servers, etc
 
 ## Project Overview
 
+**Ops Agenda** is an AI-powered SaaS application that transforms email and calendar data into structured, actionable daily/weekly agendas. Built with Next.js.
 
+### North Star
+Daily Ops Brief — a single-screen dashboard with narrative summary, timeline, Top 3 priorities, due-outs, meeting prep, and focus blocks.
+
+### Core Modules
+Daily Ops Brief, Priority Inbox (P1/P2/P3/FYSA), Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding
+
+### Key Constraints
+- No raw email bodies stored — metadata and AI summaries only
+- No autonomous actions — AI suggests, user approves
+- JSON-only AI output — schema validated on every response
+- Microsoft Graph scopes: Mail.Read, Calendars.Read (least-privilege)
+- Dashboard load < 2 seconds
+- SOC 2 aligned (encryption, audit logs, tenant isolation)
+
+### Identity
+- **Company:** Kre8ivTech | **Author:** Jeremiah Castillo | **License:** Proprietary
+- **Contact:** info@kre8ivtech.com | **Repo:** https://github.com/Kre8ivTech/ops-agenda
+
+### Key References
+- PRD: Product Requirements Document v1.0 (Approved for Build, 2026-02-09)
+- Tech stack: `TECHSTACK.md` | Requirements: `setup/docs/TECHNOLOGY_DISCOVERY.md`
+- Governance: `setup/docs/AGENT_HANDBOOK.md` (source of truth)
 
 ## ALWAYS START WITH THESE COMMANDS FOR COMMON TASKS
 
