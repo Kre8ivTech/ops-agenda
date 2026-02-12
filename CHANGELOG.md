@@ -6,6 +6,10 @@ This project adheres to the **Keep a Changelog** format and uses
 
 ## [Unreleased]
 
+### Added
+- **setup/docs/SECURITY_ARCHITECTURE.md**: Security architecture document — encryption (3-layer: disk + TLS + AES-256-GCM field-level), authentication flow (Microsoft OAuth → NextAuth.js DB sessions), tenant isolation (Supabase RLS), GDPR/CCPA compliance (data export, deletion, consent tracking), audit logging, API security headers, rate limiting, secret management
+- **.env.example**: Added `ENCRYPTION_KEY` for field-level AES-256-GCM encryption
+
 ### Changed
 - **TECHSTACK.md**: Finalized architecture — Next.js, Supabase, OpenAI, Vercel, Inngest, Upstash Redis, Supabase Storage
 - **.env.example**: Added Supabase, Inngest, Upstash provider-specific environment variables

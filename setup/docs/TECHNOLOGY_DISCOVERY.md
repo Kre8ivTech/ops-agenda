@@ -260,6 +260,7 @@ Before proceeding to Architecture phase:
 - [x] Integrations documented: Microsoft 365, AI/LLM, Payments
 - [x] Non-functional requirements captured
 - [x] Extensibility requirements captured
+- [x] Security architecture documented: [`SECURITY_ARCHITECTURE.md`](SECURITY_ARCHITECTURE.md)
 
 ---
 

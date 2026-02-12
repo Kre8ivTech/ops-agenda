@@ -104,4 +104,10 @@
 
 ---
 
+## Security Architecture
+
+For implementation-level security design (encryption, authentication flows, RLS patterns, GDPR/CCPA compliance), see [SECURITY_ARCHITECTURE.md](setup/docs/SECURITY_ARCHITECTURE.md).
+
+---
+
 > See [TECHNOLOGY_DISCOVERY.md](setup/docs/TECHNOLOGY_DISCOVERY.md) for the full requirements checklist.
