@@ -1,8 +1,17 @@
 # AI Project Governance Starter
 
-> **Vibe Coding Boilerplate** - Complete AI-assisted development from conception to production
+> **Complete AI-Assisted Development Framework** - From conception to production with standardized workflows
 
-This repository provides a **comprehensive framework** for AI-assisted ("vibe") development, covering the entire lifecycle from initial concept through brand discovery, development, testing, security audits, and production deployment.
+This repository provides a **comprehensive framework** for AI-assisted ("vibe") development, covering the entire lifecycle from initial concept through project identity, brand discovery, technology selection, development, testing, security audits, and production deployment.
+
+**Key Features:**
+- 📋 Standardized agent behavior rules across all AI tools
+- 🎨 Complete brand and design discovery workflow
+- 🔧 Multi-platform support (Claude Code, Cursor, Copilot, Gemini, and more)
+- 🤖 Pre-built agent personas and subagents
+- 🔒 Security and quality guardrails
+- 📚 Comprehensive documentation and templates
+- 🚀 MCP server configurations for extended capabilities
 
 ---
 
@@ -53,23 +62,52 @@ mkdir -p docs/project assets/logo assets/media
 
 ## 📋 Execution Guide: Conception to Production
 
-### Phase -1: Project Identity (ALWAYS FIRST)
+**Complete Workflow Order:**
 
-**Before ANY discovery, capture these 5 required items:**
-
-```markdown
-## Project Identity (Required)
-
-| Field | Value |
-|-------|-------|
-| **Application Name** | [Name of the app/product] |
-| **Company Name** | [Company or organization] |
-| **Author Name** | [Primary author/creator] |
-| **License Type** | Proprietary (default) / MIT / Apache 2.0 |
-| **Contact Email** | [Primary contact email] |
+```
+Project Identity (-1) → Brand Discovery (0) → Technology Discovery (0.5) →
+Conception (1) → Requirements (2) → Architecture (3) → Planning (4) →
+Development (5) → Testing (6) → Security (7) → Review (8) → 
+Deployment (9) → Monitoring (10)
 ```
 
-**AI Prompt to Start:**
+### Quality Gates
+
+Each phase has mandatory gates that must pass before proceeding:
+
+| Phase Transition | Gate Criteria |
+|-----------------|---------------|
+| **-1 → 0** | All 5 identity fields captured |
+| **0 → 0.5** | Visual identity and tone established |
+| **0.5 → 1** | Application type and stack confirmed |
+| **1 → 2** | Project brief approved |
+| **2 → 3** | All user stories defined |
+| **3 → 4** | Technical design reviewed |
+| **4 → 5** | Tasks estimated and prioritized |
+| **5 → 6** | All features implemented, code follows standards |
+| **6 → 7** | >80% test coverage, all tests green |
+| **7 → 8** | No critical/high vulnerabilities |
+| **8 → 9** | All feedback addressed |
+| **9 → 10** | Staging verified, production live |
+
+### Phase -1: Project Identity (ALWAYS FIRST)
+
+**⚠️ CRITICAL: Complete this BEFORE any other discovery phase**
+
+Project Identity establishes the essential metadata used throughout all documentation, code files, and legal notices. These 5 fields are **non-negotiable** and must be captured first.
+
+#### Required Fields
+
+| # | Field | Purpose | Examples |
+|---|-------|---------|----------|
+| 1 | **Application Name** | Official product name | "TaskMaster Pro", "Acme Dashboard" |
+| 2 | **Company Name** | Legal entity/organization | "Acme Corporation", "John Doe Consulting" |
+| 3 | **Author Name** | Primary creator/lead | "Jane Smith", "Development Team" |
+| 4 | **License Type** | Legal usage terms | Proprietary (default), MIT, Apache 2.0 |
+| 5 | **Contact Email** | Primary contact | "contact@company.com", "support@app.com" |
+
+#### AI Prompt to Start
+
 ```
 I'm starting a new project. Before we begin any discovery, 
 I need to capture the project identity:
@@ -81,36 +119,74 @@ I need to capture the project identity:
 5. What is the primary contact email?
 ```
 
-**After capturing identity, automatically generate:**
-- LICENSE file
-- README header
-- package.json/composer.json fields
-- File header templates
+#### Auto-Generated Artifacts
+
+Once Project Identity is captured, automatically generate:
+
+- ✅ **LICENSE file** (based on chosen license type)
+- ✅ **README header** (with company/author information)
+- ✅ **package.json/composer.json fields** (name, author, license)
+- ✅ **File header templates** (copyright notices)
+- ✅ **PROJECT_IDENTITY.json** (machine-readable identity)
+
+**📖 Full Details:** See `setup/docs/PROJECT_IDENTITY.md` for complete templates and guidance.
 
 ---
 
 ### Phase 0: Brand & Design Discovery
 
-**Before ANY development, complete brand discovery:**
+**After Project Identity, complete brand discovery BEFORE development:**
+
+Brand Discovery establishes your visual identity, design system, and brand voice. This phase ensures consistency across all user-facing elements.
+
+#### Discovery Areas
 
 ```markdown
-## Start Brand Discovery
+## Brand Discovery Checklist
 
-1. Open: setup/docs/BRAND_AND_DESIGN_DISCOVERY.md
-2. Complete ALL intake questions:
-   - Brand Identity (Questions 1-10)
-   - Visual Preferences (Questions 11-16)
-   - Inspiration & References (Questions 17-22)
-   - Tone of Voice (Questions 23-27)
-3. Gather assets:
-   - [ ] Logo files (SVG, PNG)
-   - [ ] Brand colors (hex codes)
-   - [ ] Typography choices
-   - [ ] Inspiration images
-   - [ ] Existing brand guide (if any)
-4. Create: setup/docs/project/BRAND_GUIDE.md
-5. Create: assets/logo/ and assets/media/
+### 1. Brand Identity (Questions 1-10)
+- [ ] Brand essence and personality
+- [ ] Target audience and demographics
+- [ ] Key messages and values
+- [ ] Competitive positioning
+- [ ] Brand voice and tone
+
+### 2. Visual Preferences (Questions 11-16)
+- [ ] Color palette (primary, secondary, accent)
+- [ ] Typography (headings, body, special use)
+- [ ] Visual style (modern, classic, minimal, bold)
+- [ ] Imagery style (photos, illustrations, icons)
+- [ ] UI components preferences
+
+### 3. Inspiration & References (Questions 17-22)
+- [ ] Competitor analysis
+- [ ] Inspirational examples
+- [ ] Design patterns to follow/avoid
+- [ ] Existing brand assets
+
+### 4. Tone of Voice (Questions 23-27)
+- [ ] Communication style
+- [ ] Formality level
+- [ ] Key messaging guidelines
 ```
+
+#### Assets to Gather
+
+```bash
+assets/
+├── logo/           # Logo files (SVG, PNG in multiple sizes)
+├── media/          # Brand imagery, patterns, textures
+└── brand/          # Brand guidelines, color swatches, fonts
+```
+
+#### Deliverables
+
+Create these documents in `setup/docs/project/`:
+- **BRAND_GUIDE.md** - Complete brand guidelines
+- **DESIGN_SYSTEM.md** - UI components and patterns
+- **BRAND_DISCOVERY_RESPONSES.md** - Intake answers
+
+**📖 Full Questionnaire:** `setup/docs/BRAND_AND_DESIGN_DISCOVERY.md` (835 lines of detailed guidance)
 
 **AI Prompt to Start:**
 ```
@@ -119,15 +195,83 @@ Please ask me the brand discovery intake questions from
 setup/docs/BRAND_AND_DESIGN_DISCOVERY.md one section at a time.
 ```
 
+---
+
+### Phase 0.5: Technology Discovery
+
+**After Brand Discovery, select your technology stack:**
+
+Technology Discovery helps you choose the right stack based on your application type, requirements, and deployment target.
+
+#### Key Questions
+
+```markdown
+## Technology Discovery
+
+1. **Application Type**
+   - [ ] Web Application (SPA/MPA)
+   - [ ] Mobile Application (iOS/Android/Cross-platform)
+   - [ ] Desktop Application
+   - [ ] API/Backend Service
+   - [ ] WordPress Plugin/Theme
+   - [ ] Browser Extension
+   - [ ] CLI Tool
+
+2. **Primary Capabilities** (Select all that apply)
+   - [ ] User Authentication
+   - [ ] Database Operations (CRUD)
+   - [ ] Real-time Features
+   - [ ] File Upload/Storage
+   - [ ] Payment Processing
+   - [ ] Email/Notifications
+   - [ ] Search Functionality
+   - [ ] Analytics/Reporting
+   - [ ] API Integration
+   - [ ] Admin Dashboard
+
+3. **Deployment Target**
+   - [ ] WHM/cPanel AWS LAMP Server
+   - [ ] Vercel/Netlify
+   - [ ] WordPress Hosting
+   - [ ] Docker/Kubernetes
+   - [ ] Cloudflare Workers/Pages
+   - [ ] AWS/GCP/Azure
+   - [ ] On-premise
+
+4. **Tech Stack Selection**
+   Based on answers above, recommended stacks:
+   - **Laravel** → Full-stack PHP with Blade/Inertia
+   - **Next.js** → React with server-side rendering
+   - **WordPress** → Plugin/theme development
+   - **Node.js + Express** → API-focused backend
+```
+
+#### Auto-Detection & Standards
+
+The orchestration system automatically:
+- Detects your tech stack from `TECHSTACK.md`
+- Loads appropriate coding standards
+- Configures linting and testing tools
+- Sets up framework-specific patterns
+
+**📖 Full Guide:** `setup/docs/TECHNOLOGY_DISCOVERY.md` (733 lines of stack guidance)
+
 ### Phase 1: Project Conception
+
+**Create the project vision and scope:**
 
 ```markdown
 ## Create Project Brief
 
 1. Open: setup/docs/DEVELOPMENT_ORCHESTRATION.md
-2. Complete Phase 0: Conception questions
+2. Complete Phase 2 (Conception) questions:
+   - What problem are we solving?
+   - Who are the users?
+   - What's the value proposition?
+   - What are the success metrics?
+   - What's the timeline?
 3. Create: setup/docs/project/PROJECT_BRIEF.md
-4. Get stakeholder approval
+4. Get stakeholder approval before proceeding
 ```
 
 **AI Prompt:**
@@ -139,12 +283,24 @@ the project brief in setup/docs/project/PROJECT_BRIEF.md
 
 ### Phase 2: Requirements Gathering
 
+**Define detailed requirements with acceptance criteria:**
+
 ```markdown
 ## Define Requirements
 
 1. Create user stories with acceptance criteria
+   - Use format: "As a [role], I want [feature], so that [benefit]"
+   - Include acceptance criteria for each story
+   - Prioritize using MoSCoW (Must/Should/Could/Won't)
 2. Define functional requirements
+   - Core features and capabilities
+   - User workflows and interactions
+   - Data requirements
 3. Define non-functional requirements
+   - Performance targets
+   - Security requirements
+   - Accessibility standards (WCAG 2.1 AA minimum)
+   - Browser/device support
 4. Create: setup/docs/project/USER_STORIES.md
 5. Create: setup/docs/project/REQUIREMENTS.md
 ```
@@ -158,13 +314,31 @@ following the template in setup/docs/DEVELOPMENT_ORCHESTRATION.md
 
 ### Phase 3: Architecture & Planning
 
+**Design the technical architecture:**
+
 ```markdown
 ## Design Architecture
 
 1. Create: setup/docs/project/ARCHITECTURE.md
+   - System architecture diagram
+   - Component breakdown
+   - Data models and relationships
+   - API design (if applicable)
+   - Security architecture
+   - Deployment architecture
 2. Create ADRs in setup/docs/project/adr/
+   - Document key technical decisions
+   - Format: ADR-NNN-title.md
+   - Include context, decision, and consequences
 3. Create: setup/docs/project/SPRINT_PLAN.md
-4. Set up project board (Linear/Jira/GitHub)
+   - Break down into sprints/iterations
+   - Estimate effort (story points or hours)
+   - Identify dependencies
+   - Define sprint goals
+4. Set up project board (Linear/Jira/GitHub Projects)
+   - Import user stories as issues
+   - Set up workflow columns
+   - Assign initial priorities
 ```
 
 **AI Prompt:**
@@ -176,15 +350,42 @@ and create the architecture document with ADRs.
 
 ### Phase 4: Development
 
+**Begin implementation following TDD and coding standards:**
+
 ```markdown
 ## Start Development
 
 1. Create feature branch: git checkout -b feature/[story-id]-[description]
 2. Update CLAUDE-activeContext.md with current task
+   - Document goal, progress, blockers
+   - Track decisions made
 3. Follow TDD: Write tests first
-4. Implement feature
-5. Create PR with checklist
+   - Unit tests for business logic
+   - Integration tests for APIs
+   - E2E tests for critical paths
+4. Implement feature following established patterns
+   - Check CLAUDE-patterns.md for code conventions
+   - Match existing code style
+   - Use existing abstractions
+   - Keep changes minimal and focused
+5. Run linters and formatters
+6. Create PR with checklist (see PR template)
 ```
+
+#### Coding Standards Integration
+
+The orchestration system automatically enforces coding standards based on detected technology:
+
+| Technology | Standards Applied |
+|-----------|------------------|
+| WordPress | wordpress-best-practices, php-best-practices, mysql-best-practices |
+| Laravel | laravel-best-practices, php-best-practices |
+| Next.js | react-best-practices, nextjs-patterns, typescript-standards |
+| Node.js | node-best-practices, javascript-standards |
+
+Standards are loaded from `setup/skills/coding-standards/` and enforced at CRITICAL and HIGH levels.
+
+**📖 See:** `setup/docs/PROGRESSIVE_GUARDRAILS.md` for the complete standards system
 
 **AI Prompt:**
 ```
@@ -195,14 +396,47 @@ then implement the feature following our patterns.
 
 ### Phase 5: Testing
 
+**Comprehensive testing at multiple levels:**
+
 ```markdown
 ## Run Test Suite
 
-1. Unit tests (80%+ coverage)
-2. Integration tests
-3. E2E tests with Playwright
-4. Accessibility audit
-5. Performance testing
+1. **Unit Tests** (80%+ coverage target)
+   - Test business logic in isolation
+   - Mock external dependencies
+   - Fast execution (<100ms per test)
+   
+2. **Integration Tests**
+   - Test API endpoints
+   - Test database operations
+   - Test external service integrations
+   
+3. **E2E Tests** with Playwright
+   - Test critical user journeys
+   - Test cross-browser compatibility
+   - Test responsive layouts
+   
+4. **Accessibility Audit**
+   - WCAG 2.1 AA compliance
+   - Keyboard navigation
+   - Screen reader compatibility
+   - Color contrast ratios
+   
+5. **Performance Testing**
+   - Lighthouse scores (>90 targets)
+   - Load testing for APIs
+   - Database query optimization
+   - Bundle size analysis
+```
+
+**Test Commands:**
+```bash
+npm test                    # Run all tests
+npm run test:unit          # Unit tests only
+npm run test:integration   # Integration tests
+npm run test:e2e          # E2E with Playwright
+npm run test:coverage     # Coverage report
+npm run test:a11y         # Accessibility checks
 ```
 
 **AI Prompt:**
@@ -214,14 +448,50 @@ Run the Playwright MCP for E2E testing.
 
 ### Phase 6: Security Audit
 
+**Comprehensive security review:**
+
 ```markdown
 ## Security Review
 
-1. Run SAST scan (SonarQube/Semgrep)
-2. Run dependency scan (Snyk)
-3. Review OWASP Top 10
-4. Create: setup/docs/project/SECURITY_AUDIT.md
+1. **SAST Scan** (Static Application Security Testing)
+   - Run SonarQube for code quality and vulnerabilities
+   - Run Semgrep for security patterns
+   - Check for hardcoded secrets
+   
+2. **Dependency Scan**
+   - Run Snyk for vulnerable dependencies
+   - Check for outdated packages
+   - Review license compatibility
+   
+3. **OWASP Top 10 Review**
+   - [ ] Injection (SQL, XSS, Command)
+   - [ ] Broken Authentication
+   - [ ] Sensitive Data Exposure
+   - [ ] XML External Entities (XXE)
+   - [ ] Broken Access Control
+   - [ ] Security Misconfiguration
+   - [ ] Cross-Site Scripting (XSS)
+   - [ ] Insecure Deserialization
+   - [ ] Components with Known Vulnerabilities
+   - [ ] Insufficient Logging & Monitoring
+   
+4. **Security Checklist**
+   - [ ] Environment variables properly secured
+   - [ ] API authentication implemented
+   - [ ] Rate limiting configured
+   - [ ] CORS properly configured
+   - [ ] CSP headers set
+   - [ ] HTTPS enforced
+   - [ ] Input validation on all endpoints
+   - [ ] Output encoding implemented
+   
+5. Create: setup/docs/project/SECURITY_AUDIT.md
+   - Document findings
+   - Prioritize by severity
+   - Track remediation
 ```
+
+**📖 Security Skills:** Available in `setup/skills/security/` and `setup/skills/pentest/`
 
 **AI Prompt:**
 ```
@@ -232,26 +502,87 @@ tools and create a security audit report.
 
 ### Phase 7: Code Review & Merge
 
+**Final quality check before merging:**
+
 ```markdown
 ## Final Review
 
-1. Self-review against checklist
-2. Request peer review
-3. Address feedback
-4. Merge to main
+1. **Self-Review Checklist**
+   - [ ] Code follows established patterns
+   - [ ] All tests passing
+   - [ ] No console.log or debugging code
+   - [ ] Comments explain "why", not "what"
+   - [ ] No TODO comments left
+   - [ ] Documentation updated
+   - [ ] CHANGELOG.md updated (if significant)
+   
+2. **Request Peer Review**
+   - Assign reviewers in PR
+   - Provide context and testing instructions
+   - Link to related issues/stories
+   
+3. **Address Feedback**
+   - Respond to all comments
+   - Make requested changes
+   - Re-request review after updates
+   
+4. **Merge to Main**
+   - Squash commits if needed
+   - Use conventional commit message
+   - Delete feature branch after merge
 ```
 
+**PR Template:** Use `.github/pull_request_template.md` for consistent PRs
+
 ### Phase 8: Deployment
+
+**Deploy through staging to production:**
 
 ```markdown
 ## Deploy to Production
 
-1. Deploy to staging
-2. Run smoke tests
-3. Get stakeholder approval
-4. Deploy to production
-5. Verify deployment
+1. **Deploy to Staging**
+   ```bash
+   # Deployment varies by platform
+   npm run deploy:staging        # Vercel/Netlify
+   ./scripts/deploy-staging.sh   # Custom deployment
+   git push staging main          # Platform-specific
+   ```
+   
+2. **Run Smoke Tests**
+   - [ ] Application loads successfully
+   - [ ] Authentication works
+   - [ ] Critical user paths functional
+   - [ ] Database migrations applied
+   - [ ] Environment variables set correctly
+   - [ ] External integrations working
+   
+3. **Get Stakeholder Approval**
+   - Share staging URL
+   - Walk through new features
+   - Verify acceptance criteria met
+   - Get sign-off to proceed
+   
+4. **Deploy to Production**
+   ```bash
+   npm run deploy:production
+   # or use platform-specific deployment
+   ```
+   
+5. **Verify Deployment**
+   - [ ] Health checks passing
+   - [ ] Monitoring active
+   - [ ] Error tracking configured
+   - [ ] Analytics tracking
+   - [ ] Backup systems operational
+   - [ ] Rollback plan ready
 ```
+
+**Platform Guides:**
+- Vercel: `CLAUDE-vercel.md`
+- Cloudflare: `CLAUDE-cloudflare.md`
+- WHM/cPanel: `CLAUDE-whm.md`
+- WordPress: `CLAUDE-wordpress.md`
 
 **AI Prompt:**
 ```
@@ -261,14 +592,48 @@ then to production. Help me run through the deployment checklist.
 
 ### Phase 9: Monitoring
 
+**Set up production monitoring and alerting:**
+
 ```markdown
 ## Monitor Production
 
-1. Set up Sentry alerts
-2. Configure dashboards
-3. Monitor error rates
-4. Track performance metrics
+1. **Set up Sentry Alerts**
+   - Error tracking configured
+   - Alert thresholds set
+   - Team notifications configured
+   - Issue assignment rules
+   
+2. **Configure Dashboards**
+   - Application performance metrics
+   - User analytics
+   - Error rates and trends
+   - System health indicators
+   
+3. **Monitor Error Rates**
+   - Set up automated alerts for spikes
+   - Review errors daily
+   - Triage and prioritize fixes
+   - Track resolution time
+   
+4. **Track Performance Metrics**
+   - Response times (p50, p95, p99)
+   - Throughput (requests per second)
+   - Resource utilization (CPU, memory, disk)
+   - Database query performance
+   - Cache hit rates
+   
+5. **Incident Response Plan**
+   - Define severity levels
+   - Set up on-call rotation
+   - Document runbooks
+   - Test rollback procedures
 ```
+
+**Monitoring Tools:**
+- Sentry for error tracking
+- Application-specific monitoring (New Relic, DataDog, etc.)
+- Uptime monitoring (UptimeRobot, Pingdom)
+- Log aggregation (CloudWatch, Papertrail)
 
 ---
 
@@ -276,34 +641,153 @@ then to production. Help me run through the deployment checklist.
 
 ```
 your-project/
-├── setup/                          # SETUP & TEMPLATE FILES
-│   ├── docs/                       # Documentation
-│   │   ├── project/                # YOUR PROJECT DOCS
+├── setup/                          # SETUP & GOVERNANCE FILES
+│   ├── docs/                       # Comprehensive Documentation
+│   │   ├── project/                # YOUR PROJECT DOCS (generated)
 │   │   │   ├── BRAND_GUIDE.md      # Brand guidelines
 │   │   │   ├── PROJECT_BRIEF.md    # Project overview
-│   │   │   └── adr/                # Architecture decisions
-│   │   ├── AGENT_HANDBOOK.md       # AI behavior rules
-│   │   ├── DEVELOPMENT_ORCHESTRATION.md # Full workflow
-│   │   ├── BRAND_AND_DESIGN_DISCOVERY.md # Brand intake
-│   │   └── VIBE_CODING_WORKFLOW.md # Master guide
-│   ├── examples/                   # CLAUDE.md templates
-│   ├── agents/                     # Agent personas
-│   ├── skills/                     # Coding standards & skills
-│   ├── tools/                      # Helper tools
-│   └── scripts/                    # Utility scripts
+│   │   │   ├── USER_STORIES.md     # User stories & acceptance criteria
+│   │   │   ├── REQUIREMENTS.md     # Functional & non-functional requirements
+│   │   │   ├── ARCHITECTURE.md     # System architecture
+│   │   │   ├── SPRINT_PLAN.md      # Sprint planning
+│   │   │   ├── SECURITY_AUDIT.md   # Security audit results
+│   │   │   └── adr/                # Architecture Decision Records
+│   │   ├── AGENT_HANDBOOK.md       # AI behavior source of truth
+│   │   ├── WORKFLOW.md             # Phased workflow overview
+│   │   ├── DEVELOPMENT_ORCHESTRATION.md # Complete lifecycle (1064 lines)
+│   │   ├── PROJECT_IDENTITY.md     # Project identity intake (375 lines)
+│   │   ├── BRAND_AND_DESIGN_DISCOVERY.md # Brand intake (835 lines)
+│   │   ├── TECHNOLOGY_DISCOVERY.md # Tech stack selection (733 lines)
+│   │   ├── VIBE_CODING_WORKFLOW.md # Master reference guide (755 lines)
+│   │   ├── QUICK_START.md          # 5-minute getting started (149 lines)
+│   │   ├── PLATFORM_SETUP.md       # IDE-specific setup (683 lines)
+│   │   ├── SUBAGENTS_AND_MCP_SERVERS.md # Tools & integrations (573 lines)
+│   │   ├── PROGRESSIVE_GUARDRAILS.md # Coding standards system (668 lines)
+│   │   ├── BUILD-WITH-QUALITY-PROMPT.md # Quality prompts (669 lines)
+│   │   ├── USAGE-EXAMPLES.md       # Common usage patterns (463 lines)
+│   │   ├── AGENT_ROLES.md          # Agent role definitions (13 lines)
+│   │   ├── VERSIONING.md           # SemVer policy (12 lines)
+│   │   └── RELEASE_PROCESS.md      # Release steps (7 lines)
+│   ├── examples/                   # CLAUDE.md templates & examples
+│   │   ├── orchestrators/          # Orchestrator agents
+│   │   ├── specialists/            # Framework specialists
+│   │   └── templates/              # Configuration templates
+│   ├── agents/                     # Agent persona definitions
+│   │   └── critical/               # Core agents (PM, Dev, QA, Reviewer)
+│   ├── skills/                     # AI Skills & coding standards
+│   │   ├── coding-standards/       # Framework-specific standards
+│   │   ├── security/               # Security audit skills
+│   │   └── pentest/                # Penetration testing skills
+│   ├── tools/                      # Helper tools & utilities
+│   └── scripts/                    # Automation scripts
 ├── assets/
-│   ├── logo/                       # Logo files
-│   └── media/                      # Brand imagery
+│   ├── logo/                       # Logo files (SVG, PNG, ICO)
+│   ├── media/                      # Brand imagery, screenshots
+│   └── brand/                      # Brand assets (colors, fonts)
 ├── .claude/
+│   ├── agents/                     # Claude Code subagents
+│   │   ├── code-searcher.md        # Codebase analysis
+│   │   ├── memory-bank-synchronizer.md # Context sync
+│   │   └── ux-design-expert.md     # UX guidance
+│   ├── commands/                   # Slash commands
+│   │   ├── anthropic/              # Core Claude commands
+│   │   ├── architecture/           # Architecture commands
+│   │   ├── security/               # Security commands
+│   │   └── refactor/               # Refactoring commands
+│   ├── skills/                     # Claude Code skills
+│   │   └── claude-docs-consultant/ # Fetch official docs
 │   ├── mcp/                        # MCP server configs
-│   ├── skills/                     # Claude skills
-│   └── agents/                     # Subagent definitions
-├── CLAUDE.md                       # AI instructions (stays at root)
-├── CLAUDE-activeContext.md         # Current session state
-├── CLAUDE-patterns.md              # Code patterns
-├── CLAUDE-decisions.md             # Decisions log
-└── .env                            # Environment variables
+│   │   ├── web-dev-stack.json      # Web development tools
+│   │   ├── security-stack.json     # Security tools
+│   │   ├── project-management.json # Project management
+│   │   └── devops-stack.json       # DevOps tools
+│   └── settings.json               # Claude settings
+├── .cursor/
+│   ├── rules.md                    # Cursor-specific rules
+│   └── mcp.json                    # Cursor MCP config
+├── .cline/
+│   └── mcp_settings.json           # Cline MCP config
+├── .github/
+│   ├── copilot-instructions.md     # GitHub Copilot config
+│   └── pull_request_template.md    # PR template
+├── CLAUDE.md                       # Primary AI instructions (stays at root)
+├── CLAUDE-*.md                     # Domain-specific configs (cloudflare, vercel, etc.)
+├── CLAUDE-activeContext.md         # Current session state (memory bank)
+├── CLAUDE-patterns.md              # Code patterns (memory bank)
+├── CLAUDE-decisions.md             # Architecture decisions (memory bank)
+├── CLAUDE-troubleshooting.md       # Known issues & solutions (memory bank)
+├── GEMINI.md                       # Gemini CLI configuration
+├── .windsurfrules                  # Windsurf configuration
+├── .clinerules                     # Cline configuration
+├── TECHSTACK.md                    # Technology stack documentation
+├── CHANGELOG.md                    # Version history
+└── .env.example                    # Environment variables template
 ```
+
+---
+
+## 🤖 Agent System
+
+### Critical Agents (Always Available)
+
+Located in `setup/agents/critical/`:
+
+| Agent | Role | When to Use | Capabilities |
+|-------|------|-------------|--------------|
+| **product-manager.md** | Requirements & scope | Starting new features | Defines requirements, acceptance criteria, priorities |
+| **software-engineer.md** | Implementation | Writing code | Implements features following patterns and standards |
+| **code-reviewer.md** | Quality assurance | Before merging | Reviews code for quality, security, patterns |
+| **qa-engineer.md** | Testing | Verification phase | Creates test plans, writes tests, validates quality |
+
+### Orchestrator Agents
+
+Located in `setup/examples/CLAUDE.md Collection/orchestrators/`:
+
+| Agent | Role | Capabilities |
+|-------|------|--------------|
+| **tech-lead-orchestrator.md** | Coordinates multi-step tasks | Plans work, delegates to specialists, never writes code directly |
+| **project-analyst.md** | Codebase analysis | Detects tech stack, analyzes unfamiliar codebases, generates reports |
+| **team-configurator.md** | Agent team setup | Configures specialized agent teams for specific workflows |
+
+### Framework Specialists
+
+Pre-configured experts for popular frameworks:
+
+**Backend Frameworks:**
+- Django: `django-backend-expert.md`, `django-api-developer.md`, `django-orm-expert.md`
+- Rails: `rails-backend-expert.md`, `rails-api-developer.md`, `rails-activerecord-expert.md`
+- Laravel: `laravel-backend-expert.md`, `laravel-eloquent-expert.md`
+
+**Frontend Frameworks:**
+- React: `react-component-architect.md`, `react-nextjs-expert.md`
+- Vue: `vue-component-architect.md`, `vue-nuxt-expert.md`, `vue-state-manager.md`
+
+**Universal:**
+- `backend-developer.md` - General backend development
+- `frontend-developer.md` - General frontend development
+- `api-architect.md` - API design and implementation
+
+### Claude Code Subagents
+
+Located in `.claude/agents/`:
+
+| Subagent | Purpose | How to Use |
+|----------|---------|------------|
+| **code-searcher.md** | Codebase analysis | Use CoD (Chain of Density) methodology for deep analysis |
+| **memory-bank-synchronizer.md** | Context synchronization | Sync memory bank files with actual code state |
+| **ux-design-expert.md** | UX guidance | Get UX/UI design recommendations and patterns |
+
+### Using Agents
+
+**Claude Code:**
+```
+@code-searcher Find all authentication logic in the codebase
+@memory-bank-synchronizer Sync all memory bank files with current code
+@ux-design-expert Review the user registration flow for UX issues
+```
+
+**Other Platforms:**
+Reference agent markdown files directly or use the orchestrate skill for delegation.
 
 ---
 
@@ -311,51 +795,98 @@ your-project/
 
 ### Enable MCP Servers
 
-MCP servers extend AI capabilities with external tools:
+MCP (Model Context Protocol) servers extend AI capabilities with external tools and integrations:
+
+**Installation:**
 
 ```bash
-# Install required servers
-npm install -g @anthropic/github-mcp-server
-npm install -g @anthropic/playwright-mcp-server
-npm install -g supabase-mcp
-npm install -g figma-context-mcp
-npm install -g sonarqube-mcp-server
+# Install core MCP servers
+npm install -g @anthropic/github-mcp-server      # GitHub integration
+npm install -g @anthropic/playwright-mcp-server  # Browser automation
+npm install -g supabase-mcp                      # Database operations
+npm install -g figma-context-mcp                 # Design integration
+npm install -g sonarqube-mcp-server             # Code quality
 ```
 
-### Pre-configured Stacks
+### Pre-configured MCP Stacks
 
-| Stack | File | Includes |
-|-------|------|----------|
-| Web Development | `.claude/mcp/web-dev-stack.json` | GitHub, Playwright, Supabase, Figma |
-| Security | `.claude/mcp/security-stack.json` | SonarQube, Sentry, Snyk |
-| Project Management | `.claude/mcp/project-management.json` | Linear, Jira, Notion |
-| DevOps | `.claude/mcp/devops-stack.json` | Docker, AWS, Cloudflare |
-| Design | `.claude/mcp/design-stack.json` | Figma, Magic, Browser |
+Located in `.claude/mcp/`, pre-configured for common workflows:
+
+| Stack | File | Includes | Use Case |
+|-------|------|----------|----------|
+| **Web Development** | `web-dev-stack.json` | GitHub, Playwright, Supabase, Figma, Context7 | Full-stack web development |
+| **Security** | `security-stack.json` | SonarQube, Sentry, Snyk | Security audits and monitoring |
+| **Project Management** | `project-management.json` | Linear, Jira, Notion, GitHub | Issue tracking and planning |
+| **DevOps** | `devops-stack.json` | Docker, AWS, Cloudflare, Vercel | Deployment and infrastructure |
+| **Design** | `design-stack.json` | Figma, Magic, Browser | Design handoff and prototyping |
+
+### Platform-Specific MCP Support
+
+| Platform | Config File | Support Level |
+|----------|-------------|---------------|
+| Claude Code | `.claude/mcp/*.json` | ✅ Full support |
+| Cursor | `.cursor/mcp.json` | ⚠️ Partial support |
+| Cline | `.cline/mcp_settings.json` | ⚠️ Partial support |
+| Windsurf | Manual config in settings | ⚠️ Partial support |
+| Copilot | N/A | ❌ Not supported |
+| Gemini CLI | N/A | ❌ Not supported |
+
+**📖 Full MCP Guide:** `setup/docs/SUBAGENTS_AND_MCP_SERVERS.md` (573 lines)
 
 ---
 
 ## 📚 Documentation Index
 
-### Core Workflow
-| Document | Purpose |
-|----------|---------|
-| [Development Orchestration](setup/docs/DEVELOPMENT_ORCHESTRATION.md) | Full lifecycle phases |
-| [Brand Discovery](setup/docs/BRAND_AND_DESIGN_DISCOVERY.md) | Brand intake & design system |
-| [Vibe Coding Workflow](setup/docs/VIBE_CODING_WORKFLOW.md) | Master reference guide |
-| [Quick Start](setup/docs/QUICK_START.md) | 5-minute getting started |
+### Core Workflow Documentation
 
-### Platform Setup
-| Document | Purpose |
-|----------|---------|
-| [Platform Setup](setup/docs/PLATFORM_SETUP.md) | IDE-specific configuration |
-| [MCP Servers Guide](setup/docs/SUBAGENTS_AND_MCP_SERVERS.md) | Tools & integrations |
+| Document | Lines | Purpose |
+|----------|-------|---------|
+| [Agent Handbook](setup/docs/AGENT_HANDBOOK.md) | 69 | **Source of truth** for AI behavior, rules, and principles |
+| [Workflow](setup/docs/WORKFLOW.md) | 23 | Quick overview of phased build process |
+| [Development Orchestration](setup/docs/DEVELOPMENT_ORCHESTRATION.md) | 1064 | **Complete lifecycle** from conception to monitoring |
+| [Vibe Coding Workflow](setup/docs/VIBE_CODING_WORKFLOW.md) | 755 | **Master reference** guide for all platforms |
+| [Quick Start](setup/docs/QUICK_START.md) | 149 | 5-minute getting started guide |
 
-### Policies
+### Discovery & Planning
+
+| Document | Lines | Purpose |
+|----------|-------|---------|
+| [Project Identity](setup/docs/PROJECT_IDENTITY.md) | 375 | **Phase -1:** Essential project metadata intake |
+| [Brand & Design Discovery](setup/docs/BRAND_AND_DESIGN_DISCOVERY.md) | 835 | **Phase 0:** Complete brand intake questionnaire |
+| [Technology Discovery](setup/docs/TECHNOLOGY_DISCOVERY.md) | 733 | **Phase 0.5:** Tech stack selection and configuration |
+
+### Platform & Tools
+
+| Document | Lines | Purpose |
+|----------|-------|---------|
+| [Platform Setup](setup/docs/PLATFORM_SETUP.md) | 683 | IDE-specific setup (Claude, Cursor, Copilot, etc.) |
+| [Subagents & MCP Servers](setup/docs/SUBAGENTS_AND_MCP_SERVERS.md) | 573 | MCP server configuration and agent system |
+| [Progressive Guardrails](setup/docs/PROGRESSIVE_GUARDRAILS.md) | 668 | Coding standards and enforcement system |
+
+### Quality & Best Practices
+
+| Document | Lines | Purpose |
+|----------|-------|---------|
+| [Build with Quality](setup/docs/BUILD-WITH-QUALITY-PROMPT.md) | 669 | Quality-focused development prompts |
+| [Usage Examples](setup/docs/USAGE-EXAMPLES.md) | 463 | Common usage patterns and examples |
+| [Agent Roles](setup/docs/AGENT_ROLES.md) | 13 | Agent role definitions and responsibilities |
+
+### Release Management
+
+| Document | Lines | Purpose |
+|----------|-------|---------|
+| [Versioning](setup/docs/VERSIONING.md) | 12 | Semantic versioning policy |
+| [Release Process](setup/docs/RELEASE_PROCESS.md) | 7 | Release workflow steps |
+
+### Platform-Specific Configs
+
 | Document | Purpose |
 |----------|---------|
-| [Agent Handbook](setup/docs/AGENT_HANDBOOK.md) | AI behavior rules |
-| [Workflow](setup/docs/WORKFLOW.md) | Phased build process |
-| [Versioning](setup/docs/VERSIONING.md) | SemVer policy |
+| CLAUDE-cloudflare.md | Cloudflare Workers/Pages development |
+| CLAUDE-convex.md | Convex backend integration |
+| CLAUDE-vercel.md | Vercel deployment configuration |
+| CLAUDE-whm.md | WHM/cPanel server management |
+| CLAUDE-wordpress.md | WordPress plugin/theme development |
 
 ---
 
@@ -478,13 +1009,41 @@ checklist and help verify each step.
 
 ## ✅ Golden Rules
 
-1. **Brand First** - Complete brand discovery before development
-2. **Plan Mode** - Always ask intake questions before coding
-3. **Small Changes** - Keep commits minimal and reviewable
-4. **Test First** - Write tests before implementation (TDD)
-5. **Document Always** - Update docs when behavior changes
-6. **Security Check** - Audit before every release
-7. **Never Commit Secrets** - Use environment variables
+### The 7 Core Principles
+
+1. **Identity First** - Capture project identity (5 fields) before ANY other questions
+2. **Brand Before Code** - Complete brand discovery before writing any code
+3. **Plan Mode Always** - Ask intake questions and wait for answers before implementing
+4. **Small Changes** - Keep commits minimal, focused, and reviewable
+5. **Test First** - Write tests before implementation (TDD approach)
+6. **Document Changes** - Update docs whenever user-facing behavior changes
+7. **Security Check** - Run security audit before every release
+8. **Never Commit Secrets** - Always use environment variables, never hardcode
+
+### Quality Checklist
+
+Before every commit:
+- [ ] Code follows established patterns (check `CLAUDE-patterns.md`)
+- [ ] Tests written and passing (unit, integration, E2E as needed)
+- [ ] No console.log or debugging code left in
+- [ ] Documentation updated if behavior changed
+- [ ] CHANGELOG.md updated if significant change
+- [ ] No secrets or credentials committed
+- [ ] Memory bank files excluded from commit
+
+### Progressive Guardrails
+
+The framework enforces coding standards at three levels:
+
+| Level | Severity | Enforcement | Action |
+|-------|----------|-------------|--------|
+| **CRITICAL** | Must fix | Blocking | Blocks code completion until fixed |
+| **HIGH** | Should fix | Warning | Warns but allows completion |
+| **MEDIUM** | Consider | Advisory | Suggests improvements |
+
+Standards are automatically loaded based on detected technology stack.
+
+**📖 See:** `setup/docs/PROGRESSIVE_GUARDRAILS.md` for the complete system
 
 ---
 
