@@ -36,14 +36,11 @@ Before delegating, auto-inject relevant coding standards based on the project's 
 
 | Pattern Detected | Standards Loaded |
 |------------------|------------------|
-| WordPress, wp-content, Divi, Elementor | wordpress, php, mysql |
 | Next.js, App Router, use client | nextjs, react, javascript |
-| Laravel, Eloquent, Blade, Livewire | laravel, php, mysql |
 | Supabase, RLS, auth.uid() | supabase |
-| MariaDB, Galera | mariadb, mysql |
 | React, useState, JSX | react, javascript |
-| PHP, composer.json | php |
-| MySQL, my.cnf | mysql |
+| Microsoft Graph, Mail.Read, Calendars.Read | javascript, nextjs |
+| MySQL, PostgreSQL | mysql |
 
 **Include in Subagent Prompt:**
 

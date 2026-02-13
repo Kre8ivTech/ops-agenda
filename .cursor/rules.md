@@ -4,7 +4,7 @@ This file provides comprehensive guidance to Cursor IDE when working with code i
 
 ## Core Directives
 
-Follow the guidance in `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md`.
+Follow the guidance in `setup/docs/AGENT_HANDBOOK.md` and `setup/docs/WORKFLOW.md`.
 Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
 
 ## AI Guidance
@@ -47,8 +47,8 @@ Do not jump into implementation or change files unless clearly instructed. When 
 | # | Question |
 |---|----------|
 | 6 | **Outcome**: What outcome should the user see when this is done? |
-| 7 | **Stack**: Which stack is required: Laravel app, Next.js app, or WordPress plugin? |
-| 8 | **Deployment**: Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? |
+| 7 | **Module**: Which Ops Agenda module does this task target? (Daily Ops Brief, Priority Inbox, Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding) |
+| 8 | **Integration**: Does this change affect the Microsoft Graph integration, the AI pipeline, or both? |
 | 9 | **Scope**: What is in scope vs. explicitly out of scope? |
 | 10 | **Constraints**: Are there constraints (deadlines, tech choices, must-not-change areas)? |
 | 11 | **Acceptance**: What are the acceptance criteria and how will we verify success? |
@@ -61,7 +61,7 @@ Project Identity → Brand Discovery → Technology Discovery →
 Conception → Requirements → Architecture → Development → Deploy
 ```
 
-See `docs/PROJECT_IDENTITY.md` for identity templates and `docs/DEVELOPMENT_ORCHESTRATION.md` for full lifecycle.
+See `setup/docs/PROJECT_IDENTITY.md` for identity templates and `setup/docs/DEVELOPMENT_ORCHESTRATION.md` for full lifecycle.
 
 ---
 
@@ -239,18 +239,15 @@ When using inline edits:
 
 ### Documentation Files
 
-- `docs/AGENT_HANDBOOK.md` - Source of truth for behavior
-- `docs/WORKFLOW.md` - Phased build process
-- `docs/VIBE_CODING_WORKFLOW.md` - Complete master guide
+- `setup/docs/AGENT_HANDBOOK.md` - Source of truth for behavior
+- `setup/docs/WORKFLOW.md` - Phased build process
+- `setup/docs/VIBE_CODING_WORKFLOW.md` - Complete master guide
 - `TECHSTACK.md` - Technology stack documentation
 
 ### Tech Stack Detection
 
 Check these files to understand the project:
-- `package.json` - Node.js/JavaScript projects
-- `composer.json` - PHP/Laravel projects
-- `requirements.txt` - Python projects
-- `Gemfile` - Ruby/Rails projects
+- `package.json` - Next.js / Node.js project
 
 ---
 
@@ -282,4 +279,4 @@ Check these files to understand the project:
 
 ---
 
-*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
+*For complete documentation, see `setup/docs/VIBE_CODING_WORKFLOW.md`*

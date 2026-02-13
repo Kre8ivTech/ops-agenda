@@ -125,6 +125,6 @@
   },
   "usage": {
     "description": "Read TECHSTACK.md to identify the project's tech stack, then load the corresponding AGENTS.md files for coding standards.",
-    "example": "If TECHSTACK.md mentions 'WordPress' and 'MySQL', load wordpress-best-practices, php-best-practices, and mysql-best-practices."
+    "example": "If TECHSTACK.md mentions 'Next.js' and 'Supabase', load nextjs-best-practices, react-best-practices, javascript-best-practices, and supabase-best-practices."
   }
 }

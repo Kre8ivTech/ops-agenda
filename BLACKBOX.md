@@ -4,7 +4,7 @@ This file provides comprehensive guidance to Blackbox AI when working with code 
 
 ## Core Directives
 
-Follow the guidance in `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md`.
+Follow the guidance in `setup/docs/AGENT_HANDBOOK.md` and `setup/docs/WORKFLOW.md`.
 Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
 
 ---
@@ -54,8 +54,8 @@ You are a specialized AI assistant. Your primary function is to execute the user
 | # | Question | Purpose |
 |---|----------|---------|
 | 6 | What outcome should the user see when this is done? | Define success criteria |
-| 7 | Which stack is required: Laravel app, Next.js app, or WordPress plugin? | Technology selection |
-| 8 | Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? | Infrastructure decisions |
+| 7 | Which Ops Agenda module does this task target? (Daily Ops Brief, Priority Inbox, Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding) | Module targeting |
+| 8 | Does this change affect the Microsoft Graph integration, the AI pipeline, or both? | Integration impact |
 | 9 | What is in scope vs. explicitly out of scope? | Boundary definition |
 | 10 | Are there constraints (deadlines, tech choices, must-not-change areas)? | Risk identification |
 | 11 | What are the acceptance criteria and how will we verify success? | Quality gates |
@@ -77,7 +77,7 @@ Only skip intake questions if:
 
 **NOTE**: Project Identity (Questions 1-5) should NEVER be skipped for new projects.
 
-See `docs/PROJECT_IDENTITY.md` for identity templates.
+See `setup/docs/PROJECT_IDENTITY.md` for identity templates.
 
 ---
 
@@ -309,13 +309,7 @@ When starting work, detect the project type:
 
 | File Found | Stack | Action |
 |------------|-------|--------|
-| `package.json` | Node.js/JavaScript | Check dependencies for framework |
-| `composer.json` | PHP/Laravel | Check for Laravel framework |
-| `requirements.txt` | Python | Check for Django/Flask |
-| `Gemfile` | Ruby/Rails | Check for Rails |
-| `go.mod` | Go | Check for Gin/Echo |
-| `Cargo.toml` | Rust | Check workspace config |
-| `pom.xml` | Java/Maven | Check dependencies |
+| `package.json` | Next.js / Node.js | Check for Next.js, React, Microsoft Graph SDK |
 
 ---
 
@@ -325,23 +319,13 @@ When starting work, detect the project type:
 
 | File | Purpose |
 |------|---------|
-| `docs/AGENT_HANDBOOK.md` | Source of truth for all behavior |
-| `docs/WORKFLOW.md` | Phased build process |
-| `docs/VIBE_CODING_WORKFLOW.md` | Complete master guide |
-| `docs/QUICK_START.md` | 5-minute getting started |
-| `docs/PLATFORM_SETUP.md` | Platform-specific setup |
+| `setup/docs/AGENT_HANDBOOK.md` | Source of truth for all behavior |
+| `setup/docs/WORKFLOW.md` | Phased build process |
+| `setup/docs/VIBE_CODING_WORKFLOW.md` | Complete master guide |
+| `setup/docs/QUICK_START.md` | 5-minute getting started |
+| `setup/docs/PLATFORM_SETUP.md` | Platform-specific setup |
 | `TECHSTACK.md` | Technology stack documentation |
 | `CHANGELOG.md` | Version history |
-
-### Domain-Specific Configs
-
-| File | Domain |
-|------|--------|
-| `CLAUDE-cloudflare.md` | Cloudflare Workers/Pages |
-| `CLAUDE-wordpress.md` | WordPress development |
-| `CLAUDE-vercel.md` | Vercel deployment |
-| `CLAUDE-whm.md` | WHM/cPanel servers |
-| `CLAUDE-convex.md` | Convex backend |
 
 ---
 
@@ -426,4 +410,4 @@ When starting work, detect the project type:
 
 ---
 
-*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
+*For complete documentation, see `setup/docs/VIBE_CODING_WORKFLOW.md`*

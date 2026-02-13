@@ -1,6 +1,6 @@
 # Setup Directory
 
-This directory contains all setup, documentation, and template files for the AI Project Governance Starter kit.
+This directory contains all setup, documentation, and template files for the Ops Agenda project.
 
 ## Directory Structure
 
@@ -39,8 +39,8 @@ Pre-built agent personas for delegation:
 
 ### skills/
 Coding standards and skill definitions (38 total):
-- Best practices: JavaScript, PHP, React, Next.js, Laravel, WordPress
-- Database standards: MySQL, MariaDB, Supabase
+- Best practices: JavaScript, React, Next.js, Supabase
+- Database standards: MySQL
 - Security skills: Penetration testing, vulnerability scanning
 
 ### tools/

@@ -4,8 +4,8 @@ This file provides comprehensive guidance to OpenAI Codex when working with code
 
 ## Core Directives
 
-This repository follows the policies in `docs/AGENT_HANDBOOK.md`.
-Use `docs/WORKFLOW.md` to guide the implementation lifecycle.
+This repository follows the policies in `setup/docs/AGENT_HANDBOOK.md`.
+Use `setup/docs/WORKFLOW.md` to guide the implementation lifecycle.
 Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
 
 ---
@@ -56,8 +56,8 @@ You are a code-focused AI assistant. Your primary function is to generate, modif
 | # | Question | Purpose |
 |---|----------|---------|
 | 6 | What outcome should the user see when this is done? | Define success criteria |
-| 7 | Which stack is required: Laravel app, Next.js app, or WordPress plugin? | Technology selection |
-| 8 | Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? | Infrastructure decisions |
+| 7 | Which Ops Agenda module does this task target? (Daily Ops Brief, Priority Inbox, Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding) | Module targeting |
+| 8 | Does this change affect the Microsoft Graph integration, the AI pipeline, or both? | Integration impact |
 | 9 | What is in scope vs. explicitly out of scope? | Boundary definition |
 | 10 | Are there constraints (deadlines, tech choices, must-not-change areas)? | Risk identification |
 | 11 | What are the acceptance criteria and how will we verify success? | Quality gates |
@@ -70,7 +70,7 @@ Project Identity → Brand Discovery → Technology Discovery →
 Conception → Requirements → Architecture → Development → Deploy
 ```
 
-See `docs/PROJECT_IDENTITY.md` for identity templates.
+See `setup/docs/PROJECT_IDENTITY.md` for identity templates.
 
 ---
 
@@ -191,17 +191,6 @@ This project uses a structured memory bank system. Always check these files befo
 - Use f-strings for formatting
 ```
 
-### PHP
-
-```php
-// Preferred patterns
-- Use strict types
-- Follow PSR-12 style
-- Use type declarations
-- Prefer named arguments (PHP 8+)
-- Use null coalescing (??)
-```
-
 ---
 
 ## Command Reference
@@ -264,9 +253,9 @@ Types:
 
 | File | Purpose |
 |------|---------|
-| `docs/AGENT_HANDBOOK.md` | Source of truth |
-| `docs/WORKFLOW.md` | Build process |
-| `docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
+| `setup/docs/AGENT_HANDBOOK.md` | Source of truth |
+| `setup/docs/WORKFLOW.md` | Build process |
+| `setup/docs/VIBE_CODING_WORKFLOW.md` | Complete guide |
 | `TECHSTACK.md` | Tech stack docs |
 | `CHANGELOG.md` | Version history |
 
@@ -317,4 +306,4 @@ Types:
 
 ---
 
-*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
+*For complete documentation, see `setup/docs/VIBE_CODING_WORKFLOW.md`*

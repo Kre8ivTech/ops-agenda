@@ -1,4 +1,4 @@
-# AI Project Governance Starter
+# Ops Agenda
 
 > **Complete AI-Assisted Development Framework** - From conception to production with standardized workflows
 
@@ -36,52 +36,23 @@ This repository provides a **comprehensive framework** for AI-assisted ("vibe") 
 
 ---
 
-## 🚀 Quick Start
+## Mission
 
-### Step 1: Copy to Your Project
+Ops Agenda helps professionals take control of their day by transforming scattered email and calendar data into a clear, prioritized operational agenda — automatically, every morning.
 
-```bash
-# Clone or copy this boilerplate to your project root
-git clone https://github.com/your-org/vibe-skeleton-app.git my-project
-cd my-project
-```
+## North Star Feature: Daily Ops Brief
 
-### Step 2: Configure Your AI Tool
-
-| Your Tool | Configuration File | Setup |
-|-----------|-------------------|-------|
-| Claude Code | `CLAUDE.md` | Ready to use |
-| Cursor | `.cursor/rules.md` + `.cursor/mcp.json` | Import MCP servers in settings |
-| Cline | `.clinerules` + `.cline/mcp_settings.json` | Ready to use |
-| Windsurf | `.windsurfrules` | Configure MCP in settings |
-| Copilot | `.github/copilot-instructions.md` | Ready to use |
-
-### Step 3: Set Environment Variables
-
-```bash
-# Copy and fill in your API keys
-cp .env.example .env
-
-# Required keys for full functionality:
-# - GITHUB_TOKEN (GitHub MCP)
-# - FIGMA_ACCESS_TOKEN (Design integration)
-# - SUPABASE_URL + SUPABASE_ANON_KEY (Database)
-# - SONAR_TOKEN (Code quality)
-# - SENTRY_AUTH_TOKEN (Error monitoring)
-```
-
-### Step 4: Start Your First Project
-
-```bash
-# Create initial planning documents
-mkdir -p docs/project assets/logo assets/media
-
-# Start with Project Identity (see execution guide below)
-```
+A single-screen dashboard that delivers:
+- Narrative summary of the day ahead
+- Visual timeline of meetings and focus blocks
+- Top 3 priorities (auto-ranked by AI)
+- Due-outs with deadlines
+- Meeting prep materials
+- Suggested focus blocks
 
 ---
 
-## 📋 Execution Guide: Conception to Production
+## Core Modules
 
 **Complete Workflow Order:**
 
@@ -611,7 +582,7 @@ Let's deploy this release. First to staging for verification,
 then to production. Help me run through the deployment checklist.
 ```
 
-### Phase 9: Monitoring
+## Tech Stack
 
 **Set up production monitoring and alerting:**
 
@@ -658,7 +629,7 @@ then to production. Help me run through the deployment checklist.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 your-project/
@@ -812,9 +783,9 @@ Reference agent markdown files directly or use the orchestrate skill for delegat
 
 ---
 
-## 🔧 MCP Server Configuration
+## Getting Started
 
-### Enable MCP Servers
+### 1. Clone the Repository
 
 MCP (Model Context Protocol) servers extend AI capabilities with external tools and integrations:
 
@@ -927,7 +898,7 @@ The memory bank system maintains context and continuity across AI sessions using
 
 ---
 
-## 📚 Documentation Index
+## Documentation Index
 
 ### Core Workflow Documentation
 
@@ -1213,5 +1184,4 @@ Standards are automatically loaded based on detected technology stack.
 
 ---
 
-> **Ready to start?** Begin with brand discovery:
-> Open `setup/docs/BRAND_AND_DESIGN_DISCOVERY.md` and complete the intake questions.
+> **Ready to start?** See [setup/docs/QUICK_START.md](setup/docs/QUICK_START.md) for the 5-minute onboarding guide.
