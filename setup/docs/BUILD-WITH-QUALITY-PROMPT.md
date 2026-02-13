@@ -1,8 +1,8 @@
-# Build with Quality - Consolidated Skill Prompt
+# Build with Quality — Ops Agenda Skill Prompt
 
 ## Overview
 
-This is a **self-contained, copy-paste prompt** that invokes the full Claude Flow V3 + Agentic QE skill for building software with integrated quality engineering. Use this prompt when starting any new project or feature.
+This is a **self-contained, copy-paste prompt** that invokes the full Claude Flow V3 + Agentic QE skill for building Ops Agenda features with integrated quality engineering. Use this prompt when starting any new feature or module.
 
 > **🚨 EXECUTION REQUIREMENT:** Claude Code MUST use **Claude Flow** to orchestrate the swarm. Use MCP tools (`mcp__claude-flow__*`) if available, otherwise use **CLI commands** (`npx claude-flow@alpha ...`) as fallback. See [CLAUDE FLOW SWARM ORCHESTRATION](#claude-flow-swarm-orchestration) section for both approaches.
 
@@ -83,18 +83,20 @@ claude mcp list             # Should show 'aqe' in list
 
 ## PROJECT CONTEXT
 
-**Project Name:** [YOUR_PROJECT_NAME]
-**Project Type:** [web-app | api | library | cli | mobile | data-pipeline]
-**Tech Stack:** [e.g., React + TypeScript + Node.js]
-**Description:** [Brief description of what you're building]
+**Project Name:** Ops Agenda
+**Project Type:** web-app (SaaS)
+**Tech Stack:** [Ops Agenda tech stack — see TECHNOLOGY_DISCOVERY.md]
+**Description:** AI-powered daily and weekly operational agenda from email and calendar data
 
 ## FEATURE/TASK REQUEST
 
-**Task:** [Describe what you want to build]
+**Task:** [Describe the Ops Agenda feature to build — e.g., Daily Ops Brief, Priority Inbox, M365 Sync]
 **Acceptance Criteria:**
 - [ ] [Criterion 1]
 - [ ] [Criterion 2]
 - [ ] [Criterion 3]
+- [ ] No raw email bodies stored
+- [ ] AI outputs are JSON-only, schema-validated, with confidence scores
 
 ---
 
@@ -537,42 +539,43 @@ Deliver: tested, secure, accessible code with full documentation.
 
 ## 🔧 CUSTOMIZATION OPTIONS
 
-### For Different Project Types
+### For Ops Agenda Feature Types
 
-**Web Application:**
+**Daily Ops Brief / Dashboard (Frontend):**
 ```yaml
 emphasis:
   - e2e-test-generator (Playwright)
-  - accessibility audits (WCAG)
+  - accessibility audits (WCAG AA)
   - browser-agent (visual validation)
-security_focus: XSS, CSRF, injection
+  - performance (dashboard < 2s)
+security_focus: XSS, CSRF, no raw email data in output
 ```
 
-**API/Backend:**
+**M365 Sync / AI Pipeline (Backend):**
 ```yaml
 emphasis:
   - integration-test-generator
-  - contract-validator
-  - chaos-engineer
-security_focus: authentication, authorization, rate limiting
+  - chaos-engineer (API failures, graceful degradation)
+  - contract-validator (Microsoft Graph API)
+security_focus: OAuth token handling, data retention, no raw bodies stored
 ```
 
-**Library/Package:**
+**Priority Inbox / Due-Out Detection (AI):**
 ```yaml
 emphasis:
-  - unit-test-generator
+  - unit-test-generator (classification logic)
   - mutation-tester
-  - api-documentation
-security_focus: dependency vulnerabilities
+  - schema-validator (JSON output)
+security_focus: no raw email content in logs, confidence scores required
 ```
 
-**CLI Tool:**
+**Onboarding / Auth (Full Stack):**
 ```yaml
 emphasis:
-  - integration-test-generator
-  - edge-case coverage
-  - error handling validation
-security_focus: command injection, path traversal
+  - e2e-test-generator (OAuth flow)
+  - integration-test-generator (subscription)
+  - security-scanner (OAuth, token encryption)
+security_focus: authentication, authorization, least-privilege scopes
 ```
 
 ### Adjusting Quality Thresholds

@@ -1,492 +1,171 @@
-# AI Project Governance Starter
+# Ops Agenda
 
-> **Vibe Coding Boilerplate** - Complete AI-assisted development from conception to production
+> **AI-powered daily and weekly agenda tool** — Transforms email and calendar data into structured, actionable agendas.
 
-This repository provides a **comprehensive framework** for AI-assisted ("vibe") development, covering the entire lifecycle from initial concept through brand discovery, development, testing, security audits, and production deployment.
-
----
-
-## 🚀 Quick Start
-
-### Step 1: Copy to Your Project
-
-```bash
-# Clone or copy this boilerplate to your project root
-git clone https://github.com/your-org/vibe-skeleton-app.git my-project
-cd my-project
-```
-
-### Step 2: Configure Your AI Tool
-
-| Your Tool | Configuration File | Setup |
-|-----------|-------------------|-------|
-| Claude Code | `CLAUDE.md` | Ready to use |
-| Cursor | `.cursor/rules.md` + `.cursor/mcp.json` | Import MCP servers in settings |
-| Cline | `.clinerules` + `.cline/mcp_settings.json` | Ready to use |
-| Windsurf | `.windsurfrules` | Configure MCP in settings |
-| Copilot | `.github/copilot-instructions.md` | Ready to use |
-
-### Step 3: Set Environment Variables
-
-```bash
-# Copy and fill in your API keys
-cp .env.example .env
-
-# Required keys for full functionality:
-# - GITHUB_TOKEN (GitHub MCP)
-# - FIGMA_ACCESS_TOKEN (Design integration)
-# - SUPABASE_URL + SUPABASE_ANON_KEY (Database)
-# - SONAR_TOKEN (Code quality)
-# - SENTRY_AUTH_TOKEN (Error monitoring)
-```
-
-### Step 4: Start Your First Project
-
-```bash
-# Create initial planning documents
-mkdir -p docs/project assets/logo assets/media
-
-# Start with Project Identity (see execution guide below)
-```
+**Company:** Kre8ivTech
+**Author:** Jeremiah Castillo
+**License:** Proprietary
+**Contact:** info@kre8ivtech.com
 
 ---
 
-## 📋 Execution Guide: Conception to Production
+## Mission
 
-### Phase -1: Project Identity (ALWAYS FIRST)
+Ops Agenda helps professionals take control of their day by transforming scattered email and calendar data into a clear, prioritized operational agenda — automatically, every morning.
 
-**Before ANY discovery, capture these 5 required items:**
+## North Star Feature: Daily Ops Brief
 
-```markdown
-## Project Identity (Required)
-
-| Field | Value |
-|-------|-------|
-| **Application Name** | [Name of the app/product] |
-| **Company Name** | [Company or organization] |
-| **Author Name** | [Primary author/creator] |
-| **License Type** | Proprietary (default) / MIT / Apache 2.0 |
-| **Contact Email** | [Primary contact email] |
-```
-
-**AI Prompt to Start:**
-```
-I'm starting a new project. Before we begin any discovery, 
-I need to capture the project identity:
-
-1. What is the application name?
-2. What is the company/organization name?
-3. Who is the author/creator?
-4. What license type? (Proprietary is default for commercial projects)
-5. What is the primary contact email?
-```
-
-**After capturing identity, automatically generate:**
-- LICENSE file
-- README header
-- package.json/composer.json fields
-- File header templates
+A single-screen dashboard that delivers:
+- Narrative summary of the day ahead
+- Visual timeline of meetings and focus blocks
+- Top 3 priorities (auto-ranked by AI)
+- Due-outs with deadlines
+- Meeting prep materials
+- Suggested focus blocks
 
 ---
 
-### Phase 0: Brand & Design Discovery
+## Core Modules
 
-**Before ANY development, complete brand discovery:**
-
-```markdown
-## Start Brand Discovery
-
-1. Open: setup/docs/BRAND_AND_DESIGN_DISCOVERY.md
-2. Complete ALL intake questions:
-   - Brand Identity (Questions 1-10)
-   - Visual Preferences (Questions 11-16)
-   - Inspiration & References (Questions 17-22)
-   - Tone of Voice (Questions 23-27)
-3. Gather assets:
-   - [ ] Logo files (SVG, PNG)
-   - [ ] Brand colors (hex codes)
-   - [ ] Typography choices
-   - [ ] Inspiration images
-   - [ ] Existing brand guide (if any)
-4. Create: setup/docs/project/BRAND_GUIDE.md
-5. Create: assets/logo/ and assets/media/
-```
-
-**AI Prompt to Start:**
-```
-I'm starting a new project. Let's begin with brand discovery.
-Please ask me the brand discovery intake questions from 
-setup/docs/BRAND_AND_DESIGN_DISCOVERY.md one section at a time.
-```
-
-### Phase 1: Project Conception
-
-```markdown
-## Create Project Brief
-
-1. Open: setup/docs/DEVELOPMENT_ORCHESTRATION.md
-2. Complete Phase 0: Conception questions
-3. Create: setup/docs/project/PROJECT_BRIEF.md
-4. Get stakeholder approval
-```
-
-**AI Prompt:**
-```
-Based on our brand discovery, let's create the project brief.
-Ask me the conception intake questions and help me document
-the project brief in setup/docs/project/PROJECT_BRIEF.md
-```
-
-### Phase 2: Requirements Gathering
-
-```markdown
-## Define Requirements
-
-1. Create user stories with acceptance criteria
-2. Define functional requirements
-3. Define non-functional requirements
-4. Create: setup/docs/project/USER_STORIES.md
-5. Create: setup/docs/project/REQUIREMENTS.md
-```
-
-**AI Prompt:**
-```
-Let's define the requirements for this project.
-Help me create user stories with acceptance criteria
-following the template in setup/docs/DEVELOPMENT_ORCHESTRATION.md
-```
-
-### Phase 3: Architecture & Planning
-
-```markdown
-## Design Architecture
-
-1. Create: setup/docs/project/ARCHITECTURE.md
-2. Create ADRs in setup/docs/project/adr/
-3. Create: setup/docs/project/SPRINT_PLAN.md
-4. Set up project board (Linear/Jira/GitHub)
-```
-
-**AI Prompt:**
-```
-Let's design the architecture for this project.
-Based on our requirements, recommend the tech stack
-and create the architecture document with ADRs.
-```
-
-### Phase 4: Development
-
-```markdown
-## Start Development
-
-1. Create feature branch: git checkout -b feature/[story-id]-[description]
-2. Update CLAUDE-activeContext.md with current task
-3. Follow TDD: Write tests first
-4. Implement feature
-5. Create PR with checklist
-```
-
-**AI Prompt:**
-```
-I'm starting development on [feature].
-Let's follow TDD - help me write the tests first,
-then implement the feature following our patterns.
-```
-
-### Phase 5: Testing
-
-```markdown
-## Run Test Suite
-
-1. Unit tests (80%+ coverage)
-2. Integration tests
-3. E2E tests with Playwright
-4. Accessibility audit
-5. Performance testing
-```
-
-**AI Prompt:**
-```
-Let's run our test suite and ensure quality.
-Check test coverage and help me add any missing tests.
-Run the Playwright MCP for E2E testing.
-```
-
-### Phase 6: Security Audit
-
-```markdown
-## Security Review
-
-1. Run SAST scan (SonarQube/Semgrep)
-2. Run dependency scan (Snyk)
-3. Review OWASP Top 10
-4. Create: setup/docs/project/SECURITY_AUDIT.md
-```
-
-**AI Prompt:**
-```
-Let's perform a security audit on this codebase.
-Check for vulnerabilities using the security scanning
-tools and create a security audit report.
-```
-
-### Phase 7: Code Review & Merge
-
-```markdown
-## Final Review
-
-1. Self-review against checklist
-2. Request peer review
-3. Address feedback
-4. Merge to main
-```
-
-### Phase 8: Deployment
-
-```markdown
-## Deploy to Production
-
-1. Deploy to staging
-2. Run smoke tests
-3. Get stakeholder approval
-4. Deploy to production
-5. Verify deployment
-```
-
-**AI Prompt:**
-```
-Let's deploy this release. First to staging for verification,
-then to production. Help me run through the deployment checklist.
-```
-
-### Phase 9: Monitoring
-
-```markdown
-## Monitor Production
-
-1. Set up Sentry alerts
-2. Configure dashboards
-3. Monitor error rates
-4. Track performance metrics
-```
+| Module | Description |
+|--------|-------------|
+| **Daily Ops Brief** | AI-generated narrative summary, timeline, Top 3 priorities |
+| **Priority Inbox** | P1/P2/P3/FYSA email classification with confidence scores |
+| **Due-Out Detection** | NLP extraction of deadlines and action items from emails |
+| **Calendar Intelligence** | Multi-calendar aggregation, conflict detection, prep time |
+| **Weekly Outlook** | Forward-looking weekly planning view |
+| **Draft Reply** | AI-suggested email responses (user must approve before send) |
+| **M365 Sync** | Microsoft Graph API integration (Mail.Read, Calendars.Read) |
+| **AI Pipeline** | JSON-only structured output, schema validation, confidence scores |
+| **Onboarding** | Microsoft OAuth 2.0, calendar selection, preference setup |
 
 ---
 
-## 📁 Project Structure
+## Key Constraints (from PRD)
+
+- **No raw email bodies stored** — only metadata and AI-generated summaries
+- **No autonomous actions** — AI never sends, archives, or flags emails in v1
+- **JSON-only AI output** — schema validated on every response
+- **Least-privilege scopes** — Mail.Read, Calendars.Read only
+- **SOC 2 aligned** — encryption at rest/transit, immutable audit logs, tenant isolation
+- **Dashboard load < 2 seconds**
+- **30-day default data retention**
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js
+- **Integration:** Microsoft 365 via Microsoft Graph API
+- **AI:** LLM provider (TBD) — JSON structured output only
+- **Database:** PostgreSQL (provider TBD)
+- **Auth:** Microsoft OAuth 2.0
+- **Payments:** Stripe (TBD)
+
+> Full tech requirements: [TECHNOLOGY_DISCOVERY.md](setup/docs/TECHNOLOGY_DISCOVERY.md)
+> Stack details pending Architecture phase finalization.
+
+---
+
+## Project Structure
 
 ```
-your-project/
-├── setup/                          # SETUP & TEMPLATE FILES
+ops-agenda/
+├── setup/                          # Setup & governance
 │   ├── docs/                       # Documentation
-│   │   ├── project/                # YOUR PROJECT DOCS
-│   │   │   ├── BRAND_GUIDE.md      # Brand guidelines
-│   │   │   ├── PROJECT_BRIEF.md    # Project overview
-│   │   │   └── adr/                # Architecture decisions
-│   │   ├── AGENT_HANDBOOK.md       # AI behavior rules
-│   │   ├── DEVELOPMENT_ORCHESTRATION.md # Full workflow
+│   │   ├── AGENT_HANDBOOK.md       # AI behavior rules (source of truth)
+│   │   ├── WORKFLOW.md             # Phased build process
+│   │   ├── QUICK_START.md          # Getting started
+│   │   ├── DEVELOPMENT_ORCHESTRATION.md # Full lifecycle
+│   │   ├── TECHNOLOGY_DISCOVERY.md # Tech requirements
 │   │   ├── BRAND_AND_DESIGN_DISCOVERY.md # Brand intake
-│   │   └── VIBE_CODING_WORKFLOW.md # Master guide
+│   │   ├── VIBE_CODING_WORKFLOW.md # Master reference
+│   │   └── ...                     # Additional governance docs
 │   ├── examples/                   # CLAUDE.md templates
 │   ├── agents/                     # Agent personas
-│   ├── skills/                     # Coding standards & skills
-│   ├── tools/                      # Helper tools
-│   └── scripts/                    # Utility scripts
-├── assets/
-│   ├── logo/                       # Logo files
-│   └── media/                      # Brand imagery
-├── .claude/
-│   ├── mcp/                        # MCP server configs
-│   ├── skills/                     # Claude skills
-│   └── agents/                     # Subagent definitions
-├── CLAUDE.md                       # AI instructions (stays at root)
-├── CLAUDE-activeContext.md         # Current session state
-├── CLAUDE-patterns.md              # Code patterns
-├── CLAUDE-decisions.md             # Decisions log
-└── .env                            # Environment variables
+│   ├── skills/                     # Coding standards & security skills
+│   └── tools/                      # Helper tools
+├── CLAUDE.md                       # AI instructions (Claude Code)
+├── CODEX.md                        # AI instructions (OpenAI Codex)
+├── BLACKBOX.md                     # AI instructions (Blackbox AI)
+├── .clinerules                     # AI instructions (Cline)
+├── .windsurfrules                  # AI instructions (Windsurf)
+├── .cursor/rules.md                # AI instructions (Cursor)
+├── .github/copilot-instructions.md # AI instructions (Copilot)
+├── TECHSTACK.md                    # Technology stack documentation
+├── CHANGELOG.md                    # Version history
+├── .env.example                    # Environment variable template
+└── CLAUDE-*.md                     # Memory bank system files
 ```
 
 ---
 
-## 🔧 MCP Server Configuration
+## Getting Started
 
-### Enable MCP Servers
-
-MCP servers extend AI capabilities with external tools:
+### 1. Clone the Repository
 
 ```bash
-# Install required servers
-npm install -g @anthropic/github-mcp-server
-npm install -g @anthropic/playwright-mcp-server
-npm install -g supabase-mcp
-npm install -g figma-context-mcp
-npm install -g sonarqube-mcp-server
+git clone https://github.com/Kre8ivTech/ops-agenda.git
+cd ops-agenda
 ```
 
-### Pre-configured Stacks
+### 2. Set Environment Variables
 
-| Stack | File | Includes |
-|-------|------|----------|
-| Web Development | `.claude/mcp/web-dev-stack.json` | GitHub, Playwright, Supabase, Figma |
-| Security | `.claude/mcp/security-stack.json` | SonarQube, Sentry, Snyk |
-| Project Management | `.claude/mcp/project-management.json` | Linear, Jira, Notion |
-| DevOps | `.claude/mcp/devops-stack.json` | Docker, AWS, Cloudflare |
-| Design | `.claude/mcp/design-stack.json` | Figma, Magic, Browser |
+```bash
+cp .env.example .env
+# Fill in required keys:
+# - MICROSOFT_CLIENT_ID / SECRET / TENANT_ID (Microsoft Graph)
+# - AI_API_KEY (LLM provider)
+# - DATABASE_URL (PostgreSQL)
+# - STRIPE_SECRET_KEY (payments)
+```
+
+### 3. Start Development
+
+```bash
+# Use your preferred AI coding tool and follow the governance docs:
+# - setup/docs/AGENT_HANDBOOK.md (source of truth)
+# - setup/docs/WORKFLOW.md (build phases)
+# - setup/docs/QUICK_START.md (5-minute guide)
+```
 
 ---
 
-## 📚 Documentation Index
+## Documentation Index
 
 ### Core Workflow
 | Document | Purpose |
 |----------|---------|
+| [Agent Handbook](setup/docs/AGENT_HANDBOOK.md) | AI behavior rules (source of truth) |
+| [Workflow](setup/docs/WORKFLOW.md) | Phased build process |
+| [Quick Start](setup/docs/QUICK_START.md) | 5-minute getting started |
 | [Development Orchestration](setup/docs/DEVELOPMENT_ORCHESTRATION.md) | Full lifecycle phases |
+
+### Discovery & Design
+| Document | Purpose |
+|----------|---------|
+| [Technology Discovery](setup/docs/TECHNOLOGY_DISCOVERY.md) | Tech requirements & capabilities |
 | [Brand Discovery](setup/docs/BRAND_AND_DESIGN_DISCOVERY.md) | Brand intake & design system |
 | [Vibe Coding Workflow](setup/docs/VIBE_CODING_WORKFLOW.md) | Master reference guide |
-| [Quick Start](setup/docs/QUICK_START.md) | 5-minute getting started |
 
-### Platform Setup
+### Policies & Standards
 | Document | Purpose |
 |----------|---------|
-| [Platform Setup](setup/docs/PLATFORM_SETUP.md) | IDE-specific configuration |
-| [MCP Servers Guide](setup/docs/SUBAGENTS_AND_MCP_SERVERS.md) | Tools & integrations |
-
-### Policies
-| Document | Purpose |
-|----------|---------|
-| [Agent Handbook](setup/docs/AGENT_HANDBOOK.md) | AI behavior rules |
-| [Workflow](setup/docs/WORKFLOW.md) | Phased build process |
+| [Progressive Guardrails](setup/docs/PROGRESSIVE_GUARDRAILS.md) | Scope boundaries |
+| [Agent Roles](setup/docs/AGENT_ROLES.md) | AI agent responsibilities |
 | [Versioning](setup/docs/VERSIONING.md) | SemVer policy |
+| [Release Process](setup/docs/RELEASE_PROCESS.md) | Release workflow |
 
 ---
 
-## ⚡ Quick Commands
+## MVP Scope — Explicitly Out
 
-### Starting a New Project
-
-```bash
-# 1. Initialize project structure
-mkdir -p docs/project assets/logo assets/media
-
-# 2. Create brand guide from template
-cp setup/docs/BRAND_AND_DESIGN_DISCOVERY.md setup/docs/project/BRAND_DISCOVERY_RESPONSES.md
-
-# 3. Start memory bank
-echo "# Active Context\n\n## Current Session\n- Date: $(date +%Y-%m-%d)\n- Goal: Project Setup" > CLAUDE-activeContext.md
-```
-
-### Daily Development
-
-```bash
-# Check current context
-cat CLAUDE-activeContext.md
-
-# Create feature branch
-git checkout -b feature/US-001-feature-name
-
-# After development
-git add . && git commit -m "feat: description"
-```
-
-### Quality Checks
-
-```bash
-# Run tests
-npm test
-
-# Run linting
-npm run lint
-
-# Check coverage
-npm run test:coverage
-```
+- Auto-sending, archiving, or flagging emails
+- Team workflows or shared inboxes
+- Task manager, CRM, or chat integrations
+- Google Calendar or non-M365 providers
+- Mobile native apps (responsive web only)
 
 ---
 
-## 🎯 Phase Checklist
-
-### Before Development Starts
-- [ ] Brand discovery completed
-- [ ] Brand guide created
-- [ ] Logo and assets collected
-- [ ] Project brief approved
-- [ ] Requirements documented
-- [ ] Architecture designed
-- [ ] Sprint planned
-- [ ] MCP servers configured
-- [ ] Environment variables set
-
-### During Development
-- [ ] Feature branch created
-- [ ] Tests written first (TDD)
-- [ ] Code follows patterns
-- [ ] PR checklist completed
-- [ ] Code review passed
-
-### Before Deployment
-- [ ] All tests passing (80%+ coverage)
-- [ ] Security audit complete
-- [ ] No critical vulnerabilities
-- [ ] Documentation updated
-- [ ] Staging verified
-- [ ] Stakeholder approval
-
----
-
-## 🤖 AI Prompts Reference
-
-### Start New Project
-```
-I want to start a new [web/mobile] project for [description].
-Let's go through the full orchestration workflow starting with
-brand discovery. Guide me through each phase.
-```
-
-### Resume Session
-```
-Let's continue where we left off. Check CLAUDE-activeContext.md
-for the current state and help me with the next steps.
-```
-
-### Code Review
-```
-Please review this code against our quality checklist in
-setup/docs/AGENT_HANDBOOK.md and the patterns in CLAUDE-patterns.md.
-```
-
-### Security Audit
-```
-Run a security audit on this codebase following the checklist
-in setup/docs/DEVELOPMENT_ORCHESTRATION.md Phase 6.
-```
-
-### Deployment
-```
-Let's deploy this release. Walk me through the deployment
-checklist and help verify each step.
-```
-
----
-
-## 📖 Additional Resources
-
-- **Agent Library**: `setup/agents/` - Pre-built agent personas
-- **Skills**: `setup/skills/` - Security and pentest skills
-- **CLAUDE.md Examples**: `setup/examples/` - Templates and examples
-- **Changelog**: `CHANGELOG.md` - Version history
-
----
-
-## ✅ Golden Rules
-
-1. **Brand First** - Complete brand discovery before development
-2. **Plan Mode** - Always ask intake questions before coding
-3. **Small Changes** - Keep commits minimal and reviewable
-4. **Test First** - Write tests before implementation (TDD)
-5. **Document Always** - Update docs when behavior changes
-6. **Security Check** - Audit before every release
-7. **Never Commit Secrets** - Use environment variables
-
----
-
-> **Ready to start?** Begin with brand discovery:
-> Open `setup/docs/BRAND_AND_DESIGN_DISCOVERY.md` and complete the intake questions.
+> **Ready to start?** See [setup/docs/QUICK_START.md](setup/docs/QUICK_START.md) for the 5-minute onboarding guide.

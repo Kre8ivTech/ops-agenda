@@ -1,8 +1,8 @@
-# Development Orchestration Guide
+# Development Orchestration — Ops Agenda
 
-> **From Conception to Production-Ready: Complete AI-Assisted Development Lifecycle**
+> **From Conception to Production-Ready: Complete Development Lifecycle for Ops Agenda**
 
-This guide provides a comprehensive orchestration framework for AI-assisted development, covering every phase from initial concept to production deployment.
+This guide provides the orchestration framework for Ops Agenda development, covering every phase from initial concept to production deployment.
 
 ---
 
@@ -89,44 +89,16 @@ Each phase has mandatory gates that must pass before proceeding:
 
 ### Coding Standards Integration
 
-The orchestration system automatically loads and enforces coding standards based on the project's tech stack.
+The orchestration system loads and enforces coding standards based on the project's tech stack.
 
 #### Auto-Detection
 
-Standards are detected from `TECHSTACK.md` patterns using `.claude/config/coding-standards.json`:
-
-| Technology Detected | Standards Loaded |
-|---------------------|------------------|
-| WordPress, wp-content, Divi, Elementor | `wordpress-best-practices`, `php-best-practices`, `mysql-best-practices` |
-| Next.js, App Router, use client, Vercel | `nextjs-best-practices`, `react-best-practices`, `javascript-best-practices` |
-| Laravel, Eloquent, Blade, Livewire | `laravel-best-practices`, `php-best-practices`, `mysql-best-practices` |
-| Supabase, RLS, auth.uid(), Edge Functions | `supabase-best-practices` |
-| MariaDB, Galera, Aria | `mariadb-best-practices`, `mysql-best-practices` |
-| React, useState, useEffect, JSX | `react-best-practices`, `javascript-best-practices` |
-| PHP, composer.json | `php-best-practices` |
-| MySQL, my.cnf | `mysql-best-practices` |
+Standards are detected from `TECHSTACK.md` patterns using `.claude/config/coding-standards.json`. Standards will be configured during the Architecture phase once the tech stack is finalized.
 
 #### Enforcement Points
 
 1. **Delegate Skill**: Automatically injects relevant standards into subagent prompts
 2. **Development Phase Gate (5 → 6)**: Validates code against CRITICAL and HIGH impact rules before testing phase
-
-#### Standards Structure
-
-Each technology has a dedicated skill folder in `../skills/`:
-
-```
-../skills/
-├── javascript-best-practices/    # 24 rules
-├── php-best-practices/           # 24 rules
-├── react-best-practices/         # 47 rules
-├── nextjs-best-practices/        # 24 rules
-├── laravel-best-practices/       # 26 rules
-├── wordpress-best-practices/     # 25 rules
-├── mysql-best-practices/         # 24 rules
-├── mariadb-best-practices/       # 22 rules
-└── supabase-best-practices/      # 22 rules
-```
 
 #### Rule Impact Levels
 
@@ -172,51 +144,26 @@ This phase is **NON-NEGOTIABLE**. These 5 items must be captured before ANY othe
 | 4 | **License Type** | ✅ | Proprietary |
 | 5 | **Contact Email** | ✅ | - |
 
-### Template: Project Identity
-
-```markdown
-## Project Identity
+### Ops Agenda Project Identity (COMPLETE)
 
 | Field | Value |
 |-------|-------|
-| **Application Name** | [Name of the app/product] |
-| **Company Name** | [Company or organization] |
-| **Author Name** | [Primary author/creator] |
+| **Application Name** | Ops Agenda |
+| **Company Name** | Kre8ivTech |
+| **Author Name** | Jeremiah Castillo |
 | **License Type** | Proprietary |
-| **Copyright Year** | 2025 |
-| **Contact Email** | [email@example.com] |
-```
+| **Copyright Year** | 2026 |
+| **Contact Email** | info@kre8ivtech.com |
 
-### Generated Artifacts
+### Gate Criteria: PASSED
 
-After capturing identity, automatically generate:
+- [x] Application Name: Ops Agenda
+- [x] Company Name: Kre8ivTech
+- [x] Author Name: Jeremiah Castillo
+- [x] License Type: Proprietary
+- [x] Contact Email: info@kre8ivtech.com
 
-| Artifact | Purpose |
-|----------|---------|
-| `LICENSE` | License file based on type selected |
-| `PROJECT_IDENTITY.json` | Machine-readable identity |
-| README header | Standard header with identity |
-| File headers | Source code comment headers |
-
-### Fallback Rules
-
-If client says "I don't know yet":
-- **Application Name**: Use code name or working title
-- **Company Name**: Use individual's name if sole proprietor
-- **Author Name**: Use whoever is leading the project
-- **License**: Default to "Proprietary"
-- **Contact Email**: ⚠️ REQUIRED - cannot proceed without
-
-### Gate Criteria
-
-Before proceeding to Phase 0 (Brand Discovery):
-- [ ] Application Name captured
-- [ ] Company Name captured
-- [ ] Author Name captured
-- [ ] License Type selected
-- [ ] Contact Email captured
-
-See `PROJECT_IDENTITY.md` for detailed templates.
+See `PROJECT_IDENTITY.md` for generated artifacts (LICENSE, package.json, file headers).
 
 ---
 
@@ -253,42 +200,51 @@ Transform initial ideas into actionable project concepts.
 | `VALUE_PROPOSITION.md` | Core value and differentiation |
 | `STAKEHOLDERS.md` | Key stakeholders and roles |
 
-### Template: Project Brief
+### Template: Project Brief (Ops Agenda)
 
 ```markdown
-# Project Brief: [Project Name]
+# Project Brief: Ops Agenda
 
 ## Vision Statement
-[One sentence describing the ultimate goal]
+Provide users with a more effective and efficient means to manage the time
+allocated in each day by transforming email and calendar data into a
+structured, actionable daily and weekly agenda.
 
 ## Problem Statement
-[What problem are we solving?]
+Professionals operating in high-volume, high-context environments lose time
+and effectiveness due to fragmented information across inboxes and calendars.
+Existing tools surface data but do not synthesize intent, urgency, and
+constraints into an operational plan.
 
 ## Target Users
-- Primary: [User type and characteristics]
-- Secondary: [Additional user types]
+- Primary (MVP): Executives, military leaders, entrepreneurs, PMs, consultants
+- Secondary (Future): Teams and organizations requiring shared visibility
 
 ## Success Metrics
-- [ ] Metric 1: [Target]
-- [ ] Metric 2: [Target]
+- [ ] Clear understanding of daily priorities within 30 seconds
+- [ ] Reduced missed deadlines
+- [ ] Improved meeting preparedness
+- [ ] Daily active usage of Daily Ops Brief
+- [ ] User corrections to AI decreasing over time
+- [ ] Retention after 30 days
 
 ## Constraints
-- Timeline: [Deadline]
-- Budget: [Range]
-- Technology: [Must-use or avoid]
+- MVP: Individual users only (architecture must support future team expansion)
+- Microsoft 365 integration only (Google is future)
+- No auto-sending, auto-archiving, or auto-flagging
+- Compliance: SOC 2 aligned, encryption at rest/transit
+- Data: No raw email bodies stored
 
-## Out of Scope
-- [Explicitly excluded items]
-
-## Stakeholders
-| Role | Name | Responsibility |
-|------|------|----------------|
-| Product Owner | | Final decisions |
-| Tech Lead | | Architecture |
-| Sponsor | | Funding/support |
+## Out of Scope (v1)
+- Auto-sending emails
+- Auto-archiving or auto-flagging
+- Team workflows / shared inboxes
+- Task manager integrations
+- Chat or file intelligence
+- CRM integrations
 
 ## Approval
-- [ ] Stakeholder approval received
+- [x] PRD v1.0 approved (2026-02-09)
 - [ ] Proceed to Requirements phase
 ```
 
@@ -353,38 +309,73 @@ Define detailed user requirements and acceptance criteria.
 ---
 ```
 
-### Template: Requirements Document
+### Template: Requirements Document (Ops Agenda)
 
 ```markdown
-# Requirements Specification
+# Requirements Specification — Ops Agenda
 
 ## Functional Requirements
 
-### FR-001: [Requirement Name]
-- **Priority**: Must Have / Should Have / Could Have / Won't Have
-- **Description**: [Detailed description]
-- **Rationale**: [Why this is needed]
-- **Acceptance Criteria**: [How to verify]
+### FR-001: Daily Ops Brief (North Star)
+- **Priority**: Must Have
+- **Description**: Generate a synthesized daily agenda with narrative summary,
+  timeline, Top 3 priorities, due-outs, prep meetings, and focus blocks
+- **Acceptance Criteria**: Loads < 2s, scannable in < 30s, always shows Top 3
+
+### FR-002: Priority Inbox
+- **Priority**: Must Have
+- **Description**: AI-classified email priority (P1, P2, P3, FYSA) with
+  explainable reasoning and user overrides
+- **Acceptance Criteria**: Emails sorted by priority, explanation shown, override works
+
+### FR-003: Due-Out Detection
+- **Priority**: Must Have
+- **Description**: Extract deadlines, action requests, and flag unanswered emails
+- **Acceptance Criteria**: Due-outs in Daily Brief, dates shown, confidence scores
+
+### FR-004: Calendar Intelligence
+- **Priority**: Must Have
+- **Description**: Multi-calendar support with prep indicators and conflict detection
+- **Acceptance Criteria**: All calendars reflected, prep marked, conflicts surfaced
+
+### FR-005: Draft Reply Assistance
+- **Priority**: Should Have
+- **Description**: Optional AI-generated email drafts with tone settings
+- **Acceptance Criteria**: Toggle on/off, editable, never auto-sent, respects tone
+
+### FR-006: Weekly Outlook
+- **Priority**: Must Have
+- **Description**: Forecast workload and meeting density, highlight high-risk days
+- **Acceptance Criteria**: Loads from cached data, deadlines and heavy days visible
 
 ## Non-Functional Requirements
 
 ### Performance
-- NFR-P01: Page load time < 3 seconds
-- NFR-P02: API response time < 500ms (p95)
-- NFR-P03: Support 1000 concurrent users
+- NFR-P01: Dashboard load < 2 seconds
+- NFR-P02: Background jobs async and non-blocking
+- NFR-P03: Idempotent sync and AI jobs
 
 ### Security
 - NFR-S01: All data encrypted at rest and in transit
-- NFR-S02: Authentication required for all protected routes
-- NFR-S03: OWASP Top 10 compliance
+- NFR-S02: OAuth tokens encrypted, no credentials stored
+- NFR-S03: Audit logs immutable
+- NFR-S04: Tenant isolation
+- NFR-S05: Least-privilege Microsoft Graph scopes
 
-### Scalability
-- NFR-SC01: Horizontal scaling capability
-- NFR-SC02: Database connection pooling
+### Data Handling
+- NFR-D01: No raw email bodies stored
+- NFR-D02: Only metadata and AI summaries persisted
+- NFR-D03: 30-day default retention
 
-### Availability
-- NFR-A01: 99.9% uptime SLA
-- NFR-A02: Disaster recovery within 4 hours
+### AI Output
+- NFR-AI01: JSON-only structured output
+- NFR-AI02: Schema validated on every response
+- NFR-AI03: Confidence score required for each analysis
+- NFR-AI04: No autonomous actions in v1
+
+### Reliability
+- NFR-R01: Graceful degradation if AI unavailable
+- NFR-R02: Incremental sync with retry logic
 ```
 
 ---
@@ -656,16 +647,18 @@ Ensure quality through comprehensive testing.
 ### E2E Tests
 | Scenario | Priority | Status |
 |----------|----------|--------|
-| User registration | High | To Do |
-| Login flow | High | To Do |
-| Checkout flow | High | To Do |
+| Onboarding + M365 OAuth | High | To Do |
+| Daily Ops Brief generation | High | To Do |
+| Priority Inbox classification | High | To Do |
+| Due-out detection | High | To Do |
+| Calendar intelligence | High | To Do |
 
 ### Performance Tests
 | Test | Target | Status |
 |------|--------|--------|
-| Page load | < 3s | To Do |
-| API response | < 500ms | To Do |
-| Concurrent users | 1000 | To Do |
+| Dashboard load | < 2s | To Do |
+| Brief generation | < 5s | To Do |
+| Background sync | Non-blocking | To Do |
 
 ## Environment
 - Staging URL: [URL]
@@ -710,7 +703,11 @@ Identify and remediate security vulnerabilities.
 - [ ] Encryption at rest
 - [ ] Encryption in transit (TLS 1.3)
 - [ ] PII handling compliant
-- [ ] Data retention policies
+- [ ] Data retention policies (30-day default)
+- [ ] No raw email bodies stored
+- [ ] OAuth tokens encrypted
+- [ ] Audit logs immutable
+- [ ] Tenant isolation enforced
 
 ### Infrastructure
 - [ ] Security headers configured
@@ -1020,10 +1017,12 @@ Monitor production and respond to issues.
 
 ## 13. Templates
 
-### Project Directory Structure
+### Project Directory Structure (Ops Agenda)
 
 ```
-project/
+ops-agenda/
+├── setup/
+│   └── docs/                    # Governance & process documentation
 ├── docs/
 │   ├── PROJECT_BRIEF.md
 │   ├── REQUIREMENTS.md
@@ -1045,20 +1044,23 @@ project/
 └── README.md
 ```
 
-### Quick Start
+### Quick Start (Ops Agenda)
 
-1. **Create project brief** (`docs/PROJECT_BRIEF.md`)
-2. **Define requirements** (`docs/USER_STORIES.md`)
-3. **Design architecture** (`docs/ARCHITECTURE.md`)
-4. **Plan sprint** (`docs/SPRINT_PLAN.md`)
-5. **Develop features** (feature branches)
-6. **Test thoroughly** (automated + manual)
-7. **Security audit** (tools + manual review)
-8. **Code review** (PR process)
-9. **Deploy** (staging → production)
-10. **Monitor** (alerts + dashboards)
+1. **Review PRD** (provided by product owner)
+2. **Complete project identity** (`setup/docs/PROJECT_IDENTITY.md`) — DONE
+3. **Technology discovery** (`setup/docs/TECHNOLOGY_DISCOVERY.md`) — DONE
+4. **Define requirements** (`docs/USER_STORIES.md`)
+5. **Design architecture** (`docs/ARCHITECTURE.md`)
+6. **Plan sprint** (`docs/SPRINT_PLAN.md`)
+7. **Develop features** (feature branches, modular architecture)
+8. **Test thoroughly** (automated + manual, dashboard < 2s)
+9. **Security audit** (SOC 2 alignment, no raw email bodies)
+10. **Code review** (PR process)
+11. **Deploy** (staging → production)
+12. **Monitor** (alerts + dashboards)
 
 ---
 
 *For agent definitions, see `../agents/orchestration/`*
 *For MCP server configurations, see `SUBAGENTS_AND_MCP_SERVERS.md`*
+*For PRD details, see the Ops Agenda Product Requirements Document (v1.0)*

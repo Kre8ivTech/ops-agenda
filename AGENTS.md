@@ -1,99 +1,38 @@
-## ALWAYS START WITH THESE COMMANDS FOR COMMON TASKS
+# Ops Agenda — Agent Reference
 
-**Task: "List/summarize all files and directories"**
+> This file provides a quick reference for AI agent roles and configurations used in the Ops Agenda project.
 
-```bash
-fd . -t f           # Lists ALL files recursively (FASTEST)
-# OR
-rg --files          # Lists files (respects .gitignore)
-```
+---
 
-**Task: "Search for content in files"**
+## Agent Roles
 
-```bash
-rg "search_term"    # Search everywhere (FASTEST)
-```
+See [setup/docs/AGENT_ROLES.md](setup/docs/AGENT_ROLES.md) for detailed role definitions:
 
-**Task: "Find files by name"**
+| Role | Responsibility |
+|------|---------------|
+| **Lead Agent** | Architecture decisions, module boundaries, PRD compliance |
+| **Implementer** | Feature development, M365 integration, AI pipeline code |
+| **Reviewer** | Code review, security audit, SOC 2 compliance checks |
 
-```bash
-fd "filename"       # Find by name pattern (FASTEST)
-```
+---
 
-### Directory/File Exploration
+## Subagents & MCP Servers
 
-```bash
-# FIRST CHOICE - List all files/dirs recursively:
-fd . -t f           # All files (fastest)
-fd . -t d           # All directories
-rg --files          # All files (respects .gitignore)
+See [setup/docs/SUBAGENTS_AND_MCP_SERVERS.md](setup/docs/SUBAGENTS_AND_MCP_SERVERS.md) for recommended stacks:
 
-# For current directory only:
-ls -la              # OK for single directory view
-```
+| Stack | Purpose |
+|-------|---------|
+| **Core** | GitHub, Playwright, Supabase, Figma |
+| **Extended** | SonarQube, Sentry |
+| **Security Audit** | Pentest tools, OWASP checks |
 
-### BANNED - Never Use These Slow Tools
+---
 
-* ❌ `tree` - NOT INSTALLED, use `fd` instead
-* ❌ `find` - use `fd` or `rg --files`
-* ❌ `grep` or `grep -r` - use `rg` instead
-* ❌ `ls -R` - use `rg --files` or `fd`
-* ❌ `cat file | grep` - use `rg pattern file`
+## Key Governance Docs
 
-### Use These Faster Tools Instead
-
-```bash
-# ripgrep (rg) - content search 
-rg "search_term"                # Search in all files
-rg -i "case_insensitive"        # Case-insensitive
-rg "pattern" -t py              # Only Python files
-rg "pattern" -g "*.md"          # Only Markdown
-rg -1 "pattern"                 # Filenames with matches
-rg -c "pattern"                 # Count matches per file
-rg -n "pattern"                 # Show line numbers 
-rg -A 3 -B 3 "error"            # Context lines
-rg " (TODO| FIXME | HACK)"      # Multiple patterns
-
-# ripgrep (rg) - file listing 
-rg --files                      # List files (respects •gitignore)
-rg --files | rg "pattern"       # Find files by name 
-rg --files -t md                # Only Markdown files 
-
-# fd - file finding 
-fd -e js                        # All •js files (fast find) 
-fd -x command {}                # Exec per-file 
-fd -e md -x ls -la {}           # Example with ls 
-
-# jq - JSON processing 
-jq. data.json                   # Pretty-print 
-jq -r .name file.json           # Extract field 
-jq '.id = 0' x.json             # Modify field
-```
-
-### Search Strategy
-
-1. Start broad, then narrow: `rg "partial" | rg "specific"`
-2. Filter by type early: `rg -t python "def function_name"`
-3. Batch patterns: `rg "(pattern1|pattern2|pattern3)"`
-4. Limit scope: `rg "pattern" src/`
-
-### INSTANT DECISION TREE
-
-```
-User asks to "list/show/summarize/explore files"?
-  → USE: fd . -t f  (fastest, shows all files)
-  → OR: rg --files  (respects .gitignore)
-
-User asks to "search/grep/find text content"?
-  → USE: rg "pattern"  (NOT grep!)
-
-User asks to "find file/directory by name"?
-  → USE: fd "name"  (NOT find!)
-
-User asks for "directory structure/tree"?
-  → USE: fd . -t d  (directories) + fd . -t f  (files)
-  → NEVER: tree (not installed!)
-
-Need just current directory?
-  → USE: ls -la  (OK for single dir)
-```
+| Document | Purpose |
+|----------|---------|
+| [Agent Handbook](setup/docs/AGENT_HANDBOOK.md) | Source of truth for AI behavior |
+| [Workflow](setup/docs/WORKFLOW.md) | Phased build process |
+| [Progressive Guardrails](setup/docs/PROGRESSIVE_GUARDRAILS.md) | Scope boundaries |
+| [Build with Quality](setup/docs/BUILD-WITH-QUALITY-PROMPT.md) | Quality prompts |

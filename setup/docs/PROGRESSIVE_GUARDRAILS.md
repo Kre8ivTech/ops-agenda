@@ -1,8 +1,8 @@
-# Progressive Guardrails System
+# Progressive Guardrails — Ops Agenda
 
 > **Wide to Narrow: From Exploration to Precision**
 
-This document defines the guardrail system that progressively narrows from open exploration to precise implementation. Each phase tightens constraints while preserving creative problem-solving within defined boundaries.
+This document defines the guardrail system for Ops Agenda development that progressively narrows from open exploration to precise implementation. Each phase tightens constraints while preserving creative problem-solving within defined boundaries.
 
 ---
 
@@ -565,24 +565,28 @@ Deployment:
 
 ### Example Responses:
 
-**"Can we change the tech stack?"** (During Development)
-→ "The tech stack was locked in Phase 2 (Conception). 
-   Changing it now would require a formal change request 
-   with full impact assessment. Would you like to proceed 
-   with that process, or shall we continue with the current 
-   implementation?"
+**"Can we add Google Calendar support?"** (During Development)
+→ "Google integration is explicitly out of scope for v1 per the
+   approved PRD. The modular architecture supports adding it as
+   a future module without refactor. I'll add it to the backlog.
+   For now, let's focus on Microsoft 365 integration."
 
-**"Let's add this feature"** (During Development)
-→ "Feature scope was frozen in Phase 3 (Requirements). 
-   This would be a great addition for V2. I'll add it 
-   to the backlog. For now, let's focus on completing 
-   the current sprint."
+**"Let's add team workflows"** (During Development)
+→ "Team workflows are out of scope for v1 (individual users only).
+   The architecture must support future team expansion, but
+   implementation is deferred. This is enforced by the PRD scope."
 
-**"What if we targeted a different audience?"** (During Planning)
-→ "Target audience was defined in Phase 0 (Brand Discovery) 
-   and locked in Phase 2. Changing it would require revisiting 
-   all subsequent decisions. Is there a specific concern about 
-   the current audience that we should address?"
+**"Can we auto-send draft replies?"** (During Development)
+→ "Auto-sending emails is explicitly out of scope per the PRD.
+   Draft replies must be editable and never auto-sent. This is a
+   compliance and trust requirement that cannot be changed without
+   a formal change request process."
+
+**"What if we stored raw email bodies for better AI analysis?"** (During Development)
+→ "The PRD requires no raw email bodies be stored — only metadata
+   and AI-generated summaries, with transient processing only.
+   This is a compliance requirement (SOC 2 aligned). We must work
+   within this constraint."
 ```
 
 ### The "10% Flex" Rule
@@ -661,6 +665,24 @@ Is the request about something from a PREVIOUS phase?
            └─ NO → Defer to appropriate future phase
                    or add to backlog
 ```
+
+---
+
+## Ops Agenda Locked Decisions
+
+The following decisions are locked per the approved PRD (v1.0):
+
+| Decision | Locked In | Value |
+|----------|-----------|-------|
+| Application type | Technology Discovery | SaaS |
+| Primary integration | Technology Discovery | Microsoft 365 |
+| MVP user scope | PRD | Individual users only |
+| Data storage | PRD | No raw email bodies; metadata + AI summaries only |
+| AI output format | PRD | JSON-only, schema-validated, confidence scores |
+| Compliance | PRD | SOC 2 aligned, encryption at rest/transit |
+| Auto-actions | PRD | No auto-sending, auto-archiving, or auto-flagging |
+| Team features | PRD | Out of scope for v1 |
+| Retention | PRD | 30-day default |
 
 ---
 

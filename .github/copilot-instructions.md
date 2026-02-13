@@ -4,7 +4,7 @@ This file provides comprehensive guidance to GitHub Copilot when working with co
 
 ## Core Directives
 
-Follow the policies in `docs/AGENT_HANDBOOK.md` and `docs/WORKFLOW.md`.
+Follow the policies in `setup/docs/AGENT_HANDBOOK.md` and `setup/docs/WORKFLOW.md`.
 Start in **plan mode**, ask the required intake questions, and wait for answers before making changes.
 
 ---
@@ -51,8 +51,8 @@ Start in **plan mode**, ask the required intake questions, and wait for answers 
 | # | Question |
 |---|----------|
 | 6 | What outcome should the user see when this is done? |
-| 7 | Which stack is required: Laravel app, Next.js app, or WordPress plugin? |
-| 8 | Where is the deployment target: WHM AWS LAMP server, Vercel, or existing React server? |
+| 7 | Which Ops Agenda module does this task target? (Daily Ops Brief, Priority Inbox, Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding) |
+| 8 | Does this change affect the Microsoft Graph integration, the AI pipeline, or both? |
 | 9 | What is in scope vs. explicitly out of scope? |
 | 10 | Are there constraints (deadlines, tech choices, must-not-change areas)? |
 | 11 | What are the acceptance criteria and how will we verify success? |
@@ -73,7 +73,7 @@ Conception → Requirements → Architecture → Development → Deploy
 - Modifying architecture or structure
 - Any change affecting user-visible behavior
 
-See `docs/PROJECT_IDENTITY.md` for identity templates.
+See `setup/docs/PROJECT_IDENTITY.md` for identity templates.
 
 ---
 
@@ -170,15 +170,6 @@ This project uses a structured memory bank system. Check these files for context
 - Use f-strings
 ```
 
-```php
-// PHP
-- Use strict types
-- Follow PSR-12
-- Use type declarations
-- Prefer named arguments
-- Use null coalescing
-```
-
 ### Security Guidelines
 
 - Never generate hardcoded secrets
@@ -223,20 +214,12 @@ Types:
 
 | File | Purpose |
 |------|---------|
-| `docs/AGENT_HANDBOOK.md` | Source of truth for behavior |
-| `docs/WORKFLOW.md` | Phased build process |
-| `docs/VIBE_CODING_WORKFLOW.md` | Complete master guide |
-| `docs/QUICK_START.md` | 5-minute getting started |
+| `setup/docs/AGENT_HANDBOOK.md` | Source of truth for behavior |
+| `setup/docs/WORKFLOW.md` | Phased build process |
+| `setup/docs/VIBE_CODING_WORKFLOW.md` | Complete master guide |
+| `setup/docs/QUICK_START.md` | 5-minute getting started |
 | `TECHSTACK.md` | Technology stack documentation |
 | `CHANGELOG.md` | Version history |
-
-### Domain-Specific Configs
-
-| File | Domain |
-|------|--------|
-| `CLAUDE-cloudflare.md` | Cloudflare Workers/Pages |
-| `CLAUDE-wordpress.md` | WordPress development |
-| `CLAUDE-vercel.md` | Vercel deployment |
 
 ---
 
@@ -359,4 +342,4 @@ try {
 
 ---
 
-*For complete documentation, see `docs/VIBE_CODING_WORKFLOW.md`*
+*For complete documentation, see `setup/docs/VIBE_CODING_WORKFLOW.md`*
