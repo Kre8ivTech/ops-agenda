@@ -1,0 +1,49 @@
+{
+  "name": "ops-agenda",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@upstash/redis": "^1.28.4",
+    "inngest": "^3.15.11",
+    "next": "15.1.6",
+    "next-auth": "^4.24.5",
+    "openai": "^4.75.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "stripe": "^14.14.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.2",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.6",
+    "jsdom": "^24.0.0",
+    "postcss": "^8",
+    "prettier": "^3.2.4",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5",
+    "vitest": "^1.2.1"
+  }
+}
