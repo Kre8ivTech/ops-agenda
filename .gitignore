@@ -4,8 +4,11 @@ vendor/
 
 # Build artifacts
 dist/
-build/
+build/*
+!build/sites-vite-plugin.ts
 .next/
+.vinext/
+.wrangler/
 
 # Logs
 logs/
