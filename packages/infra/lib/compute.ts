@@ -112,7 +112,7 @@ export class Compute extends Construct {
 
     container.addPortMappings({
       containerPort: placeholderPort,
-      hostPort: 0, // dynamic host port for bridge mode
+      hostPort: placeholderPort,
       protocol: ecs.Protocol.TCP,
     });
 

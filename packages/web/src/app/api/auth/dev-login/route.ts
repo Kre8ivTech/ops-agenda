@@ -1,4 +1,4 @@
-import { DEV_SESSION, isDevAuthBypassEnabled, setSessionCookie } from '@/lib/auth';
+import { DEV_SESSION, isDevAuthBypassEnabled, sanitizeReturnTo, setSessionCookie } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,7 @@ export async function GET(request: Request) {
   await setSessionCookie(DEV_SESSION);
 
   const { searchParams } = new URL(request.url);
-  const returnTo = searchParams.get('returnTo') ?? '/dashboard';
-  const safe =
-    returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard';
+  const safe = sanitizeReturnTo(searchParams.get('returnTo'));
 
   return Response.redirect(new URL(safe, request.url));
 }

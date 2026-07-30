@@ -64,6 +64,10 @@ function redirectUri(): string {
   return `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`;
 }
 
+export function sanitizeReturnTo(returnTo?: string | null): string {
+  return returnTo?.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard';
+}
+
 type IronCrypto = Parameters<typeof Iron.seal>[0];
 
 function getCrypto(): IronCrypto {
@@ -121,6 +125,7 @@ function cognitoAuthorizeUrl(state: string, codeChallenge: string): string {
 export async function createSignInUrl(returnTo = '/dashboard'): Promise<string> {
   const state = base64url(webCrypto.getRandomValues(new Uint8Array(16)));
   const { codeVerifier, codeChallenge } = await generatePkce();
+  const safeReturnTo = sanitizeReturnTo(returnTo);
 
   const cookieStore = await cookies();
   cookieStore.set(pkceCookieName(), await seal({ codeVerifier, state }), {
@@ -130,7 +135,7 @@ export async function createSignInUrl(returnTo = '/dashboard'): Promise<string> 
     path: '/',
     maxAge: 60 * 5,
   });
-  cookieStore.set(returnToCookieName(), await seal(returnTo), {
+  cookieStore.set(returnToCookieName(), await seal(safeReturnTo), {
     httpOnly: true,
     secure: cookieSecure(),
     sameSite: 'lax',
@@ -200,7 +205,9 @@ export async function exchangeCode(
     picture: typeof payload.picture === 'string' ? payload.picture : undefined,
   };
 
-  const returnTo = returnToCookie ? await unseal<string>(returnToCookie) : '/dashboard';
+  const returnTo = sanitizeReturnTo(
+    returnToCookie ? await unseal<string>(returnToCookie) : '/dashboard',
+  );
 
   return { session, tokens, returnTo };
 }

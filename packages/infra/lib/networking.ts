@@ -54,8 +54,8 @@ export class Networking extends Construct {
     });
     this.ecsSecurityGroup.addIngressRule(
       this.albSecurityGroup,
-      ec2.Port.tcp(3000),
-      'ALB to Next.js container',
+      ec2.Port.tcp(80),
+      'ALB to application container',
     );
 
     this.rdsSecurityGroup = new ec2.SecurityGroup(this, 'RdsSg', {

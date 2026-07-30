@@ -26,11 +26,9 @@ function statusPill(task: DashboardTask): { label: string; className: string } {
 
 export function PriorityCard({
   task,
-  tenant,
   now,
 }: {
   task: DashboardTask;
-  tenant: { accountId: string; userId: string };
   now: Date;
 }) {
   const status = statusPill(task);
@@ -66,7 +64,7 @@ export function PriorityCard({
           {whyLine(task, now)}
         </p>
         <div className="flex flex-wrap gap-2">
-          <MarkHandledButton tenant={tenant} taskId={task.id} />
+          <MarkHandledButton taskId={task.id} />
           <ButtonLink href="/productivity/tasks" variant="quiet" size="small">
             Open task
           </ButtonLink>

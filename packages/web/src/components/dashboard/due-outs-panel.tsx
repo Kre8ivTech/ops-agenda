@@ -3,11 +3,9 @@ import { formatDueLabel, type DashboardTask } from '@/lib/dashboard/brief';
 
 export function DueOutsPanel({
   items,
-  tenant,
   now,
 }: {
   items: DashboardTask[];
-  tenant: { accountId: string; userId: string };
   now: Date;
 }) {
   return (
@@ -38,7 +36,7 @@ export function DueOutsPanel({
                 key={item.id}
                 className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[11px] border-t border-border py-[11px]"
               >
-                <MarkHandledCheck tenant={tenant} taskId={item.id} title={item.title} />
+                <MarkHandledCheck taskId={item.id} title={item.title} />
                 <span className="grid min-w-0 gap-0.5">
                   <strong className="truncate text-[0.88rem] font-bold text-ink">{item.title}</strong>
                   <span className="truncate text-[0.78rem] text-text-secondary">

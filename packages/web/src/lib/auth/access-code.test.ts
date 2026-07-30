@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { matchesAccessCode, parseAccessCodes } from '@/lib/auth/access-code';
+import { sanitizeReturnTo } from '@/lib/auth';
 import { resetPasswordSchema, signUpSchema } from '@/lib/auth/schemas';
 
 describe('parseAccessCodes', () => {
@@ -67,5 +68,18 @@ describe('resetPasswordSchema', () => {
       confirmPassword: 'CorrectHorse2!',
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('sanitizeReturnTo', () => {
+  it('keeps local application paths', () => {
+    expect(sanitizeReturnTo('/dashboard')).toBe('/dashboard');
+    expect(sanitizeReturnTo('/productivity/tasks?filter=open')).toBe('/productivity/tasks?filter=open');
+  });
+
+  it('falls back for missing or external targets', () => {
+    expect(sanitizeReturnTo(undefined)).toBe('/dashboard');
+    expect(sanitizeReturnTo('https://evil.example')).toBe('/dashboard');
+    expect(sanitizeReturnTo('//evil.example')).toBe('/dashboard');
   });
 });

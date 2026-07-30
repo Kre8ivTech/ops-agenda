@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { createTask } from '@/lib/tasks/actions';
 
-export function CreateTaskForm({ tenant }: { tenant: { accountId: string; userId: string } }) {
+export function CreateTaskForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createTask(tenant, { title, description });
+    await createTask({ title, description });
     setTitle('');
     setDescription('');
   }
