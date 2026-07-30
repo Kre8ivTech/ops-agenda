@@ -1,11 +1,13 @@
 'use server';
 
+import { redirect } from 'next/navigation';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { buildAuditEvent } from '@/lib/audit';
+import { getSession, setSessionCookie } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
 import { account, auditEvent, entity, moduleState, user } from '@/lib/db/schema';
 import { env } from '@/lib/env';
-import { buildAuditEvent } from '@/lib/audit';
 
 const db = createDb(env.DATABASE_URL ?? '');
 
@@ -21,8 +23,17 @@ const onboardSchema = z.object({
  * production it will be gated by Cognito post-confirmation triggers or admin
  * approval and will link the Cognito sub to the user row.
  */
-export async function onboardTenant(input: z.input<typeof onboardSchema>) {
-  const data = onboardSchema.parse(input);
+export async function onboardTenant(formData: FormData) {
+  const data = onboardSchema.parse({
+    accountName: formData.get('accountName'),
+    userEmail: formData.get('userEmail'),
+    userName: formData.get('userName'),
+  });
+
+  const authSession = await getSession();
+  if (!authSession?.sub) {
+    throw new Error('You must be signed in to create a workspace');
+  }
 
   // Onboarding runs outside a normal tenant context, so we create the account
   // first and then use its id as the tenant for the remaining rows.
@@ -34,6 +45,7 @@ export async function onboardTenant(input: z.input<typeof onboardSchema>) {
       .insert(user)
       .values({
         accountId: newAccount.id,
+        cognitoSub: authSession.sub,
         email: data.userEmail,
         name: data.userName,
         role: 'admin',
@@ -68,6 +80,14 @@ export async function onboardTenant(input: z.input<typeof onboardSchema>) {
       ),
     );
 
-    return { account: newAccount, user: newUser };
+    // Link the freshly-created tenant to the authenticated Cognito session.
+    await setSessionCookie({
+      ...authSession,
+      accountId: newAccount.id,
+      userId: newUser.id,
+      role: newUser.role,
+    });
+
+    redirect('/dashboard');
   });
 }

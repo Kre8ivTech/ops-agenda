@@ -84,6 +84,7 @@ export const user = pgTable(
     accountId: uuid('account_id')
       .notNull()
       .references(() => account.id),
+    cognitoSub: varchar('cognito_sub', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull(),
     name: varchar('name', { length: 255 }),
     timezone: varchar('timezone', { length: 100 }).notNull().default('America/New_York'),

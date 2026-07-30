@@ -1,9 +1,9 @@
-import { auth } from '@/lib/auth';
-import { SignOutButton } from '@/components/sign-out-button';
 import Link from 'next/link';
+import { getSession } from '@/lib/auth';
+import { SignOutButton } from '@/components/sign-out-button';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+  const session = await getSession();
 
   return (
     <div className="flex min-h-full">
@@ -24,7 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
         </nav>
         <div className="mt-8">
-          <div className="text-xs text-zinc-500">{session?.user?.email}</div>
+          <div className="text-xs text-zinc-500">{session?.email}</div>
           <SignOutButton />
         </div>
       </aside>

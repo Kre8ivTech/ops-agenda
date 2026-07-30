@@ -1,11 +1,11 @@
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { listTasks } from '@/lib/tasks/actions';
 import { CreateTaskForm } from '@/components/create-task-form';
 
 export default async function TasksPage() {
-  const session = await auth();
+  const session = await getSession();
 
-  if (!session?.user?.accountId || !session?.user?.userId) {
+  if (!session?.accountId || !session?.userId) {
     return (
       <div className="rounded border border-amber-200 bg-amber-50 p-4 text-amber-900">
         Your session is not linked to a tenant account. Complete onboarding to continue.
@@ -13,7 +13,7 @@ export default async function TasksPage() {
     );
   }
 
-  const tenant = { accountId: session.user.accountId, userId: session.user.userId };
+  const tenant = { accountId: session.accountId, userId: session.userId };
   const tasks = await listTasks(tenant);
 
   return (
