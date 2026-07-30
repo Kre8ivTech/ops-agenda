@@ -26,9 +26,33 @@ interface PkceCookie {
   state: string;
 }
 
-const SESSION_COOKIE = '__Host-session';
-const PKCE_COOKIE = '__Host-pkce';
-const RETURN_TO_COOKIE = '__Host-return-to';
+const SESSION_COOKIE_PROD = '__Host-session';
+const SESSION_COOKIE_DEV = 'oa-session';
+const PKCE_COOKIE_PROD = '__Host-pkce';
+const PKCE_COOKIE_DEV = 'oa-pkce';
+const RETURN_TO_COOKIE_PROD = '__Host-return-to';
+const RETURN_TO_COOKIE_DEV = 'oa-return-to';
+
+function isProd(): boolean {
+  return env.NODE_ENV === 'production';
+}
+
+/** `__Host-` + Secure cookies break on http://localhost — use plain names in development. */
+export function sessionCookieName(): string {
+  return isProd() ? SESSION_COOKIE_PROD : SESSION_COOKIE_DEV;
+}
+
+function pkceCookieName(): string {
+  return isProd() ? PKCE_COOKIE_PROD : PKCE_COOKIE_DEV;
+}
+
+function returnToCookieName(): string {
+  return isProd() ? RETURN_TO_COOKIE_PROD : RETURN_TO_COOKIE_DEV;
+}
+
+function cookieSecure(): boolean {
+  return isProd();
+}
 
 function cognitoDomain(): string {
   const domain = env.COGNITO_DOMAIN;
@@ -99,16 +123,16 @@ export async function createSignInUrl(returnTo = '/dashboard'): Promise<string> 
   const { codeVerifier, codeChallenge } = await generatePkce();
 
   const cookieStore = await cookies();
-  cookieStore.set(PKCE_COOKIE, await seal({ codeVerifier, state }), {
+  cookieStore.set(pkceCookieName(), await seal({ codeVerifier, state }), {
     httpOnly: true,
-    secure: true,
+    secure: cookieSecure(),
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 5,
   });
-  cookieStore.set(RETURN_TO_COOKIE, await seal(returnTo), {
+  cookieStore.set(returnToCookieName(), await seal(returnTo), {
     httpOnly: true,
-    secure: true,
+    secure: cookieSecure(),
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 5,
@@ -122,8 +146,8 @@ export async function exchangeCode(
   state: string,
 ): Promise<{ session: Session; tokens: TokenSet; returnTo: string }> {
   const cookieStore = await cookies();
-  const pkceCookie = cookieStore.get(PKCE_COOKIE)?.value;
-  const returnToCookie = cookieStore.get(RETURN_TO_COOKIE)?.value;
+  const pkceCookie = cookieStore.get(pkceCookieName())?.value;
+  const returnToCookie = cookieStore.get(returnToCookieName())?.value;
 
   if (!pkceCookie) {
     throw new Error('PKCE cookie missing');
@@ -162,8 +186,8 @@ export async function exchangeCode(
   const payload = await verifyIdToken(tokens.id_token);
 
   // Clear PKCE cookies now that the flow is complete.
-  cookieStore.delete(PKCE_COOKIE);
-  cookieStore.delete(RETURN_TO_COOKIE);
+  cookieStore.delete(pkceCookieName());
+  cookieStore.delete(returnToCookieName());
 
   const email =
     typeof payload.email === 'string'
@@ -200,9 +224,9 @@ export async function verifyIdToken(token: string): Promise<Record<string, unkno
 
 export async function setSessionCookie(session: Session): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, await seal(session), {
+  cookieStore.set(sessionCookieName(), await seal(session), {
     httpOnly: true,
-    secure: true,
+    secure: cookieSecure(),
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 8, // 8 hours
@@ -211,16 +235,30 @@ export async function setSessionCookie(session: Session): Promise<void> {
 
 export async function clearSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete(SESSION_COOKIE);
+  cookieStore.delete(sessionCookieName());
 }
 
 export async function getSession(): Promise<Session | null> {
   const cookieStore = await cookies();
-  const value = cookieStore.get(SESSION_COOKIE)?.value;
+  const value = cookieStore.get(sessionCookieName())?.value;
   if (!value) return null;
   try {
     return await unseal<Session>(value);
   } catch {
     return null;
   }
+}
+
+/** Stable local-dev tenant ids so dashboard/tasks can run without Cognito. */
+export const DEV_SESSION: Session = {
+  sub: 'local-dev-sub',
+  email: 'dana.whitfield@northgate.co',
+  name: 'Dana Whitfield',
+  accountId: '00000000-0000-4000-8000-000000000001',
+  userId: '00000000-0000-4000-8000-000000000002',
+  role: 'admin',
+};
+
+export function isDevAuthBypassEnabled(): boolean {
+  return env.NODE_ENV === 'development' && env.AUTH_DEV_BYPASS === true;
 }

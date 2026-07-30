@@ -1,14 +1,19 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { unseal } from '@/lib/auth';
+import { sessionCookieName, unseal } from '@/lib/auth';
 
 const PUBLIC_PATHS = new Set([
   '/',
   '/auth/signin',
+  '/auth/signup',
+  '/auth/signup/confirm',
+  '/auth/forgot-password',
+  '/auth/forgot-password/reset',
   '/auth/error',
   '/api/auth/signin',
   '/api/auth/callback',
   '/api/auth/signout',
+  '/api/auth/dev-login',
   '/api/health',
 ]);
 
@@ -24,7 +29,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionCookie = req.cookies.get('__Host-session')?.value;
+  const sessionCookie = req.cookies.get(sessionCookieName())?.value;
   let session: { email?: string } | null = null;
 
   if (sessionCookie) {

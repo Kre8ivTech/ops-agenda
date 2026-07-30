@@ -86,7 +86,7 @@ export class Compute extends Construct {
     });
 
     const container = taskDefinition.addContainer('nextjs', {
-      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/nginx/nginx:alpine'), // placeholder; CI/CD will deploy actual image
+      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/docker/library/node:22-alpine'), // placeholder; CI/CD will deploy actual image
       memoryLimitMiB: props.memory,
       cpu: props.cpu,
       logging: ecs.LogDrivers.awsLogs({
@@ -97,10 +97,15 @@ export class Compute extends Construct {
         PORT: props.containerPort.toString(),
         NODE_ENV: 'production',
       },
+      command: [
+        'sh',
+        '-c',
+        `node -e 'require("http").createServer((_,res)=>res.end("ok")).listen(${props.containerPort})'`,
+      ],
       healthCheck: {
         command: [
           'CMD-SHELL',
-          `curl -f http://localhost:${props.containerPort}/api/health || exit 1`,
+          `node -e 'require("http").get("http://localhost:${props.containerPort}/api/health", r => process.exit(r.statusCode === 200 ? 0 : 1)).on("error", () => process.exit(1))'`,
         ],
         interval: cdk.Duration.seconds(30),
         timeout: cdk.Duration.seconds(5),

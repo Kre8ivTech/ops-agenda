@@ -18,7 +18,8 @@ export class Auth extends Construct {
 
     this.userPool = new cognito.UserPool(this, 'UserPool', {
       userPoolName: `${cdk.Stack.of(this).stackName}-users`,
-      selfSignUpEnabled: false, // admin/onboarding creates accounts
+      // Product gate is SIGNUP_ACCESS_CODES in the web app; pool must allow SignUp API.
+      selfSignUpEnabled: true,
       signInAliases: { email: true },
       autoVerify: { email: true },
       mfa: cognito.Mfa.OPTIONAL,

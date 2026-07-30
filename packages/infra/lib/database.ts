@@ -48,7 +48,7 @@ export class Database extends Construct {
       storageEncrypted: true,
       deletionProtection: false, // enable in production
       removalPolicy: cdk.RemovalPolicy.DESTROY, // adjust for production
-      backupRetention: cdk.Duration.days(7),
+      backupRetention: cdk.Duration.days(1),
       cloudwatchLogsExports: ['postgresql'],
       parameterGroup,
     });

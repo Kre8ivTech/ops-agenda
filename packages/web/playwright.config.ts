@@ -20,7 +20,10 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'pnpm build && pnpm start',
+    // `next start` is incompatible with `output: "standalone"`. Serve the
+    // standalone bundle the same way ECS will.
+    command:
+      'pnpm build && mkdir -p .next/standalone/packages/web/public .next/standalone/packages/web/.next && cp -R public/. .next/standalone/packages/web/public/ && cp -R .next/static .next/standalone/packages/web/.next/static && PORT=3000 HOSTNAME=127.0.0.1 node .next/standalone/packages/web/server.js',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

@@ -18,7 +18,14 @@ export const env = createEnv({
     COGNITO_CLIENT_ID: z.string().optional(),
     COGNITO_CLIENT_SECRET: z.string().optional(),
     COGNITO_DOMAIN: z.string().optional(),
+    // Comma-separated allowlist for self-serve signup, e.g. `dev-access-2026`.
+    SIGNUP_ACCESS_CODES: z.string().optional(),
     SESSION_SECRET: z.string().min(32).optional(),
+    // Development only: enables /api/auth/dev-login for local dashboard preview without Cognito.
+    AUTH_DEV_BYPASS: z
+      .enum(['true', 'false'])
+      .optional()
+      .transform((v) => v === 'true'),
     AUDIT_BUCKET_NAME: z.string().optional(),
     SYNC_QUEUE_URL: z.string().url().optional(),
   },
@@ -33,7 +40,9 @@ export const env = createEnv({
     COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID,
     COGNITO_CLIENT_SECRET: process.env.COGNITO_CLIENT_SECRET,
     COGNITO_DOMAIN: process.env.COGNITO_DOMAIN,
+    SIGNUP_ACCESS_CODES: process.env.SIGNUP_ACCESS_CODES,
     SESSION_SECRET: process.env.SESSION_SECRET,
+    AUTH_DEV_BYPASS: process.env.AUTH_DEV_BYPASS,
     AUDIT_BUCKET_NAME: process.env.AUDIT_BUCKET_NAME,
     SYNC_QUEUE_URL: process.env.SYNC_QUEUE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
