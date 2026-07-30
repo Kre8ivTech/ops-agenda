@@ -19,15 +19,7 @@ function statusPill(task: DashboardTask): { label: string; className: string } {
   return { label: 'Open', className: 'bg-wash text-text-secondary' };
 }
 
-export function PriorityCard({
-  task,
-  tenant,
-  now,
-}: {
-  task: DashboardTask;
-  tenant: { accountId: string; userId: string };
-  now: Date;
-}) {
+export function PriorityCard({ task, now }: { task: DashboardTask; now: Date }) {
   const status = statusPill(task);
   const dueClass =
     task.flagState === 'at_risk' || formatDueLabel(task, now) === 'Overdue'
@@ -61,7 +53,7 @@ export function PriorityCard({
           {whyLine(task, now)}
         </p>
         <div className="flex flex-wrap gap-2">
-          <MarkHandledButton tenant={tenant} taskId={task.id} />
+          <MarkHandledButton taskId={task.id} />
           <ButtonLink href="/productivity/tasks" variant="quiet" size="small">
             Open task
           </ButtonLink>

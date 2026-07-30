@@ -30,7 +30,7 @@ export class OpsAgendaStack extends cdk.Stack {
     });
 
     const auth = new Auth(this, 'Auth', {
-      callbackUrls: [`${appUrl}/api/auth/callback/cognito`],
+      callbackUrls: [`${appUrl}/api/auth/callback`],
       logoutUrls: [appUrl],
     });
 

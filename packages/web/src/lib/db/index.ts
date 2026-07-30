@@ -10,7 +10,10 @@ export type Transaction = Parameters<Database['transaction']>[0] extends (tx: in
   ? T
   : never;
 
-export function createDb(connectionString: string) {
+export function createDb(connectionString?: string) {
+  if (!connectionString?.trim()) {
+    throw new Error('DATABASE_URL is not configured');
+  }
   if (!pool) {
     pool = new Pool({ connectionString });
   }

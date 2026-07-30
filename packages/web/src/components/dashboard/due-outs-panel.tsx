@@ -1,15 +1,7 @@
 import { MarkHandledCheck } from '@/components/dashboard/mark-handled-button';
 import { formatDueLabel, type DashboardTask } from '@/lib/dashboard/brief';
 
-export function DueOutsPanel({
-  items,
-  tenant,
-  now,
-}: {
-  items: DashboardTask[];
-  tenant: { accountId: string; userId: string };
-  now: Date;
-}) {
+export function DueOutsPanel({ items, now }: { items: DashboardTask[]; now: Date }) {
   return (
     <section className="border-border bg-white/88 rounded-[8px] border p-[18px] shadow-[var(--shadow-panel)]">
       <div className="mb-3 flex items-start justify-between gap-[18px]">
@@ -38,7 +30,7 @@ export function DueOutsPanel({
                 key={item.id}
                 className="border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[11px] border-t py-[11px]"
               >
-                <MarkHandledCheck tenant={tenant} taskId={item.id} title={item.title} />
+                <MarkHandledCheck taskId={item.id} title={item.title} />
                 <span className="grid min-w-0 gap-0.5">
                   <strong className="text-ink truncate text-[0.88rem] font-bold">
                     {item.title}

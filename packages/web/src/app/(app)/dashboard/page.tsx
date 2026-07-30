@@ -120,7 +120,7 @@ export default async function DashboardPage() {
           ) : (
             <div className="grid gap-3">
               {priorities.map((item) => (
-                <PriorityCard key={item.id} task={item} tenant={tenant} now={now} />
+                <PriorityCard key={item.id} task={item} now={now} />
               ))}
             </div>
           )}
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
             </p>
           </aside>
 
-          <DueOutsPanel items={dueOuts} tenant={tenant} now={now} />
+          <DueOutsPanel items={dueOuts} now={now} />
         </div>
       </div>
 

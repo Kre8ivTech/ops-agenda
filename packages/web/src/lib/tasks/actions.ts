@@ -4,11 +4,10 @@ import { revalidatePath } from 'next/cache';
 import { eq, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { buildAuditEvent } from '@/lib/audit';
+import { getSession } from '@/lib/auth';
 import { auditEvent, task, type TaskSelect } from '@/lib/db/schema';
 import { createDb, withTenant } from '@/lib/db';
 import { env } from '@/lib/env';
-
-const db = createDb(env.DATABASE_URL ?? '');
 
 const tenantSchema = z.object({
   accountId: z.string().uuid(),
@@ -44,9 +43,24 @@ const PRIORITY_RANK: Record<string, number> = { p1: 0, p2: 1, p3: 2, fysa: 3 };
 
 async function authorize(tenant: { accountId: string; userId: string }, _payload: unknown) {
   // Phase 1: module entitlement and entity grant checks would go here.
-  // For the spine proof-of-concept we trust the session-provided tenant context.
+  // For the spine proof-of-concept we trust the server-side tenant context.
   tenantSchema.parse(tenant);
   return true;
+}
+
+function getDb() {
+  return createDb(env.DATABASE_URL);
+}
+
+async function requireTenantSession() {
+  const session = await getSession();
+  if (!session?.accountId || !session.userId) {
+    throw new Error('Your session is not linked to a tenant account');
+  }
+  return tenantSchema.parse({
+    accountId: session.accountId,
+    userId: session.userId,
+  });
 }
 
 function revalidateTaskSurfaces() {
@@ -71,6 +85,7 @@ function sortForDashboard(a: TaskSelect, b: TaskSelect): number {
 
 export async function listTasks(tenant: { accountId: string; userId: string }) {
   await authorize(tenant, {});
+  const db = getDb();
   return withTenant(db, tenant, async (tx) => {
     return tx.query.task.findMany({
       where: (row) => isNull(row.deletedAt),
@@ -82,6 +97,7 @@ export async function listTasks(tenant: { accountId: string; userId: string }) {
 /** Unhandled first, then priority, then due date — for the dashboard brief. */
 export async function listDashboardTasks(tenant: { accountId: string; userId: string }) {
   await authorize(tenant, {});
+  const db = getDb();
   const rows = await withTenant(db, tenant, async (tx) => {
     return tx.query.task.findMany({
       where: (row) => isNull(row.deletedAt),
@@ -90,12 +106,11 @@ export async function listDashboardTasks(tenant: { accountId: string; userId: st
   return [...rows].sort(sortForDashboard);
 }
 
-export async function createTask(
-  tenant: { accountId: string; userId: string },
-  input: z.input<typeof createTaskSchema>,
-) {
+export async function createTask(input: z.input<typeof createTaskSchema>) {
+  const tenant = await requireTenantSession();
   await authorize(tenant, input);
   const data = createTaskSchema.parse(input);
+  const db = getDb();
 
   return withTenant(db, tenant, async (tx) => {
     const [created] = await tx
@@ -136,6 +151,7 @@ export async function updateTask(
 ) {
   await authorize(tenant, input);
   const data = updateTaskSchema.parse(input);
+  const db = getDb();
 
   return withTenant(db, tenant, async (tx) => {
     const [existing] = await tx.select().from(task).where(eq(task.id, data.id));
@@ -175,12 +191,11 @@ export async function updateTask(
   });
 }
 
-export async function markTaskHandled(
-  tenant: { accountId: string; userId: string },
-  input: z.infer<typeof taskIdSchema>,
-) {
+export async function markTaskHandled(input: z.infer<typeof taskIdSchema>) {
+  const tenant = await requireTenantSession();
   await authorize(tenant, input);
   const { id } = taskIdSchema.parse(input);
+  const db = getDb();
 
   return withTenant(db, tenant, async (tx) => {
     const [existing] = await tx.select().from(task).where(eq(task.id, id));
@@ -215,12 +230,11 @@ export async function markTaskHandled(
   });
 }
 
-export async function reopenTask(
-  tenant: { accountId: string; userId: string },
-  input: z.infer<typeof taskIdSchema>,
-) {
+export async function reopenTask(input: z.infer<typeof taskIdSchema>) {
+  const tenant = await requireTenantSession();
   await authorize(tenant, input);
   const { id } = taskIdSchema.parse(input);
+  const db = getDb();
 
   return withTenant(db, tenant, async (tx) => {
     const [existing] = await tx.select().from(task).where(eq(task.id, id));
@@ -261,6 +275,7 @@ export async function deleteTask(
 ) {
   await authorize(tenant, input);
   const { id } = deleteTaskSchema.parse(input);
+  const db = getDb();
 
   return withTenant(db, tenant, async (tx) => {
     const [existing] = await tx.select().from(task).where(eq(task.id, id));

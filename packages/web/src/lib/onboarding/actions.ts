@@ -9,8 +9,6 @@ import { createDb, withTenant } from '@/lib/db';
 import { account, auditEvent, entity, moduleState, user } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 
-const db = createDb(env.DATABASE_URL ?? '');
-
 const onboardSchema = z.object({
   accountName: z.string().min(1).max(255),
   userEmail: z.string().email(),
@@ -34,6 +32,15 @@ export async function onboardTenant(formData: FormData) {
   if (!authSession?.sub) {
     throw new Error('You must be signed in to create a workspace');
   }
+  const authenticatedEmail = authSession.email.trim();
+  if (!authenticatedEmail) {
+    throw new Error('Your session is missing an email address');
+  }
+  if (data.userEmail.trim().toLowerCase() !== authenticatedEmail.toLowerCase()) {
+    throw new Error('Workspace admin email must match the signed-in account');
+  }
+
+  const db = createDb(env.DATABASE_URL);
 
   // Onboarding runs outside a normal tenant context, so we create the account
   // first and then use its id as the tenant for the remaining rows.
@@ -46,7 +53,7 @@ export async function onboardTenant(formData: FormData) {
       .values({
         accountId: newAccount.id,
         cognitoSub: authSession.sub,
-        email: data.userEmail,
+        email: authenticatedEmail,
         name: data.userName,
         role: 'admin',
       })
@@ -75,7 +82,7 @@ export async function onboardTenant(formData: FormData) {
           action: 'tenant.onboard',
           targetType: 'account',
           targetId: newAccount.id,
-          after: { accountName: data.accountName, userEmail: data.userEmail },
+          after: { accountName: data.accountName, userEmail: authenticatedEmail },
         },
       ),
     );

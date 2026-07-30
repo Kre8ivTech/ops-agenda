@@ -7,10 +7,10 @@ dist/
 build/*
 !build/sites-vite-plugin.ts
 .next/
-.vinext/
-.wrangler/
 packages/infra/cdk.out/
 packages/infra/cdk.context.json
+.vinext/
+.wrangler/
 
 # Logs
 logs/

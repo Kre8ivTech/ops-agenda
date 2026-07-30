@@ -54,8 +54,8 @@ export class Networking extends Construct {
     });
     this.ecsSecurityGroup.addIngressRule(
       this.albSecurityGroup,
-      ec2.Port.tcp(3000),
-      'ALB to Next.js container',
+      ec2.Port.tcp(80),
+      'ALB to application container',
     );
     // Placeholder nginx listens on port 80 until the real Next.js image is deployed.
     this.ecsSecurityGroup.addIngressRule(

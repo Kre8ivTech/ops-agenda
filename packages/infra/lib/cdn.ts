@@ -1,4 +1,3 @@
-import * as cdk from 'aws-cdk-lib';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -30,7 +29,7 @@ export class Cdn extends Construct {
         origin: albOrigin,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.SECURITY_HEADERS,
@@ -50,23 +49,8 @@ export class Cdn extends Construct {
           compress: true,
         },
       },
-      defaultRootObject: 'index.html',
       httpVersion: cloudfront.HttpVersion.HTTP3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-      errorResponses: [
-        {
-          httpStatus: 500,
-          ttl: cdk.Duration.seconds(0),
-          responseHttpStatus: 500,
-          responsePagePath: '/500.html',
-        },
-        {
-          httpStatus: 503,
-          ttl: cdk.Duration.seconds(0),
-          responseHttpStatus: 503,
-          responsePagePath: '/503.html',
-        },
-      ],
       certificate: props.certificateArn
         ? undefined // ACM cert for custom domain would be attached separately
         : undefined,

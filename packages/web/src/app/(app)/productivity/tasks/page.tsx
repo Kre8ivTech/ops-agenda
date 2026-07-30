@@ -45,8 +45,8 @@ export default async function TasksPage() {
         </div>
       ) : (
         <>
-          <CreateTaskForm tenant={tenant} />
-          <ul className="divide-border border-border divide-y rounded-[8px] border bg-white">
+          <CreateTaskForm />
+          <ul className="divide-y divide-border rounded-[8px] border border-border bg-white">
             {tasks.map((task) => (
               <li key={task.id} className="px-4 py-4">
                 <div className="text-ink font-bold">{task.title}</div>

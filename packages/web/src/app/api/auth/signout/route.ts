@@ -10,8 +10,8 @@ export async function POST() {
 }
 
 export async function GET() {
-  await clearSessionCookie();
-  return Response.redirect(
-    new URL('/', process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
-  );
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { Allow: 'POST' },
+  });
 }
