@@ -15,8 +15,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const returnTo = searchParams.get('returnTo') ?? '/dashboard';
-  const safe =
-    returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard';
+  const safe = returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard';
 
   return Response.redirect(new URL(safe, request.url));
 }

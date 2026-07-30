@@ -23,7 +23,10 @@ test.describe('smoke', () => {
       'href',
       '/auth/forgot-password',
     );
-    await expect(page.getByRole('link', { name: 'Sign up' })).toHaveAttribute('href', '/auth/signup');
+    await expect(page.getByRole('link', { name: 'Sign up' })).toHaveAttribute(
+      'href',
+      '/auth/signup',
+    );
     await expect(page.getByText('Secured by AWS Cognito')).toBeVisible();
     await expect(page.getByText('Daily Ops Brief')).toBeVisible();
 

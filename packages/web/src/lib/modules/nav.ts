@@ -36,9 +36,7 @@ export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
           countKey: 'tasks',
           nested: true,
           countLabel:
-            typeof counts.tasks === 'number' && counts.tasks > 0
-              ? String(counts.tasks)
-              : undefined,
+            typeof counts.tasks === 'number' && counts.tasks > 0 ? String(counts.tasks) : undefined,
         },
       ],
     },

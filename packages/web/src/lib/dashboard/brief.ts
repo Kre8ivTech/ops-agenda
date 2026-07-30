@@ -26,7 +26,7 @@ function endOfLocalDay(now: Date): Date {
 }
 
 export function isUnhandled(task: DashboardTask): boolean {
-  return task.handledAt == null && task.flagState !== 'settled';
+  return task.handledAt === null && task.flagState !== 'settled';
 }
 
 export function isAtRisk(task: DashboardTask): boolean {
@@ -48,11 +48,7 @@ export function wasHandledToday(task: DashboardTask, now: Date): boolean {
 
 function isPriorityCandidate(task: DashboardTask): boolean {
   if (!isUnhandled(task)) return false;
-  return (
-    task.flagState === 'attention' ||
-    task.flagState === 'at_risk' ||
-    task.priority === 'p1'
-  );
+  return task.flagState === 'attention' || task.flagState === 'at_risk' || task.priority === 'p1';
 }
 
 function comparePriorityThenDue(a: DashboardTask, b: DashboardTask): number {
@@ -70,16 +66,14 @@ export function selectTopPriorities(tasks: DashboardTask[], limit = 3): Dashboar
   if (preferred.length >= limit) return preferred.slice(0, limit);
 
   const preferredIds = new Set(preferred.map((t) => t.id));
-  const fillers = unhandled
-    .filter((t) => !preferredIds.has(t.id))
-    .sort(comparePriorityThenDue);
+  const fillers = unhandled.filter((t) => !preferredIds.has(t.id)).sort(comparePriorityThenDue);
 
   return [...preferred, ...fillers].slice(0, limit);
 }
 
 export function selectDueOuts(tasks: DashboardTask[], limit = 6): DashboardTask[] {
   return tasks
-    .filter((t) => isUnhandled(t) && t.dueOn != null)
+    .filter((t) => isUnhandled(t) && t.dueOn !== null)
     .sort((a, b) => (a.dueOn!.getTime() ?? 0) - (b.dueOn!.getTime() ?? 0))
     .slice(0, limit);
 }
@@ -105,7 +99,10 @@ export function whyLine(task: DashboardTask, now: Date = new Date()): string {
   return 'No due date';
 }
 
-export function buildNarrative(tasks: DashboardTask[], now: Date = new Date()): {
+export function buildNarrative(
+  tasks: DashboardTask[],
+  now: Date = new Date(),
+): {
   headline: string;
   body: string;
 } {
@@ -123,9 +120,7 @@ export function buildNarrative(tasks: DashboardTask[], now: Date = new Date()): 
 
   const n = top.length;
   const headline =
-    n === 1
-      ? 'One move protects the slate today.'
-      : `${n} moves protect the deadline slate.`;
+    n === 1 ? 'One move protects the slate today.' : `${n} moves protect the deadline slate.`;
 
   const parts: string[] = [];
   parts.push(`${unhandled.length} open ${unhandled.length === 1 ? 'priority' : 'priorities'}.`);
@@ -152,7 +147,10 @@ export function plannedPercent(tasks: DashboardTask[], now: Date = new Date()): 
 
 export type CapacityLevel = 'Open' | 'Balanced' | 'Tight';
 
-export function capacityStatus(tasks: DashboardTask[], now: Date = new Date()): {
+export function capacityStatus(
+  tasks: DashboardTask[],
+  now: Date = new Date(),
+): {
   level: CapacityLevel;
   fillPercent: number;
   detail: string;
@@ -167,7 +165,8 @@ export function capacityStatus(tasks: DashboardTask[], now: Date = new Date()): 
     return {
       level: 'Tight',
       fillPercent: Math.min(92, 55 + pressure * 8),
-      detail: 'Anything new above 90 minutes today displaces a P1. Clear a due-out before adding work.',
+      detail:
+        'Anything new above 90 minutes today displaces a P1. Clear a due-out before adding work.',
       roomLabel: `${Math.max(0, 25 - pressure * 3)}% flexible room`,
     };
   }
@@ -217,7 +216,11 @@ export function formatDueLabel(task: DashboardTask, now: Date = new Date()): str
   if (dueMs <= todayEnd) {
     return task.dueOn.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
   }
-  return task.dueOn.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  return task.dueOn.toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
 }
 
 export function priorityLabel(priority: string): string {

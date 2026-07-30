@@ -3,10 +3,10 @@
  */
 export function EntitySwitcher() {
   return (
-    <label className="inline-flex items-center gap-2 text-[0.82rem] text-text-secondary">
-      <span className="font-extrabold text-ink">Entity</span>
+    <label className="text-text-secondary inline-flex items-center gap-2 text-[0.82rem]">
+      <span className="text-ink font-extrabold">Entity</span>
       <select
-        className="h-9 rounded-[8px] border border-border bg-white px-3 text-[0.83rem] font-extrabold text-ink outline-none focus:border-signal focus:shadow-[0_0_0_3px_var(--wash-green)]"
+        className="border-border text-ink focus:border-signal h-9 rounded-[8px] border bg-white px-3 text-[0.83rem] font-extrabold outline-none focus:shadow-[0_0_0_3px_var(--wash-green)]"
         defaultValue="personal"
         aria-label="Entity switcher"
       >

@@ -8,9 +8,9 @@ export function DegradedBanner({ show = false }: { show?: boolean }) {
   return (
     <div
       role="status"
-      className="flex items-start gap-3 rounded-[8px] border border-border bg-risk-wash px-3.5 py-3 text-[0.88rem] leading-[1.45] text-ink"
+      className="border-border bg-risk-wash text-ink flex items-start gap-3 rounded-[8px] border px-3.5 py-3 text-[0.88rem] leading-[1.45]"
     >
-      <span className="mt-1.5 size-[7px] shrink-0 rounded-full bg-risk" aria-hidden />
+      <span className="bg-risk mt-1.5 size-[7px] shrink-0 rounded-full" aria-hidden />
       <p className="m-0">
         Two accounts stopped returning calendar data at 4:12 AM. Reconnect from Settings →
         Integrations when connectors are live.

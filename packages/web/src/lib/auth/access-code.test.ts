@@ -45,7 +45,11 @@ describe('signUpSchema', () => {
   });
 
   it('rejects weak passwords', () => {
-    const result = signUpSchema.safeParse({ ...valid, password: 'short', confirmPassword: 'short' });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      password: 'short',
+      confirmPassword: 'short',
+    });
     expect(result.success).toBe(false);
   });
 

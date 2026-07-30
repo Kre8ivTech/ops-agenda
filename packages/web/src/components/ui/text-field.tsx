@@ -21,7 +21,7 @@ export function TextField({
 
   return (
     <label className="grid gap-1.5">
-      <span className="flex items-baseline justify-between gap-3 text-[0.8rem] font-extrabold text-ink">
+      <span className="text-ink flex items-baseline justify-between gap-3 text-[0.8rem] font-extrabold">
         <span>{label}</span>
         {labelAside}
       </span>
@@ -29,17 +29,17 @@ export function TextField({
         id={fieldId}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
-        className={`h-[46px] w-full rounded-[8px] border bg-white px-[13px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-text-secondary/55 focus:border-signal focus:shadow-[0_0_0_3px_var(--wash-green)] ${
+        className={`text-ink placeholder:text-text-secondary/55 focus:border-signal h-[46px] w-full rounded-[8px] border bg-white px-[13px] outline-none transition-[border-color,box-shadow] focus:shadow-[0_0_0_3px_var(--wash-green)] ${
           error ? 'border-risk' : 'border-border'
         } ${className}`}
         {...props}
       />
       {error ? (
-        <span id={`${fieldId}-error`} className="text-[0.78rem] text-risk">
+        <span id={`${fieldId}-error`} className="text-risk text-[0.78rem]">
           {error}
         </span>
       ) : hint ? (
-        <span id={`${fieldId}-hint`} className="text-[0.78rem] text-text-secondary">
+        <span id={`${fieldId}-hint`} className="text-text-secondary text-[0.78rem]">
           {hint}
         </span>
       ) : null}

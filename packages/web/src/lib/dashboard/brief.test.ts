@@ -12,7 +12,9 @@ import {
   type DashboardTask,
 } from '@/lib/dashboard/brief';
 
-function task(partial: Partial<DashboardTask> & Pick<DashboardTask, 'id' | 'title'>): DashboardTask {
+function task(
+  partial: Partial<DashboardTask> & Pick<DashboardTask, 'id' | 'title'>,
+): DashboardTask {
   return {
     description: null,
     priority: 'p3',

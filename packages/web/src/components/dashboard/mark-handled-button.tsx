@@ -48,7 +48,7 @@ export function MarkHandledCheck({
         type="submit"
         title={`Mark handled: ${title}`}
         aria-label={`Mark handled: ${title}`}
-        className="size-4 shrink-0 rounded-[5px] border-[1.5px] border-border bg-white hover:border-signal hover:bg-wash-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+        className="border-border hover:border-signal hover:bg-wash-green focus-visible:outline-signal size-4 shrink-0 rounded-[5px] border-[1.5px] bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
       />
     </form>
   );

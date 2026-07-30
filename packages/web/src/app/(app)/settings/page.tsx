@@ -12,24 +12,24 @@ const COMING = [
 export default function SettingsPage() {
   return (
     <div className="max-w-2xl">
-      <p className="mb-1.5 text-[0.76rem] font-extrabold uppercase text-signal">Settings</p>
-      <h1 className="m-0 text-[1.7rem] font-extrabold tracking-[-0.02em] text-ink">
+      <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Settings</p>
+      <h1 className="text-ink m-0 text-[1.7rem] font-extrabold tracking-[-0.02em]">
         Workspace settings
       </h1>
-      <p className="mt-3 m-0 max-w-[62ch] text-[0.95rem] leading-[1.5] text-text-secondary">
+      <p className="text-text-secondary m-0 mt-3 max-w-[62ch] text-[0.95rem] leading-[1.5]">
         Settings screens land with each Phase 1–3 capability. Sign out from the sidebar.
       </p>
-      <ul className="mt-6 divide-y divide-border rounded-[8px] border border-border bg-white">
+      <ul className="divide-border border-border mt-6 divide-y rounded-[8px] border bg-white">
         {COMING.map((item) => (
           <li key={item.label} className="flex items-baseline justify-between gap-4 px-4 py-3">
-            <span className="font-bold text-ink">{item.label}</span>
-            <span className="text-[0.82rem] text-text-secondary">{item.note}</span>
+            <span className="text-ink font-bold">{item.label}</span>
+            <span className="text-text-secondary text-[0.82rem]">{item.note}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-[0.88rem] text-text-secondary">
+      <p className="text-text-secondary mt-4 text-[0.88rem]">
         Need a workspace?{' '}
-        <Link href="/onboarding" className="font-extrabold text-signal hover:text-ink">
+        <Link href="/onboarding" className="text-signal hover:text-ink font-extrabold">
           Continue onboarding
         </Link>
       </p>

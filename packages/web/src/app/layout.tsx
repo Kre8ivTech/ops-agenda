@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} min-h-dvh antialiased`}
     >
-      <body className="flex min-h-dvh flex-col font-sans text-ink">{children}</body>
+      <body className="text-ink flex min-h-dvh flex-col font-sans">{children}</body>
     </html>
   );
 }

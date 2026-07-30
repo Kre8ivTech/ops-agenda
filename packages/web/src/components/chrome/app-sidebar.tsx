@@ -67,7 +67,7 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
               />
             ) : (
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2.5 rounded-[7px] px-2.5 py-[7px]">
-                <span className="truncate text-[0.86rem] font-extrabold text-white/72">
+                <span className="text-white/72 truncate text-[0.86rem] font-extrabold">
                   {group.label}
                 </span>
               </div>
@@ -89,7 +89,7 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
 
       <div className="mt-auto grid gap-2.5">
         <div className="grid gap-[7px] rounded-[8px] bg-white/[0.06] p-3">
-          <span className="font-mono text-[0.68rem] font-extrabold uppercase text-signal-on-ink">
+          <span className="text-signal-on-ink font-mono text-[0.68rem] font-extrabold uppercase">
             Sync
           </span>
           <span className="text-[0.8rem] leading-[1.35] text-white/70">
@@ -98,7 +98,7 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
         </div>
 
         <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2.5 rounded-[8px] px-2 py-2.5">
-          <span className="grid size-[30px] place-items-center rounded-full bg-signal font-sans text-[0.76rem] font-extrabold text-white">
+          <span className="bg-signal grid size-[30px] place-items-center rounded-full font-sans text-[0.76rem] font-extrabold text-white">
             {initials}
           </span>
           <span className="grid min-w-0 gap-px">
@@ -121,7 +121,7 @@ export function AppSidebar(props: AppSidebarProps) {
     <>
       <button
         type="button"
-        className="fixed top-3 left-3 z-40 inline-flex h-10 items-center rounded-[8px] border border-border bg-white px-3 text-[0.83rem] font-extrabold text-ink shadow-[var(--shadow-panel)] lg:hidden"
+        className="border-border text-ink fixed left-3 top-3 z-40 inline-flex h-10 items-center rounded-[8px] border bg-white px-3 text-[0.83rem] font-extrabold shadow-[var(--shadow-panel)] lg:hidden"
         onClick={() => setOpen(true)}
         aria-label="Open navigation"
       >
@@ -131,14 +131,14 @@ export function AppSidebar(props: AppSidebarProps) {
       {open ? (
         <button
           type="button"
-          className="fixed inset-0 z-40 bg-ink/40 lg:hidden"
+          className="bg-ink/40 fixed inset-0 z-40 lg:hidden"
           aria-label="Close navigation"
           onClick={() => setOpen(false)}
         />
       ) : null}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-dvh w-[246px] shrink-0 flex-col gap-5 overflow-y-auto bg-ink px-3.5 py-5 transition-transform lg:sticky lg:top-0 lg:translate-x-0 ${
+        className={`bg-ink fixed inset-y-0 left-0 z-50 flex h-dvh w-[246px] shrink-0 flex-col gap-5 overflow-y-auto px-3.5 py-5 transition-transform lg:sticky lg:top-0 lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >

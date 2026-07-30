@@ -30,7 +30,7 @@ export function Lockup({ mark = 'signal', className = '', size = 32 }: LockupPro
         className="shrink-0"
         decoding="async"
       />
-      <span className="font-lockup text-[0.94rem] font-extrabold tracking-[0.02em] uppercase">
+      <span className="font-lockup text-[0.94rem] font-extrabold uppercase tracking-[0.02em]">
         Ops Agenda
       </span>
     </span>

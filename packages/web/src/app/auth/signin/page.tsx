@@ -26,15 +26,18 @@ function cognitoStartHref(returnTo?: string): string {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ callbackUrl?: string; returnTo?: string; registered?: string; reset?: string }>;
+  searchParams: Promise<{
+    callbackUrl?: string;
+    returnTo?: string;
+    registered?: string;
+    reset?: string;
+  }>;
 }) {
   const params = await searchParams;
   const returnTo = params.returnTo ?? params.callbackUrl;
   const signInHref = cognitoStartHref(returnTo);
   const localPreviewHref = `/api/auth/dev-login?returnTo=${encodeURIComponent(
-    returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')
-      ? returnTo
-      : '/dashboard',
+    returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard',
   )}`;
   const showLocalPreview = isDevAuthBypassEnabled();
 
@@ -45,11 +48,11 @@ export default async function SignInPage({
 
         <div className="my-10 flex w-full flex-col gap-[22px] lg:my-0">
           <div>
-            <p className="mb-1.5 text-[0.76rem] font-extrabold uppercase text-signal">Sign in</p>
-            <h1 className="mb-2 text-[2.3rem] leading-[1.02] font-extrabold tracking-[-0.02em] text-ink">
+            <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Sign in</p>
+            <h1 className="text-ink mb-2 text-[2.3rem] font-extrabold leading-[1.02] tracking-[-0.02em]">
               Your day, already prioritized.
             </h1>
-            <p className="m-0 max-w-[40ch] text-[0.95rem] leading-[1.5] text-text-secondary">
+            <p className="text-text-secondary m-0 max-w-[40ch] text-[0.95rem] leading-[1.5]">
               Sign in to open today&apos;s brief. Your mail, tasks and calendar are already scanned.
             </p>
           </div>
@@ -84,7 +87,7 @@ export default async function SignInPage({
               labelAside={
                 <a
                   href="/auth/forgot-password"
-                  className="text-[0.78rem] font-semibold text-text-secondary hover:text-signal"
+                  className="text-text-secondary hover:text-signal text-[0.78rem] font-semibold"
                   data-testid="forgot-password-link"
                 >
                   Forgot?
@@ -92,7 +95,7 @@ export default async function SignInPage({
               }
             />
 
-            <label className="flex cursor-pointer items-center gap-2 text-[0.85rem] text-text-secondary">
+            <label className="text-text-secondary flex cursor-pointer items-center gap-2 text-[0.85rem]">
               <span className="relative inline-flex size-4 shrink-0 items-center justify-center">
                 <input
                   type="checkbox"
@@ -101,7 +104,7 @@ export default async function SignInPage({
                   aria-label="Keep me signed in on this device"
                 />
                 <span
-                  className="grid size-4 place-items-center rounded bg-wash text-[10px] font-black text-transparent peer-checked:bg-signal peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal"
+                  className="bg-wash peer-checked:bg-signal peer-focus-visible:outline-signal grid size-4 place-items-center rounded text-[10px] font-black text-transparent peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2"
                   aria-hidden
                 >
                   ✓
@@ -126,9 +129,9 @@ export default async function SignInPage({
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
-            <span className="text-[0.72rem] font-extrabold uppercase text-text-secondary">or</span>
-            <span className="h-px flex-1 bg-border" />
+            <span className="bg-border h-px flex-1" />
+            <span className="text-text-secondary text-[0.72rem] font-extrabold uppercase">or</span>
+            <span className="bg-border h-px flex-1" />
           </div>
 
           <div className="grid gap-2.5">
@@ -141,24 +144,24 @@ export default async function SignInPage({
               <MicrosoftMark />
               Continue with Microsoft 365
             </ButtonLink>
-            <p className="m-0 text-[0.78rem] leading-[1.45] text-text-secondary">
+            <p className="text-text-secondary m-0 text-[0.78rem] leading-[1.45]">
               Grants read-only access to mail and calendar metadata —{' '}
-              <strong className="font-bold text-ink">Mail.Read</strong>,{' '}
-              <strong className="font-bold text-ink">Calendars.Read</strong>. Message bodies are
+              <strong className="text-ink font-bold">Mail.Read</strong>,{' '}
+              <strong className="text-ink font-bold">Calendars.Read</strong>. Message bodies are
               never stored.
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="m-0 text-[0.84rem] text-text-secondary">
+        <div className="border-border flex flex-col gap-4 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-text-secondary m-0 text-[0.84rem]">
             No account yet?{' '}
-            <a href="/auth/signup" className="font-extrabold text-signal hover:text-ink">
+            <a href="/auth/signup" className="text-signal hover:text-ink font-extrabold">
               Sign up
             </a>
           </p>
-          <span className="inline-flex items-center gap-[7px] rounded-full border border-border bg-wash px-2.5 py-1.5 font-mono text-[11px] font-semibold text-text-secondary">
-            <span className="size-1.5 rounded-full bg-signal shadow-[0_0_0_3px_var(--wash-green)]" />
+          <span className="border-border bg-wash text-text-secondary inline-flex items-center gap-[7px] rounded-full border px-2.5 py-1.5 font-mono text-[11px] font-semibold">
+            <span className="bg-signal size-1.5 rounded-full shadow-[0_0_0_3px_var(--wash-green)]" />
             Secured by AWS Cognito
           </span>
         </div>

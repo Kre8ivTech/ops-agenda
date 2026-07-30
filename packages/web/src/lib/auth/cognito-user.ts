@@ -59,7 +59,10 @@ function mapCognitoError(err: unknown): CognitoUserError {
     case 'CodeMismatchException':
       return new CognitoUserError('code_mismatch', 'That verification code is not correct.');
     case 'ExpiredCodeException':
-      return new CognitoUserError('expired_code', 'That verification code has expired. Request a new one.');
+      return new CognitoUserError(
+        'expired_code',
+        'That verification code has expired. Request a new one.',
+      );
     case 'InvalidPasswordException':
       return new CognitoUserError(
         'invalid_password',
@@ -67,7 +70,10 @@ function mapCognitoError(err: unknown): CognitoUserError {
       );
     case 'LimitExceededException':
     case 'TooManyRequestsException':
-      return new CognitoUserError('limit_exceeded', 'Too many attempts. Wait a minute and try again.');
+      return new CognitoUserError(
+        'limit_exceeded',
+        'Too many attempts. Wait a minute and try again.',
+      );
     case 'InvalidParameterException':
       return new CognitoUserError('invalid_parameter', 'Check the form fields and try again.');
     case 'NotAuthorizedException':

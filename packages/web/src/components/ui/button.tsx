@@ -4,12 +4,9 @@ type Variant = 'primary' | 'secondary' | 'quiet' | 'ghost';
 type Size = 'large' | 'medium' | 'small';
 
 const VARIANT: Record<Variant, string> = {
-  primary:
-    'border-transparent bg-ink text-white hover:bg-signal focus-visible:outline-signal',
-  secondary:
-    'border-border bg-white text-ink hover:border-ink focus-visible:outline-signal',
-  quiet:
-    'border-transparent bg-wash text-ink hover:bg-wash-green focus-visible:outline-signal',
+  primary: 'border-transparent bg-ink text-white hover:bg-signal focus-visible:outline-signal',
+  secondary: 'border-border bg-white text-ink hover:border-ink focus-visible:outline-signal',
+  quiet: 'border-transparent bg-wash text-ink hover:bg-wash-green focus-visible:outline-signal',
   ghost:
     'border-transparent bg-transparent text-text-secondary hover:text-ink focus-visible:outline-signal',
 };
@@ -37,7 +34,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button type="button" className={`${BASE} ${VARIANT[variant]} ${SIZE[size]} ${className}`} {...props}>
+    <button
+      type="button"
+      className={`${BASE} ${VARIANT[variant]} ${SIZE[size]} ${className}`}
+      {...props}
+    >
       {children}
     </button>
   );
