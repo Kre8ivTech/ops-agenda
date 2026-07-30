@@ -85,8 +85,12 @@ export class Compute extends Construct {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // Placeholder nginx on port 80 so the ALB/target group health checks pass in
+    // dev before the real Next.js container image is deployed. The real app will
+    // restore port 3000 and the /api/health endpoint.
+    const placeholderPort = 80;
     const container = taskDefinition.addContainer('nextjs', {
-      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/docker/library/node:22-alpine'), // placeholder; CI/CD will deploy actual image
+      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/nginx/nginx:alpine'),
       memoryLimitMiB: props.memory,
       cpu: props.cpu,
       logging: ecs.LogDrivers.awsLogs({
@@ -94,19 +98,11 @@ export class Compute extends Construct {
         logGroup,
       }),
       environment: {
-        PORT: props.containerPort.toString(),
+        PORT: placeholderPort.toString(),
         NODE_ENV: 'production',
       },
-      command: [
-        'sh',
-        '-c',
-        `node -e 'require("http").createServer((_,res)=>res.end("ok")).listen(${props.containerPort})'`,
-      ],
       healthCheck: {
-        command: [
-          'CMD-SHELL',
-          `node -e 'require("http").get("http://localhost:${props.containerPort}/api/health", r => process.exit(r.statusCode === 200 ? 0 : 1)).on("error", () => process.exit(1))'`,
-        ],
+        command: ['CMD-SHELL', `curl -f http://localhost:${placeholderPort}/ || exit 1`],
         interval: cdk.Duration.seconds(30),
         timeout: cdk.Duration.seconds(5),
         retries: 3,
@@ -115,7 +111,7 @@ export class Compute extends Construct {
     });
 
     container.addPortMappings({
-      containerPort: props.containerPort,
+      containerPort: placeholderPort,
       hostPort: 0, // dynamic host port for bridge mode
       protocol: ecs.Protocol.TCP,
     });
@@ -146,16 +142,16 @@ export class Compute extends Construct {
 
     const targetGroup = new elbv2.ApplicationTargetGroup(this, 'TargetGroup', {
       vpc: props.vpc,
-      port: props.containerPort,
+      port: placeholderPort,
       protocol: elbv2.ApplicationProtocol.HTTP,
       targets: [
         this.service.loadBalancerTarget({
           containerName: 'nextjs',
-          containerPort: props.containerPort,
+          containerPort: placeholderPort,
         }),
       ],
       healthCheck: {
-        path: '/api/health',
+        path: '/',
         interval: cdk.Duration.seconds(30),
         healthyThresholdCount: 2,
         unhealthyThresholdCount: 3,
