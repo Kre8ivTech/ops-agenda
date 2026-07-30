@@ -1,0 +1,2 @@
+{"ts":"2026-07-10T02:03:02Z","error":"   error explicitly identifies a temporary failure or slug conflict. Treat","fail":null,"platform":"codex"}
+{"ts":"2026-07-28T14:44:42Z","error":null,"fail":"1151:- In this checkout, `scripts/init-site.sh` failed with `Target is not empty: /Users/jlaptop/Apps/ops-agenda`; the working path was to initialize the Sites starter in `/tmp`, then transplant the g","platform":"codex"}

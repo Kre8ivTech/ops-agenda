@@ -4,10 +4,13 @@ vendor/
 
 # Build artifacts
 dist/
-build/
+build/*
+!build/sites-vite-plugin.ts
 .next/
 packages/infra/cdk.out/
 packages/infra/cdk.context.json
+.vinext/
+.wrangler/
 
 # Logs
 logs/
