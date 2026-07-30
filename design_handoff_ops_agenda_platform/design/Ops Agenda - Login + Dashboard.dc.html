@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&family=Poppins:wght@800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Geist,Arial,Helvetica,sans-serif;color:#16201b;background:#e9e9e2;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#25724d;text-decoration:none}
+a:hover{color:#16201b}
+h1,h2,h3,p{margin-top:0}
+input{font:inherit}
+</style>
+</helmet>
+
+<div style="padding:56px 48px 96px;display:flex;flex-direction:column;gap:56px">
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">01</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Sign in — split screen, Cognito hosted auth</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 900</span>
+</div>
+
+<div data-screen-label="Login" style="width:1440px;height:900px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#fff">
+
+<div style="display:flex;flex-direction:column;justify-content:space-between;padding:44px 72px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="32" height="26" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaHero" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaHero)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.94rem;color:#16201b;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:22px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Sign in</p>
+<h1 style="margin:0 0 8px;font-size:2.3rem;line-height:1.02;letter-spacing:-.02em">Your day, already prioritized.</h1>
+<p style="margin:0;color:#5c6861;line-height:1.5;max-width:40ch;text-wrap:pretty">Sign in to open today's brief. Your mail, tasks and calendar are already scanned.</p>
+</div>
+
+<div style="display:grid;gap:14px">
+<label style="display:grid;gap:6px">
+<span style="font-size:.8rem;font-weight:800;color:#16201b">Work email</span>
+<input type="email" value="dana.whitfield@northgate.co" style="height:46px;padding:0 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#16201b;outline:none;width:100%" style-focus="border-color:#25724d;box-shadow:0 0 0 3px #dcece2">
+</label>
+<label style="display:grid;gap:6px">
+<span style="display:flex;justify-content:space-between;align-items:baseline;font-size:.8rem;font-weight:800;color:#16201b">Password <a href="#" style="font-weight:600;font-size:.78rem;color:#5c6861" style-hover="color:#25724d">Forgot?</a></span>
+<input type="password" value="0123456789ab" style="height:46px;padding:0 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#16201b;outline:none;width:100%;letter-spacing:.18em" style-focus="border-color:#25724d;box-shadow:0 0 0 3px #dcece2">
+</label>
+
+<label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#5c6861;cursor:pointer">
+<span style="width:16px;height:16px;border-radius:4px;background:#25724d;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;flex:0 0 auto">✓</span>
+Keep me signed in on this device
+</label>
+
+<button type="button" style="height:48px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer;width:100%" style-hover="background:#25724d">Sign in</button>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px">
+<span style="height:1px;flex:1;background:#dbe2db"></span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">or</span>
+<span style="height:1px;flex:1;background:#dbe2db"></span>
+</div>
+
+<div style="display:grid;gap:10px">
+<button type="button" style="height:48px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#eef2ec">
+<span style="display:grid;grid-template-columns:9px 9px;grid-template-rows:9px 9px;gap:2px;flex:0 0 auto"><span style="background:#f25022"></span><span style="background:#7fba00"></span><span style="background:#00a4ef"></span><span style="background:#ffb900"></span></span>
+Continue with Microsoft 365
+</button>
+<p style="margin:0;font-size:.78rem;color:#5c6861;line-height:1.45">Grants read-only access to mail and calendar metadata — <strong style="color:#16201b;font-weight:700">Mail.Read</strong>, <strong style="color:#16201b;font-weight:700">Calendars.Read</strong>. Message bodies are never stored.</p>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:20px;border-top:1px solid #dbe2db">
+<p style="margin:0;font-size:.84rem;color:#5c6861">No account yet? <a href="#" style="font-weight:800">Request access</a></p>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;background:#eef2ec;border:1px solid #dbe2db;font:600 11px/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">
+<span style="width:6px;height:6px;border-radius:999px;background:#25724d;box-shadow:0 0 0 3px #dcece2"></span>
+Secured by AWS Cognito
+</span>
+</div>
+</div>
+
+<div style="position:relative;overflow:hidden;padding:56px;display:flex;flex-direction:column;justify-content:center;gap:28px;background:radial-gradient(120% 90% at 100% 0%,rgba(37,114,77,.55),transparent 60%),radial-gradient(100% 80% at 0% 100%,rgba(49,93,143,.42),transparent 62%),#16201b">
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:46ch">
+<p style="margin:0;color:#8fd3ae;font-size:.76rem;font-weight:800;text-transform:uppercase">Daily Ops Brief</p>
+<h2 style="margin:0;font-size:1.9rem;line-height:1.14;color:#fff;letter-spacing:-.02em;text-wrap:pretty">Every morning at 6:00, scattered inboxes become one ranked agenda.</h2>
+</div>
+
+<div style="border:1px solid rgba(255,255,255,.14);border-radius:10px;background:rgba(255,255,255,.96);box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-bottom:1px solid #dbe2db;background:#eef2ec">
+<span style="font:800 .8rem/1 Geist,sans-serif">Thursday, 30 July</span>
+<span style="font:600 11px/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">generated 6:02 AM</span>
+</div>
+<div style="padding:18px">
+<p style="margin:0 0 16px;color:#16201b;font-size:1.02rem;line-height:1.45;font-weight:600;text-wrap:pretty">Three moves protect the deadline slate. Procurement is the only thing at risk before noon.</p>
+<div style="display:grid;gap:9px">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="padding:4px 7px;border-radius:999px;background:#dcece2;color:#25724d;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P1</span>
+<span style="font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Finalize executive readout</span>
+<span style="font-size:.8rem;color:#5c6861;white-space:nowrap">4:00 PM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="padding:4px 7px;border-radius:999px;background:#f2dfdd;color:#a33b32;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P1</span>
+<span style="font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Resolve procurement follow-up</span>
+<span style="font-size:.8rem;color:#a33b32;white-space:nowrap;font-weight:700">At risk</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="padding:4px 7px;border-radius:999px;background:#dfe9f5;color:#315d8f;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P2</span>
+<span style="font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Review revised launch checklist</span>
+<span style="font-size:.8rem;color:#5c6861;white-space:nowrap">Friday</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+<div style="display:grid;gap:5px"><strong style="color:#fff;font-size:1.5rem;letter-spacing:-.02em">17</strong><span style="color:rgba(255,255,255,.62);font-size:.82rem;line-height:1.35">commitments pulled from email</span></div>
+<div style="display:grid;gap:5px"><strong style="color:#fff;font-size:1.5rem;letter-spacing:-.02em">31.5h</strong><span style="color:rgba(255,255,255,.62);font-size:.82rem;line-height:1.35">available across 10 workdays</span></div>
+<div style="display:grid;gap:5px"><strong style="color:#fff;font-size:1.5rem;letter-spacing:-.02em">&lt;2s</strong><span style="color:rgba(255,255,255,.62);font-size:.82rem;line-height:1.35">brief loads, cached each morning</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">02</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Daily Ops Brief — dashboard</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 wide · sidebar shell (switch to top nav in Tweaks)</span>
+</div>
+
+<div data-screen-label="Dashboard" style="width:1440px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;flex-direction:column">
+
+<sc-if value="{{ isTopNav }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 24px;height:62px;background:#16201b;border-bottom:1px solid #16201b">
+<div style="display:flex;align-items:center;gap:26px">
+<div style="display:flex;align-items:center;gap:9px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaTop" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaTop)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.86rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+<div style="display:flex;align-items:center;gap:2px">
+<sc-for list="{{ topNavItems }}" as="item" hint-placeholder-count="5">
+<span style="display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:8px;font-size:.86rem;font-weight:700;cursor:pointer;background:{{ item.rowBg }};color:{{ item.labelFg }}" style-hover="background:rgba(255,255,255,.07)">
+{{ item.label }}
+<sc-if value="{{ item.hasChildren }}" hint-placeholder-val="{{ true }}">
+<span style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid rgba(255,255,255,.45)"></span>
+</sc-if>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .78rem/1 Geist,sans-serif">DW</span>
+</div>
+</div>
+</sc-if>
+
+<div style="display:flex;align-items:stretch">
+
+<sc-if value="{{ isSidebar }}" hint-placeholder-val="{{ true }}">
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroups }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+</sc-if>
+
+<main style="flex:1;min-width:0;padding:22px 26px 30px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:4px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Thursday, 30 July</p>
+<h1 style="margin:0;font-size:1.85rem;line-height:1.04;letter-spacing:-.02em">Good morning, Dana.</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,.78);border:1px solid #dbe2db;font-size:.82rem;color:#5c6861">
+<span style="width:8px;height:8px;border-radius:999px;background:#25724d;box-shadow:0 0 0 3px #dcece2"></span>
+Brief generated 6:02 AM
+</span>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Re-run</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Start the day</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.75fr);gap:18px;align-items:start">
+
+<div style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:24px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px">
+<div style="min-width:0">
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Today</p>
+<h2 style="margin:0 0 8px;font-size:1.5rem;line-height:1.1;letter-spacing:-.02em;text-wrap:pretty">Three moves protect the deadline slate.</h2>
+<p style="margin:0;color:#5c6861;line-height:1.5;max-width:62ch;text-wrap:pretty">Procurement is the only item that fails today if untouched before noon. The steering readout collides with your follow-up block at 4:00 — one of them has to move.</p>
+</div>
+<span style="flex:0 0 auto;padding:8px 10px;border-radius:999px;color:#25724d;background:#dcece2;font-size:.84rem;font-weight:800">78% planned</span>
+</div>
+
+<div style="display:grid;gap:12px">
+<sc-for list="{{ priorities }}" as="p" hint-placeholder-count="3">
+<article style="display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,auto);gap:18px;padding:16px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<div style="min-width:0">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+<span style="padding:5px 8px;border-radius:999px;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace;background:{{ p.rankBg }};color:{{ p.rankFg }}">{{ p.rank }}</span>
+<span style="padding:5px 8px;border-radius:999px;font-size:.76rem;font-weight:800;background:{{ p.statusBg }};color:{{ p.statusFg }}">{{ p.status }}</span>
+<sc-if value="{{ showAiConfidence }}" hint-placeholder-val="{{ true }}">
+<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;border:1px solid #dbe2db;background:#f7f7f2;font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ p.confidence }} confidence</span>
+</sc-if>
+</div>
+<h3 style="margin:0 0 6px;font-size:1rem;line-height:1.24;text-wrap:pretty">{{ p.title }}</h3>
+<p style="margin:0 0 10px;color:#5c6861;line-height:1.45;font-size:.88rem">{{ p.source }}</p>
+<sc-if value="{{ showAiConfidence }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0 0 10px;color:#5c6861;line-height:1.4;font-size:.82rem;padding-left:11px;border-left:2px solid #dbe2db">{{ p.why }}</p>
+</sc-if>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button type="button" style="height:34px;padding:0 11px;border:1px solid transparent;border-radius:7px;background:#16201b;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">{{ p.action }}</button>
+<button type="button" style="height:34px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#eef2ec;color:#16201b;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Defer</button>
+<button type="button" style="height:34px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Not a priority</button>
+</div>
+</div>
+<div style="display:grid;align-content:start;gap:6px;color:#5c6861;font-size:.9rem;text-align:right">
+<strong style="color:#16201b">{{ p.due }}</strong>
+<span>{{ p.effort }} effort</span>
+<span>{{ p.impact }} impact</span>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+
+<div style="display:grid;gap:18px">
+<aside style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:18px">
+<p style="margin:0 0 4px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Capacity</p>
+<div style="height:14px;margin:18px 0 14px;overflow:hidden;border-radius:999px;background:#eef2ec">
+<span style="display:block;height:100%;width:78%;border-radius:inherit;background:linear-gradient(90deg,#25724d,#b46c22,#a33b32)"></span>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px">
+<strong style="font-size:1.35rem;letter-spacing:-.01em">Tight</strong>
+<span style="color:#5c6861;font-size:.9rem">22% flexible room</span>
+</div>
+<p style="margin:0 0 16px;color:#5c6861;font-size:.86rem;line-height:1.45;text-wrap:pretty">Anything new above 90 minutes today displaces a P1. Two slots remain tomorrow morning.</p>
+<div style="display:grid;gap:10px;padding-top:14px;border-top:1px solid #dbe2db">
+<span style="font-size:.8rem;font-weight:800">Test a new task</span>
+<input type="range" min="1" max="6" value="3" style="width:100%;accent-color:#25724d">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;color:#5c6861;font-size:.9rem"><span>3 hours</span><span style="color:#a33b32;font-weight:700">→ over capacity</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:8px;background:#eef2ec">
+<button type="button" style="border:0;height:32px;border-radius:6px;color:#5c6861;background:transparent;font-weight:800;font-size:.84rem;cursor:pointer">Low</button>
+<button type="button" style="border:0;height:32px;border-radius:6px;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);font-weight:800;font-size:.84rem;cursor:pointer">Medium</button>
+<button type="button" style="border:0;height:32px;border-radius:6px;color:#5c6861;background:transparent;font-weight:800;font-size:.84rem;cursor:pointer">High</button>
+</div>
+</div>
+</aside>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:18px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:12px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Due-outs</p>
+<h2 style="margin:0;font-size:1.15rem;line-height:1.1;letter-spacing:-.01em">Owed by you</h2>
+</div>
+<span style="color:#5c6861;font-weight:800;font-size:.86rem">6 open</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ dueOuts }}" as="d" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:11px 0;border-top:1px solid #dbe2db">
+<span style="width:16px;height:16px;border-radius:5px;border:1.5px solid #dbe2db;background:#fff"></span>
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.88rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ d.title }}</strong>
+<span style="font-size:.78rem;color:#5c6861;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ d.owner }}</span>
+</span>
+<span style="padding:4px 8px;border-radius:999px;font:700 .72rem/1.4 'Geist Mono',ui-monospace,monospace;background:{{ d.bg }};color:{{ d.fg }};white-space:nowrap">{{ d.when }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:18px 20px 22px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Schedule</p>
+<h2 style="margin:0;font-size:1.3rem;line-height:1.1;letter-spacing:-.01em">Today at a glance</h2>
+</div>
+<div style="display:flex;align-items:center;gap:14px;font-size:.82rem;color:#5c6861">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#315d8f"></span>Meetings · 4</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#25724d"></span>Focus holds · 3</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#a33b32"></span>Conflict · 1</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;align-items:center;margin-bottom:9px">
+<span></span>
+<div style="display:grid;grid-template-columns:repeat(10,1fr)">
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">8</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">9</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">10</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">11</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">12</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">1</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">2</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">3</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">4</span>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">5</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;align-items:center;margin-bottom:8px">
+<span style="font-size:.8rem;font-weight:800;color:#5c6861">Meetings</span>
+<div style="position:relative;height:46px;border-radius:8px;background:#eef2ec">
+<div style="position:absolute;top:5px;bottom:5px;left:10%;width:5%;border-radius:6px;background:#dfe9f5;border:1px solid #315d8f"><span style="position:absolute;left:calc(100% + 7px);top:50%;transform:translateY(-50%);font-size:.72rem;font-weight:800;color:#315d8f;white-space:nowrap">Standup</span></div>
+<div style="position:absolute;top:5px;bottom:5px;left:35%;width:5%;border-radius:6px;background:#dfe9f5;border:1px solid #315d8f"><span style="position:absolute;left:calc(100% + 7px);top:50%;transform:translateY(-50%);font-size:.72rem;font-weight:800;color:#315d8f;white-space:nowrap">1:1 Priya</span></div>
+<div style="position:absolute;top:5px;bottom:5px;left:65%;width:5%;border-radius:6px;background:#dfe9f5;border:1px solid #315d8f"><span style="position:absolute;left:calc(100% + 7px);top:50%;transform:translateY(-50%);font-size:.72rem;font-weight:800;color:#315d8f;white-space:nowrap">Vendor</span></div>
+<div style="position:absolute;top:5px;bottom:5px;left:80%;width:10%;border-radius:6px;background:#f2dfdd;border:1px solid #a33b32;display:flex;align-items:center;padding:0 5px"><span style="font-size:.68rem;font-weight:800;color:#a33b32;white-space:nowrap">Steering review</span><span style="position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:999px;background:#a33b32;border:2px solid #fff"></span></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;align-items:center">
+<span style="font-size:.8rem;font-weight:800;color:#5c6861">Focus holds</span>
+<div style="position:relative;height:46px;border-radius:8px;background:#eef2ec">
+<div style="position:absolute;top:5px;bottom:5px;left:15%;width:17.5%;border-radius:6px;background:#dcece2;border:1px solid #25724d;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 7px;overflow:hidden"><span style="font-size:.72rem;font-weight:800;color:#25724d;white-space:nowrap">Deep work</span><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#25724d">1h45</span></div>
+<div style="position:absolute;top:5px;bottom:5px;left:50%;width:13.3%;border-radius:6px;background:#dcece2;border:1px solid #25724d;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 7px;overflow:hidden"><span style="font-size:.72rem;font-weight:800;color:#25724d;white-space:nowrap">Decisions</span><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#25724d">1h20</span></div>
+<div style="position:absolute;top:5px;bottom:5px;left:72.5%;width:15%;border-radius:6px;background:#f6ead8;border:1px dashed #b46c22;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 7px;overflow:hidden"><span style="font-size:.72rem;font-weight:800;color:#b46c22;white-space:nowrap">Follow-ups</span><span style="font-size:.68rem;font-weight:800;color:#b46c22;white-space:nowrap">move?</span></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;margin-top:16px">
+<span></span>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 14px;border:1px solid #dbe2db;border-radius:8px;background:#f7f7f2">
+<p style="margin:0;font-size:.88rem;color:#16201b;line-height:1.4"><strong style="font-weight:800">Suggested:</strong> shift Follow-ups to 8:15 AM tomorrow and hold 4:00–5:00 for the steering review prep.</p>
+<div style="display:flex;gap:8px;flex:0 0 auto">
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:#25724d;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Apply</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Dismiss</button>
+</div>
+</div>
+</div>
+</section>
+
+<div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.75fr);gap:18px;align-items:start">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:18px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Meeting prep</p>
+<h2 style="margin:0;font-size:1.3rem;line-height:1.1;letter-spacing:-.01em">Next up in 40 minutes</h2>
+</div>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;font-size:.84rem;cursor:pointer" style-hover="background:#dcece2">Open full pack</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+<div style="display:grid;gap:10px;padding:14px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#5c6861">Attendees</span>
+<div style="display:flex;align-items:center">
+<span style="width:30px;height:30px;border-radius:999px;background:#dcece2;color:#25724d;display:grid;place-items:center;font:800 .74rem/1 Geist,sans-serif;border:2px solid #fff">PR</span>
+<span style="width:30px;height:30px;border-radius:999px;background:#dfe9f5;color:#315d8f;display:grid;place-items:center;font:800 .74rem/1 Geist,sans-serif;border:2px solid #fff;margin-left:-8px">JL</span>
+<span style="width:30px;height:30px;border-radius:999px;background:#f6ead8;color:#b46c22;display:grid;place-items:center;font:800 .74rem/1 Geist,sans-serif;border:2px solid #fff;margin-left:-8px">MK</span>
+<span style="margin-left:8px;font-size:.82rem;color:#5c6861">+2 optional</span>
+</div>
+<p style="margin:0;font-size:.84rem;color:#5c6861;line-height:1.4">Priya owns the open procurement thread.</p>
+</div>
+<div style="display:grid;gap:8px;padding:14px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#5c6861">Last time</span>
+<p style="margin:0;font-size:.88rem;line-height:1.4;color:#16201b">You committed to a revised cost model by today. It is still unsent.</p>
+</div>
+<div style="display:grid;gap:8px;padding:14px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#5c6861">Bring</span>
+<p style="margin:0;font-size:.88rem;line-height:1.4;color:#16201b">Vendor lock deadline, Q3 spend delta, two approval options.</p>
+</div>
+</div>
+</section>
+
+<sc-if value="{{ showConnectors }}" hint-placeholder-val="{{ true }}">
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:18px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Connections</p>
+<h2 style="margin:0;font-size:1.15rem;line-height:1.1;letter-spacing:-.01em">Work signals</h2>
+</div>
+<span style="color:#5c6861;font-weight:800;font-size:.86rem">2/3 live</span>
+</div>
+<div style="display:grid;gap:10px">
+<sc-for list="{{ connectors }}" as="c" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:.86rem;background:{{ c.bg }};color:{{ c.fg }}">{{ c.mark }}</span>
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.9rem">{{ c.label }}</strong>
+<span style="font-size:.78rem;color:#5c6861;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.signal }}</span>
+</span>
+<button type="button" style="height:32px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:{{ c.btnBg }};color:{{ c.btnFg }};font-size:.8rem;font-weight:800;cursor:pointer">{{ c.btn }}</button>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+</div>
+</main>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">03</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Productivity → Email — priority inbox</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1060</span>
+</div>
+
+<div data-screen-label="Email" style="width:1440px;height:1060px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsEmail }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 24px 14px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Productivity</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Email — 17 commitments found</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#fff;width:230px">
+<span style="width:12px;height:12px;border:1.5px solid #5c6861;border-radius:999px;flex:0 0 auto"></span>
+<span style="font-size:.86rem;color:#5c6861">Search mail</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Re-scan</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:6px;padding:0 24px 14px;border-bottom:1px solid #dbe2db">
+<sc-for list="{{ mailFilters }}" as="f" hint-placeholder-count="5">
+<span style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:999px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }};font-size:.83rem;font-weight:800;cursor:pointer">{{ f.label }}<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;opacity:.7">{{ f.count }}</span></span>
+</sc-for>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:400px minmax(0,1fr)">
+
+<div style="border-right:1px solid #dbe2db;background:rgba(255,255,255,.6);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #dbe2db;background:#eef2ec">
+<span style="font:800 .7rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:#5c6861">Ranked by Ops Agenda</span>
+<span style="font-size:.78rem;color:#5c6861;font-weight:700">Today</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ emails }}" as="e" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:11px;padding:13px 16px;border-bottom:1px solid #dbe2db;cursor:pointer;background:{{ e.rowBg }};border-left:3px solid {{ e.accent }}" style-hover="background:#eef2ec">
+<span style="width:32px;height:32px;border-radius:999px;display:grid;place-items:center;font:800 .74rem/1 Geist,sans-serif;background:{{ e.avBg }};color:{{ e.avFg }}">{{ e.initials }}</span>
+<div style="min-width:0;display:grid;gap:4px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+<strong style="font-size:.86rem;font-weight:{{ e.senderWeight }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.sender }}</strong>
+<span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861;flex:0 0 auto">{{ e.time }}</span>
+</div>
+<span style="font-size:.87rem;font-weight:{{ e.subjectWeight }};color:#16201b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.subject }}</span>
+<span style="font-size:.8rem;color:#5c6861;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.snippet }}</span>
+<div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">
+<span style="padding:3px 7px;border-radius:999px;font:800 .68rem/1.3 'Geist Mono',ui-monospace,monospace;background:{{ e.rankBg }};color:{{ e.rankFg }}">{{ e.rank }}</span>
+<sc-if value="{{ e.hasBadge }}" hint-placeholder-val="{{ true }}">
+<span style="padding:3px 7px;border-radius:999px;font-size:.71rem;font-weight:800;background:{{ e.badgeBg }};color:{{ e.badgeFg }}">{{ e.badge }}</span>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="min-width:0;overflow:hidden;display:flex;flex-direction:column;background:rgba(255,255,255,.82)">
+
+<div style="padding:20px 26px 16px;border-bottom:1px solid #dbe2db">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:12px">
+<div style="min-width:0">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+<span style="padding:4px 8px;border-radius:999px;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace;background:#f2dfdd;color:#a33b32">P1</span>
+<span style="padding:4px 8px;border-radius:999px;font-size:.74rem;font-weight:800;background:#f2dfdd;color:#a33b32">At risk · 6 days unanswered</span>
+</div>
+<h2 style="margin:0 0 6px;font-size:1.35rem;line-height:1.12;letter-spacing:-.01em;text-wrap:pretty">Re: Vendor lock — revised cost model needed before 11:00</h2>
+<p style="margin:0;font-size:.86rem;color:#5c6861">Priya Raman · 4 messages · last reply Monday 5:41 PM</p>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#5c6861;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Snooze</button>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Open in Outlook</button>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;padding:20px 26px 26px;display:flex;flex-direction:column;gap:16px">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:#f7f7f2;padding:16px 18px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Extracted from this thread</p>
+<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px solid #dbe2db;background:#fff;font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">88% confidence</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px">
+<div style="display:grid;gap:5px;padding:12px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Due-out</span>
+<span style="font-size:.88rem;font-weight:700;line-height:1.35">Send revised cost model</span>
+</div>
+<div style="display:grid;gap:5px;padding:12px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Deadline</span>
+<span style="font-size:.88rem;font-weight:700;line-height:1.35;color:#a33b32">Today, 11:00 AM</span>
+</div>
+<div style="display:grid;gap:5px;padding:12px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Owner</span>
+<span style="font-size:.88rem;font-weight:700;line-height:1.35">You — confirmed Monday</span>
+</div>
+</div>
+<p style="margin:0 0 14px;font-size:.84rem;color:#5c6861;line-height:1.45;padding-left:11px;border-left:2px solid #dbe2db">Ranked P1 because the vendor lock window closes at 11:00, Priya has followed up twice, and no reply has been sent in six days.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:#25724d;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Add to due-outs</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#16201b;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#eef2ec">Edit extraction</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Not a commitment</button>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:#fff;padding:16px 18px;display:grid;gap:12px">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px">
+<span style="width:32px;height:32px;border-radius:999px;background:#dcece2;color:#25724d;display:grid;place-items:center;font:800 .74rem/1 Geist,sans-serif">PR</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.88rem">Priya Raman</strong>
+<span style="font-size:.78rem;color:#5c6861">to you, Marcus Kohl</span>
+</span>
+<span style="font:600 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">Mon 5:41 PM</span>
+</div>
+<p style="margin:0;font-size:.92rem;line-height:1.55;color:#16201b;text-wrap:pretty">Following up on the cost model — procurement needs the revised figures before the vendor lock window closes Thursday at 11:00. If the Q3 spend delta has moved, flag it and I will take it to the committee myself. Otherwise I will submit as-is.</p>
+<p style="margin:0;font-size:.84rem;color:#5c6861;padding-top:10px;border-top:1px solid #dbe2db">2 earlier messages hidden · metadata only, bodies are not stored</p>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:#f7f7f2;padding:16px 18px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Suggested reply</p>
+<span style="font-size:.78rem;color:#5c6861;font-weight:700">Nothing sends without your approval</span>
+</div>
+<div style="padding:14px 16px;border:1px solid #dbe2db;border-radius:8px;background:#fff;margin-bottom:12px">
+<p style="margin:0 0 10px;font-size:.92rem;line-height:1.55;color:#16201b;text-wrap:pretty">Priya — revised model attached. Q3 spend delta moved by 4.2% against the March baseline, driven by the contractor extension. Nothing in that changes the recommendation, so please submit as-is before the 11:00 lock.</p>
+<p style="margin:0;font-size:.92rem;line-height:1.55;color:#16201b">I will bring the delta to Thursday's steering review.</p>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<button type="button" style="height:36px;padding:0 14px;border:1px solid transparent;border-radius:7px;background:#16201b;color:#fff;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">Review and send</button>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#16201b;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="background:#eef2ec">Edit draft</button>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Regenerate</button>
+<span style="margin-left:auto;font-size:.78rem;color:#5c6861">Drafted from thread metadata and your Q3 figures</span>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">04</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Productivity → Calendar — week view with protected holds</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1060</span>
+</div>
+
+<div data-screen-label="Calendar" style="width:1440px;height:1060px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsCalendar }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;padding:18px 24px 22px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Productivity</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Calendar — week of 27 July</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db">
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Day</span>
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);cursor:pointer">Week</span>
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Month</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Today</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Protect focus time</button>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:stretch">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px 18px 18px;display:flex;flex-direction:column;min-width:0">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="font:800 .76rem/1 Geist,sans-serif;text-transform:uppercase;color:#25724d">27 – 31 July</span>
+<div style="display:flex;align-items:center;gap:12px;font-size:.8rem;color:#5c6861">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#dfe9f5;border:1px solid #315d8f"></span>Meeting</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#dcece2;border:1px solid #25724d"></span>Protected hold</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#f6ead8;border:1px dashed #b46c22"></span>Suggested</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#f2dfdd;border:1px solid #a33b32"></span>Conflict</span>
+</div>
+</div>
+<span style="font-size:.82rem;color:#5c6861">31.5 h unbooked</span>
+</div>
+
+<div style="display:grid;grid-template-columns:52px repeat(5,minmax(0,1fr));gap:6px;margin-bottom:6px">
+<span></span>
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="5">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:7px 9px;border-radius:7px;background:{{ d.headBg }}">
+<span style="font-size:.8rem;font-weight:800;color:{{ d.headFg }}">{{ d.name }}</span>
+<span style="font:700 .78rem/1 'Geist Mono',ui-monospace,monospace;color:{{ d.numFg }}">{{ d.num }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:52px repeat(5,minmax(0,1fr));gap:6px">
+<div style="position:relative;height:100%">
+<sc-for list="{{ hourMarks }}" as="h" hint-placeholder-count="11">
+<span style="position:absolute;right:8px;top:{{ h.top }};transform:translateY(-50%);font:600 .7rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ h.label }}</span>
+</sc-for>
+</div>
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="5">
+<div style="position:relative;height:100%;border-radius:7px;background-color:{{ d.colBg }};background-image:repeating-linear-gradient(to bottom,#dbe2db 0 1px,transparent 1px 10%)">
+<sc-for list="{{ d.events }}" as="ev" hint-placeholder-count="3">
+<div style="position:absolute;top:{{ ev.top }};height:{{ ev.height }};left:{{ ev.left }};width:{{ ev.width }};min-height:26px;border-radius:6px;padding:4px {{ ev.padX }};overflow:hidden;background:{{ ev.bg }};border:{{ ev.border }};display:flex;flex-direction:column;justify-content:center;gap:1px">
+<span style="font-size:{{ ev.fontSize }};font-weight:800;line-height:1.15;color:{{ ev.fg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.title }}</span>
+<sc-if value="{{ ev.showTime }}" hint-placeholder-val="{{ true }}">
+<span style="font:600 .66rem/1.2 'Geist Mono',ui-monospace,monospace;color:{{ ev.fg }};opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.time }}</span>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;top:26.7%;height:0;border-top:2px solid #a33b32">
+<span style="position:absolute;left:-4px;top:-4px;width:7px;height:7px;border-radius:999px;background:#a33b32"></span>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div style="display:grid;gap:14px;align-content:start;min-width:0">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 12px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Load by day</p>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ weekLoad }}" as="w" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:34px minmax(0,1fr) 38px;align-items:center;gap:9px">
+<span style="font-size:.78rem;font-weight:800;color:#5c6861">{{ w.name }}</span>
+<span style="height:9px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ w.pct }};background:{{ w.color }}"></span></span>
+<span style="font:700 .74rem/1 'Geist Mono',ui-monospace,monospace;color:{{ w.color }};text-align:right">{{ w.pct }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Suggested holds</p>
+<span style="font-size:.76rem;color:#5c6861;font-weight:700">3</span>
+</div>
+<p style="margin:0 0 12px;font-size:.82rem;color:#5c6861;line-height:1.4">Placed against your P1 work. Nothing is written to Outlook until you apply it.</p>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ suggestedHolds }}" as="h" hint-placeholder-count="3">
+<div style="display:grid;gap:8px;padding:11px 12px;border:1px dashed #b46c22;border-radius:8px;background:#f6ead8">
+<span style="display:grid;gap:2px">
+<strong style="font-size:.85rem;line-height:1.3;text-wrap:pretty">{{ h.title }}</strong>
+<span style="font:600 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#b46c22">{{ h.when }}</span>
+</span>
+<span style="font-size:.78rem;color:#5c6861;line-height:1.4">{{ h.why }}</span>
+<div style="display:flex;gap:7px">
+<button type="button" style="height:30px;padding:0 10px;border:1px solid transparent;border-radius:6px;background:#25724d;color:#fff;font-size:.78rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Apply</button>
+<button type="button" style="height:30px;padding:0 10px;border:1px solid #dbe2db;border-radius:6px;background:#fff;color:#5c6861;font-size:.78rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Dismiss</button>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Needs time</p>
+<span style="font-size:.76rem;color:#5c6861;font-weight:700">3 unscheduled</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ unscheduled }}" as="u" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #dbe2db">
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ u.title }}</strong>
+<span style="font-size:.76rem;color:#5c6861">{{ u.meta }}</span>
+</span>
+<button type="button" style="height:30px;padding:0 10px;border:1px solid #dbe2db;border-radius:6px;background:#eef2ec;color:#16201b;font-size:.78rem;font-weight:800;cursor:pointer;white-space:nowrap" style-hover="background:#dcece2">Find time</button>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">05</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Productivity → Tasks — due-outs board</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1060</span>
+</div>
+
+<div data-screen-label="Tasks" style="width:1440px;height:1060px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsTasks }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;padding:18px 24px 22px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Productivity</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Tasks — 6 due-outs, 2 at risk</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db">
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);cursor:pointer">Board</span>
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">List</span>
+<span style="height:30px;padding:0 11px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Timeline</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Filter</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">New task</button>
+</div>
+</div>
+
+<section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ taskStats }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;gap:5px;padding:14px 16px;border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88)">
+<span style="font-size:.74rem;font-weight:800;text-transform:uppercase;color:#5c6861">{{ s.label }}</span>
+<strong style="font-size:1.5rem;letter-spacing:-.02em;color:{{ s.color }}">{{ s.value }}</strong>
+<span style="font-size:.8rem;color:#5c6861;line-height:1.35">{{ s.note }}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+<div style="display:flex;align-items:center;gap:12px;min-width:0">
+<span style="padding:5px 9px;border-radius:999px;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace;background:#f6ead8;color:#b46c22;flex:0 0 auto">NEW</span>
+<p style="margin:0;font-size:.9rem;line-height:1.4;color:#16201b;text-wrap:pretty"><strong style="font-weight:800">3 commitments</strong> were extracted from mail overnight. Approve them to add to the board — <span style="color:#5c6861">Send revised cost model, Confirm offsite venue, Return signed NDA.</span></p>
+</div>
+<div style="display:flex;gap:8px;flex:0 0 auto">
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:#25724d;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Review all</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Dismiss</button>
+</div>
+</section>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
+<sc-for list="{{ taskColumns }}" as="col" hint-placeholder-count="4">
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.72);padding:12px;display:grid;gap:10px;align-content:start">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 2px">
+<span style="display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:800;color:#16201b">
+<span style="width:8px;height:8px;border-radius:999px;background:{{ col.dot }}"></span>{{ col.label }}
+</span>
+<span style="font:700 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ col.count }}</span>
+</div>
+<sc-for list="{{ col.tasks }}" as="t" hint-placeholder-count="3">
+<article style="display:grid;gap:9px;padding:13px;border:1px solid #dbe2db;border-left:3px solid {{ t.accent }};border-radius:8px;background:#fff">
+<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+<span style="padding:3px 7px;border-radius:999px;font:800 .68rem/1.3 'Geist Mono',ui-monospace,monospace;background:{{ t.rankBg }};color:{{ t.rankFg }}">{{ t.rank }}</span>
+<sc-if value="{{ t.hasFlag }}" hint-placeholder-val="{{ true }}">
+<span style="padding:3px 7px;border-radius:999px;font-size:.7rem;font-weight:800;background:{{ t.flagBg }};color:{{ t.flagFg }}">{{ t.flag }}</span>
+</sc-if>
+</div>
+<strong style="font-size:.88rem;line-height:1.3;font-weight:700;text-wrap:pretty">{{ t.title }}</strong>
+<span style="font-size:.78rem;color:#5c6861;line-height:1.35">{{ t.source }}</span>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:9px;border-top:1px solid #dbe2db">
+<span style="font:600 .74rem/1 'Geist Mono',ui-monospace,monospace;color:{{ t.dueFg }}">{{ t.due }}</span>
+<span style="display:inline-flex;align-items:center;gap:6px;font-size:.74rem;color:#5c6861">
+<span style="width:22px;height:22px;border-radius:999px;display:grid;place-items:center;font:800 .64rem/1 Geist,sans-serif;background:{{ t.avBg }};color:{{ t.avFg }}">{{ t.owner }}</span>
+{{ t.effort }}
+</span>
+</div>
+</article>
+</sc-for>
+<sc-if value="{{ col.showAdd }}" hint-placeholder-val="{{ true }}">
+<button type="button" style="height:36px;border:1px dashed #dbe2db;border-radius:8px;background:transparent;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#eef2ec;color:#16201b">Add task</button>
+</sc-if>
+</section>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">06</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Ask — conversational layer over everything</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1060 · plus ⌘K surface</span>
+</div>
+
+<div style="display:flex;flex-direction:column;align-items:flex-start;gap:24px">
+
+<div data-screen-label="Ask" style="width:1440px;flex:0 0 auto;height:1060px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsAsk }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:18px 26px 14px;border-bottom:1px solid #dbe2db">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Ask</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Everything you have, in one question</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#fff;font-size:.84rem;font-weight:700;color:#16201b">
+Scope: All entities
+<span style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #5c6861"></span>
+</span>
+<span style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 12px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db;font:700 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">⌘K anywhere</span>
+<button type="button" style="height:38px;padding:0 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#5c6861;font-weight:800;font-size:.84rem;cursor:pointer" style-hover="color:#16201b">History</button>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 320px">
+
+<div style="min-width:0;display:flex;flex-direction:column">
+<div style="flex:1;min-height:0;overflow:hidden;padding:22px 26px;display:flex;flex-direction:column;gap:18px">
+
+<div style="display:flex;justify-content:flex-end">
+<div style="max-width:60%;padding:12px 15px;border-radius:10px 10px 2px 10px;background:#16201b;color:#fff">
+<p style="margin:0;font-size:.92rem;line-height:1.45">Which entity is eating my time?</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px">
+<span style="width:32px;height:32px;border-radius:8px;background:#25724d;color:#fff;display:grid;place-items:center;font:900 .74rem/1 'Geist Mono',ui-monospace,monospace">OA</span>
+<div style="min-width:0;display:grid;gap:12px">
+<div style="padding:15px 17px;border:1px solid #dbe2db;border-radius:2px 10px 10px 10px;background:#fff">
+<p style="margin:0 0 12px;font-size:.94rem;line-height:1.55;color:#16201b;text-wrap:pretty">Kre8ivHosting. It took <strong style="font-weight:800">41% of your booked hours</strong> over the last 90 days and returned <strong style="font-weight:800">9% of revenue</strong> — the widest gap in your portfolio. Most of it is support and incident calls, not billable project work.</p>
+<div style="display:grid;gap:7px;margin-bottom:12px">
+<sc-for list="{{ askRows }}" as="r" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:minmax(0,1.4fr) 56px minmax(0,1fr) 56px;align-items:center;gap:10px">
+<span style="font-size:.85rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.entity }}</span>
+<span style="font:700 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861;text-align:right">{{ r.hours }}</span>
+<span style="height:8px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ r.pct }};background:{{ r.color }}"></span></span>
+<span style="font:700 .78rem/1 'Geist Mono',ui-monospace,monospace;color:{{ r.color }};text-align:right">{{ r.rev }}</span>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:minmax(0,1.4fr) 56px minmax(0,1fr) 56px;gap:10px;padding-top:4px">
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Entity</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861;text-align:right">Hours</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Share of time</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861;text-align:right">Rev</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #dbe2db">
+<span style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#5c6861;margin-right:2px">Sources</span>
+<sc-for list="{{ askSources }}" as="s" hint-placeholder-count="4">
+<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid #dbe2db;background:#f7f7f2;font-size:.78rem;font-weight:700;color:#16201b;cursor:pointer" style-hover="background:#eef2ec">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;color:{{ s.fg }}">{{ s.kind }}</span>{{ s.label }}
+</span>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ askFollowUps }}" as="f" hint-placeholder-count="3">
+<span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:999px;border:1px solid #dbe2db;background:#fff;font-size:.82rem;font-weight:700;color:#25724d;cursor:pointer" style-hover="background:#dcece2">{{ f }}</span>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;justify-content:flex-end">
+<div style="max-width:60%;padding:12px 15px;border-radius:10px 10px 2px 10px;background:#16201b;color:#fff">
+<p style="margin:0;font-size:.92rem;line-height:1.45">Move the recurring support calls off my calendar next month.</p>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px">
+<span style="width:32px;height:32px;border-radius:8px;background:#25724d;color:#fff;display:grid;place-items:center;font:900 .74rem/1 'Geist Mono',ui-monospace,monospace">OA</span>
+<div style="min-width:0;padding:15px 17px;border:1px solid #b46c22;border-radius:2px 10px 10px 10px;background:#f6ead8">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+<span style="padding:4px 8px;border-radius:999px;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace;background:#b46c22;color:#fff">ACTION</span>
+<span style="font-size:.82rem;font-weight:800;color:#b46c22">Needs your approval — nothing has changed yet</span>
+</div>
+<p style="margin:0 0 12px;font-size:.94rem;line-height:1.55;color:#16201b;text-wrap:pretty">I can decline the four recurring Kre8ivHosting support slots in August and reply to each organiser proposing async updates instead. That frees <strong style="font-weight:800">6.5 hours</strong> and touches your Outlook calendar plus four email threads.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:#16201b;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">Review the 4 changes</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#16201b;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#eef2ec">Show me the drafts</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:transparent;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+
+<div style="padding:16px 26px 20px;border-top:1px solid #dbe2db;background:rgba(255,255,255,.7)">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 12px 10px 16px;border:1px solid #dbe2db;border-radius:10px;background:#fff">
+<span style="font-size:.92rem;color:#5c6861">Ask anything — email, calendar, tasks, transactions, entities, documents…</span>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font:700 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">Read-only</span>
+<button type="button" style="height:36px;padding:0 15px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;font-size:.84rem;cursor:pointer" style-hover="background:#25724d">Ask</button>
+</div>
+</div>
+<p style="margin:9px 2px 0;font-size:.78rem;color:#5c6861">Answers cite the records they came from. Actions are proposed, never executed without approval.</p>
+</div>
+</div>
+
+<div style="border-left:1px solid #dbe2db;background:rgba(255,255,255,.72);padding:20px 18px;display:grid;gap:18px;align-content:start;overflow:hidden">
+<div>
+<p style="margin:0 0 10px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Try asking</p>
+<div style="display:grid;gap:8px">
+<sc-for list="{{ askSuggestions }}" as="s" hint-placeholder-count="5">
+<div style="padding:11px 12px;border:1px solid #dbe2db;border-radius:8px;background:#fff;font-size:.85rem;line-height:1.4;color:#16201b;cursor:pointer;text-wrap:pretty" style-hover="background:#eef2ec">{{ s }}</div>
+</sc-for>
+</div>
+</div>
+<div>
+<p style="margin:0 0 10px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Data in scope</p>
+<div style="display:grid;gap:7px">
+<sc-for list="{{ askScope }}" as="s" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 11px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.84rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.label }}</span>
+<span style="font:700 .74rem/1 'Geist Mono',ui-monospace,monospace;color:{{ s.fg }}">{{ s.state }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:12px 13px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec">
+<p style="margin:0;font-size:.8rem;line-height:1.45;color:#5c6861">Health data is excluded from Ask results. Change this in <strong style="color:#16201b;font-weight:800">Settings → Modules</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;flex:0 0 auto">
+<span style="font:800 12px/1.2 Geist,sans-serif;color:#16201b">06b · ⌘K surface — same engine, any page</span>
+<div style="width:660px;flex:0 0 auto;height:470px;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px rgba(35,45,40,.28);border:1px solid #dbe2db;background:#fff;display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #dbe2db">
+<span style="font:800 .8rem/1 'Geist Mono',ui-monospace,monospace;color:#25724d">ASK</span>
+<span style="font-size:1rem;color:#16201b">what am I forgetting this week<span style="display:inline-block;width:2px;height:16px;background:#25724d;margin-left:2px;vertical-align:-3px"></span></span>
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">esc</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 10px;display:grid;gap:2px;align-content:start">
+<span style="padding:6px 10px;font:800 .66rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#5c6861">Answer</span>
+<div style="padding:11px 12px;border-radius:8px;background:#dcece2;display:grid;gap:6px">
+<span style="font-size:.88rem;line-height:1.45;color:#16201b;text-wrap:pretty">Three things: the NDA due Friday, Priya's cost model at 11:00, and the Kre8ivTech annual report — filed by 15 Aug or the entity is at risk.</span>
+<span style="font-size:.76rem;color:#25724d;font-weight:700">3 sources · Tasks, Email, Business → Compliance</span>
+</div>
+<span style="padding:10px 10px 6px;font:800 .66rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#5c6861">Jump to</span>
+<sc-for list="{{ paletteJumps }}" as="j" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 11px;border-radius:8px;background:{{ j.bg }};cursor:pointer" style-hover="background:#eef2ec">
+<span style="font-size:.87rem;font-weight:700;color:#16201b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ j.label }}</span>
+<span style="font:600 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ j.path }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<span style="font-size:.76rem;color:#5c6861">Enter to open · ⇧Enter to ask in full view</span>
+<span style="font-size:.76rem;color:#5c6861">Read-only</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">07</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Productivity → Briefs — the written Daily Ops Brief</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1160</span>
+</div>
+
+<div data-screen-label="Briefs" style="width:1440px;height:1160px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsBriefs }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:18px 26px 14px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Productivity</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Briefs</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db">
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);cursor:pointer">Daily</span>
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Weekly outlook</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Export PDF</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Re-run brief</button>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding:0 26px 22px;align-items:stretch">
+
+<article style="min-width:0;border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.9);box-shadow:0 22px 60px rgba(35,45,40,.12);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 26px;border-bottom:1px solid #dbe2db;background:#eef2ec">
+<span style="font:800 .74rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#5c6861">Daily Ops Brief · Thursday 30 July 2026</span>
+<div style="display:flex;align-items:center;gap:14px">
+<span style="display:inline-flex;align-items:center;gap:7px;font-size:.78rem;color:#5c6861"><span style="width:7px;height:7px;border-radius:999px;background:#25724d;box-shadow:0 0 0 3px #dcece2"></span>Generated 6:02 AM in 1.8 s</span>
+<span style="font-size:.78rem;color:#5c6861">Delivered to email · SMS</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;padding:24px 26px 26px;display:flex;flex-direction:column;gap:20px">
+
+<div>
+<p style="margin:0 0 10px;font-size:1.24rem;line-height:1.4;font-weight:600;color:#16201b;text-wrap:pretty">Three moves protect the deadline slate. Procurement is the only thing that fails today if untouched before noon, and the 4:00 steering review collides with your follow-up block — one of them has to move.</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ briefFacts }}" as="f" hint-placeholder-count="4">
+<span style="display:inline-flex;align-items:baseline;gap:7px;padding:6px 11px;border-radius:999px;border:1px solid #dbe2db;background:#f7f7f2">
+<strong style="font-size:.86rem;font-weight:800;color:{{ f.color }}">{{ f.value }}</strong>
+<span style="font-size:.78rem;color:#5c6861">{{ f.label }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+
+<div style="display:grid;gap:16px">
+<sc-for list="{{ briefSections }}" as="s" hint-placeholder-count="5">
+<section style="display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;padding-top:16px;border-top:1px solid #dbe2db">
+<span style="font:800 .8rem/1.3 'Geist Mono',ui-monospace,monospace;color:{{ s.numFg }}">{{ s.num }}</span>
+<div style="min-width:0;display:grid;gap:7px">
+<h2 style="margin:0;font-size:1rem;line-height:1.2;letter-spacing:-.01em">{{ s.title }}</h2>
+<p style="margin:0;font-size:.92rem;line-height:1.55;color:#3c4a43;text-wrap:pretty">{{ s.body }}</p>
+<sc-if value="{{ s.hasList }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;gap:6px;margin-top:2px">
+<sc-for list="{{ s.list }}" as="li" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:9px 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff">
+<span style="padding:3px 7px;border-radius:999px;font:800 .68rem/1.3 'Geist Mono',ui-monospace,monospace;background:{{ li.tagBg }};color:{{ li.tagFg }}">{{ li.tag }}</span>
+<span style="font-size:.87rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ li.text }}</span>
+<span style="font:600 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ li.metaFg }};white-space:nowrap">{{ li.meta }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</section>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 26px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<span style="font-size:.8rem;color:#5c6861">Built from 42 messages, 11 events, 6 due-outs and 3 entity deadlines.</span>
+<div style="display:flex;gap:8px">
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Too long</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Missed something</button>
+<button type="button" style="height:34px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:#25724d;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Start the day</button>
+</div>
+</div>
+</article>
+
+<div style="display:grid;gap:14px;align-content:start;min-width:0">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 12px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Delivery</p>
+<div style="display:grid;gap:9px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px">
+<span style="font-size:.86rem;font-weight:700">Daily at 6:00 AM</span>
+<span style="width:34px;height:20px;border-radius:999px;background:#25724d;padding:2px;display:flex;justify-content:flex-end"><span style="width:16px;height:16px;border-radius:999px;background:#fff"></span></span>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px">
+<span style="font-size:.86rem;font-weight:700">Weekly outlook — Sunday 6 PM</span>
+<span style="width:34px;height:20px;border-radius:999px;background:#25724d;padding:2px;display:flex;justify-content:flex-end"><span style="width:16px;height:16px;border-radius:999px;background:#fff"></span></span>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px">
+<span style="font-size:.86rem;font-weight:700;color:#5c6861">SMS summary</span>
+<span style="width:34px;height:20px;border-radius:999px;background:#dbe2db;padding:2px;display:flex"><span style="width:16px;height:16px;border-radius:999px;background:#fff"></span></span>
+</div>
+</div>
+<p style="margin:12px 0 0;font-size:.78rem;color:#5c6861;line-height:1.4;padding-top:12px;border-top:1px solid #dbe2db">Quiet hours 9 PM – 6 AM. Change in Settings → Notifications.</p>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Archive</p>
+<span style="font-size:.76rem;color:#5c6861;font-weight:700">142 briefs</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ briefArchive }}" as="a" hint-placeholder-count="5">
+<div style="display:grid;gap:4px;padding:11px 0;border-top:1px solid #dbe2db;cursor:pointer">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+<strong style="font-size:.84rem;font-weight:800">{{ a.date }}</strong>
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;color:{{ a.tagFg }}">{{ a.tag }}</span>
+</div>
+<span style="font-size:.8rem;color:#5c6861;line-height:1.4;text-wrap:pretty">{{ a.summary }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">08</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Productivity → Capacity — load vs available hours</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1180</span>
+</div>
+
+<div data-screen-label="Capacity" style="width:1440px;height:1180px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsCapacity }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;padding:18px 26px 22px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Productivity</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Capacity — {{ capHeadline }}</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db">
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);cursor:pointer">This week</span>
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Next week</span>
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">30 days</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Set working hours</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Rebalance week</button>
+</div>
+</div>
+
+<section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ capStats }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;gap:5px;padding:14px 16px;border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88)">
+<span style="font-size:.74rem;font-weight:800;text-transform:uppercase;color:#5c6861">{{ s.label }}</span>
+<strong style="font-size:1.5rem;letter-spacing:-.02em;color:{{ s.color }}">{{ s.value }}</strong>
+<span style="font-size:.8rem;color:#5c6861;line-height:1.35">{{ s.note }}</span>
+</div>
+</sc-for>
+</section>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:stretch">
+
+<div style="min-width:0;display:grid;grid-template-rows:minmax(0,1.25fr) minmax(0,1fr);gap:16px">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px 18px 18px;display:flex;flex-direction:column;min-width:0">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px">
+<div>
+<p style="margin:0 0 5px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Load</p>
+<h2 style="margin:0;font-size:1.15rem;line-height:1.1;letter-spacing:-.01em">Committed hours against an 8-hour day</h2>
+</div>
+<div style="display:flex;align-items:center;gap:12px;font-size:.8rem;color:#5c6861">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#315d8f"></span>Meetings</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#25724d"></span>Focus holds</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#b46c22"></span>Due-out work</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#a33b32"></span>Over capacity</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px">
+<div style="position:relative">
+<sc-for list="{{ capAxis }}" as="a" hint-placeholder-count="5">
+<span style="position:absolute;right:0;top:{{ a.top }};transform:translateY(-50%);font:600 .7rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ a.label }}</span>
+</sc-for>
+</div>
+<div style="position:relative;min-width:0">
+<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,#dbe2db 0 1px,transparent 1px 25%)"></div>
+<div style="position:absolute;left:0;right:0;top:20%;border-top:2px dashed #a33b32"></div>
+<span style="position:absolute;right:2px;top:20%;transform:translateY(-130%);font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#a33b32">8 h capacity</span>
+<div style="position:relative;height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:26px;padding:0 12px">
+<sc-for list="{{ capDays }}" as="d" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;min-width:0">
+<span style="font:800 .78rem/1 'Geist Mono',ui-monospace,monospace;color:{{ d.totalFg }};background:#fff;border-radius:4px;padding:3px 6px">{{ d.total }}</span>
+<div style="width:100%;height:{{ d.barH }};display:flex;flex-direction:column;border-radius:6px 6px 0 0;overflow:hidden">
+<sc-for list="{{ d.segments }}" as="seg" hint-placeholder-count="3">
+<span style="height:{{ seg.h }};background:{{ seg.color }};display:block"></span>
+</sc-for>
+</div>
+<span style="font-size:.8rem;font-weight:800;color:{{ d.nameFg }}">{{ d.name }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px 18px 18px;min-width:0;overflow:hidden">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px">
+<div>
+<p style="margin:0 0 5px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Cross-module</p>
+<h2 style="margin:0 0 4px;font-size:1.15rem;line-height:1.1;letter-spacing:-.01em">Time per entity against revenue per entity</h2>
+<p style="margin:0;font-size:.84rem;color:#5c6861;line-height:1.4">Last 90 days. Only possible because calendar and financial data sit in the same place.</p>
+</div>
+<span style="flex:0 0 auto;padding:7px 10px;border-radius:999px;background:#f2dfdd;color:#a33b32;font-size:.8rem;font-weight:800">1 entity upside-down</span>
+</div>
+<div style="display:grid;gap:9px">
+<div style="display:grid;grid-template-columns:minmax(0,1.1fr) 50px minmax(0,1fr) minmax(0,1fr) 74px;align-items:center;gap:12px">
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Entity</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861;text-align:right">Hours</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Share of time</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861">Share of revenue</span>
+<span style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:#5c6861;text-align:right">Gap</span>
+</div>
+<sc-for list="{{ capEntities }}" as="e" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:minmax(0,1.1fr) 50px minmax(0,1fr) minmax(0,1fr) 74px;align-items:center;gap:12px;padding:9px 0;border-top:1px solid #dbe2db">
+<span style="font-size:.87rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.entity }}</span>
+<span style="font:700 .8rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861;text-align:right">{{ e.hours }}</span>
+<span style="height:9px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ e.timePct }};background:#315d8f"></span></span>
+<span style="height:9px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ e.revPct }};background:#25724d"></span></span>
+<span style="font:800 .8rem/1 'Geist Mono',ui-monospace,monospace;color:{{ e.gapFg }};text-align:right">{{ e.gap }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+<div style="display:grid;gap:14px;align-content:start;min-width:0">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Overcommitted</p>
+<span style="font-size:.76rem;color:#a33b32;font-weight:800">1 day</span>
+</div>
+<p style="margin:0 0 12px;font-size:.82rem;color:#5c6861;line-height:1.4">Thursday is 0.8 h past capacity before anything new arrives.</p>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ capFixes }}" as="f" hint-placeholder-count="2">
+<div style="display:grid;gap:8px;padding:11px 12px;border:1px dashed #b46c22;border-radius:8px;background:#f6ead8">
+<strong style="font-size:.85rem;line-height:1.3;text-wrap:pretty">{{ f.title }}</strong>
+<span style="font-size:.78rem;color:#5c6861;line-height:1.4">{{ f.detail }}</span>
+<div style="display:flex;gap:7px">
+<button type="button" style="height:30px;padding:0 10px;border:1px solid transparent;border-radius:6px;background:#25724d;color:#fff;font-size:.78rem;font-weight:800;cursor:pointer" style-hover="background:#16201b">Apply</button>
+<button type="button" style="height:30px;padding:0 10px;border:1px solid #dbe2db;border-radius:6px;background:#fff;color:#5c6861;font-size:.78rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Dismiss</button>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 12px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Focus capacity</p>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px">
+<strong style="font-size:1.35rem;letter-spacing:-.01em">{{ capFocusTotal }}</strong>
+<span style="color:#5c6861;font-size:.86rem">across 5 days</span>
+</div>
+<div style="display:flex;gap:4px;margin-bottom:12px">
+<sc-for list="{{ capFocusBlocks }}" as="b" hint-placeholder-count="5">
+<span style="height:26px;flex:{{ b.flex }};border-radius:4px;background:{{ b.color }};display:block"></span>
+</sc-for>
+</div>
+<p style="margin:0 0 12px;font-size:.82rem;color:#5c6861;line-height:1.45;text-wrap:pretty">Friday carries only 1 h 30, and the longest unbroken block all week is 1 h 45 — below what the readout work needs in one sitting.</p>
+<div style="display:grid;gap:8px;padding-top:12px;border-top:1px solid #dbe2db">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:.8rem;font-weight:800">Test a new commitment</span><span style="font-size:.78rem;color:#5c6861">{{ capFreeText }}</span></div>
+<input type="range" min="1" max="6" value="3" style="width:100%;accent-color:#25724d">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;color:#5c6861;font-size:.88rem"><span>3 hours this week</span><span style="color:{{ capTestFg }};font-weight:800">{{ capTestVerdict }}</span></div>
+<p style="margin:0;font-size:.78rem;color:#5c6861;line-height:1.4">It cannot land on Thursday — already 48 minutes over.</p>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 10px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Next four weeks</p>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ capForecast }}" as="w" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:64px minmax(0,1fr) 44px;align-items:center;gap:10px">
+<span style="font-size:.78rem;font-weight:700;color:#5c6861">{{ w.label }}</span>
+<span style="height:9px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ w.pct }};background:{{ w.color }}"></span></span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ w.color }};text-align:right">{{ w.pct }}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin:12px 0 0;font-size:.8rem;color:#5c6861;line-height:1.4;padding-top:12px;border-top:1px solid #dbe2db">The week of 17 Aug is already 96% booked — protect focus time now rather than in two weeks.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">09</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Plan → Goals — the intentional layer</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1250</span>
+</div>
+
+<div data-screen-label="Goals" style="width:1440px;height:1250px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsGoals }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;padding:18px 26px 22px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Plan</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">Goals — 2026, Q3</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:2px;padding:4px;border-radius:8px;background:#eef2ec;border:1px solid #dbe2db">
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#16201b;background:#fff;box-shadow:0 4px 12px rgba(35,45,40,.1);cursor:pointer">Annual</span>
+<span style="height:30px;padding:0 12px;display:grid;place-items:center;border-radius:6px;font-size:.82rem;font-weight:800;color:#5c6861;cursor:pointer">Quarterly</span>
+</div>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Quarterly review</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">New goal</button>
+</div>
+</div>
+
+<section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ goalStats }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;gap:5px;padding:14px 16px;border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88)">
+<span style="font-size:.74rem;font-weight:800;text-transform:uppercase;color:#5c6861">{{ s.label }}</span>
+<strong style="font-size:1.5rem;letter-spacing:-.02em;color:{{ s.color }}">{{ s.value }}</strong>
+<span style="font-size:.8rem;color:#5c6861;line-height:1.35">{{ s.note }}</span>
+</div>
+</sc-for>
+</section>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start">
+
+<div style="min-width:0;display:grid;gap:14px;align-content:start">
+<sc-for list="{{ goals }}" as="g" hint-placeholder-count="4">
+<article style="border:1px solid #dbe2db;border-left:3px solid {{ g.accent }};border-radius:8px;background:rgba(255,255,255,.9);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px 18px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px">
+<div style="min-width:0">
+<h2 style="margin:0 0 5px;font-size:1.05rem;line-height:1.2;letter-spacing:-.01em;text-wrap:pretty">{{ g.title }}</h2>
+<p style="margin:0;font-size:.82rem;color:#5c6861">{{ g.meta }}</p>
+</div>
+<span style="flex:0 0 auto;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:800;background:{{ g.statusBg }};color:{{ g.statusFg }}">{{ g.status }}</span>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin-bottom:12px">
+<div style="position:relative;height:12px;border-radius:999px;background:#eef2ec;overflow:hidden">
+<span style="position:absolute;left:0;top:0;bottom:0;width:{{ g.pct }};background:{{ g.accent }};border-radius:999px"></span>
+</div>
+<span style="display:flex;align-items:baseline;gap:7px;white-space:nowrap">
+<strong style="font-size:1.05rem;letter-spacing:-.01em">{{ g.pct }}</strong>
+<span style="font-size:.78rem;color:#5c6861">of {{ g.targetLabel }}</span>
+</span>
+</div>
+<p style="margin:0 0 12px;font-size:.8rem;color:#5c6861">Pace to hit the target by {{ g.due }}: <strong style="color:{{ g.paceFg }};font-weight:800">{{ g.pace }}</strong></p>
+
+<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+<sc-for list="{{ g.milestones }}" as="m" hint-placeholder-count="4">
+<span style="display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:{{ m.bg }};color:{{ m.fg }};border:{{ m.border }}">
+<span style="width:6px;height:6px;border-radius:999px;background:{{ m.fg }}"></span>{{ m.label }}
+</span>
+</sc-for>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:12px;border-top:1px solid #dbe2db">
+<span style="font-size:.82rem;color:#5c6861">{{ g.linked }}</span>
+<div style="display:flex;gap:7px">
+<button type="button" style="height:32px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#16201b;font-size:.8rem;font-weight:800;cursor:pointer" style-hover="background:#eef2ec">Linked work</button>
+<button type="button" style="height:32px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#eef2ec;color:#16201b;font-size:.8rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Update</button>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+<div style="display:grid;gap:14px;align-content:start;min-width:0">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 4px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Important vs urgent</p>
+<p style="margin:0 0 14px;font-size:.82rem;color:#5c6861;line-height:1.4">Where your committed hours actually went this quarter.</p>
+<div style="display:flex;height:14px;border-radius:999px;overflow:hidden;margin-bottom:14px">
+<sc-for list="{{ goalSplit }}" as="s" hint-placeholder-count="3">
+<span style="flex:{{ s.flex }};background:{{ s.color }};display:block"></span>
+</sc-for>
+</div>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ goalSplit }}" as="s" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px">
+<span style="width:10px;height:10px;border-radius:3px;background:{{ s.color }}"></span>
+<span style="font-size:.84rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.label }}</span>
+<span style="font:700 .8rem/1 'Geist Mono',ui-monospace,monospace;color:{{ s.color }}">{{ s.pct }}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin:14px 0 0;font-size:.8rem;color:#5c6861;line-height:1.45;padding-top:12px;border-top:1px solid #dbe2db;text-wrap:pretty">Under a third of your time advanced a goal. The brief will start protecting goal work ahead of low-stakes requests.</p>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Needs attention</p>
+<span style="font-size:.76rem;color:#b46c22;font-weight:800">2 stalled</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ goalStalled }}" as="s" hint-placeholder-count="2">
+<div style="display:grid;gap:5px;padding:11px 0;border-top:1px solid #dbe2db">
+<strong style="font-size:.85rem;line-height:1.3;text-wrap:pretty">{{ s.title }}</strong>
+<span style="font-size:.79rem;color:#5c6861;line-height:1.4">{{ s.detail }}</span>
+</div>
+</sc-for>
+</div>
+<button type="button" style="width:100%;height:34px;margin-top:12px;border:1px solid #dbe2db;border-radius:7px;background:#eef2ec;color:#16201b;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Schedule time for both</button>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 10px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Unlinked work</p>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<strong style="font-size:1.35rem;letter-spacing:-.01em">14 tasks</strong>
+<span style="font-size:.84rem;color:#5c6861">not tied to a goal</span>
+</div>
+<p style="margin:0 0 12px;font-size:.8rem;color:#5c6861;line-height:1.45;text-wrap:pretty">Some of it is necessary admin. Some of it is someone else's priority wearing your name.</p>
+<button type="button" style="width:100%;height:34px;border:1px solid transparent;border-radius:7px;background:#16201b;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">Review and link</button>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Quarterly review</p>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">30 Sep</span>
+</div>
+<p style="margin:0 0 12px;font-size:.82rem;color:#5c6861;line-height:1.45;text-wrap:pretty">Nine weeks out. The ritual asks three questions of every goal.</p>
+<div style="display:grid;gap:7px">
+<sc-for list="{{ goalReview }}" as="q" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 11px;border:1px solid #dbe2db;border-radius:7px;background:#fff">
+<span style="font:800 .7rem/1 'Geist Mono',ui-monospace,monospace;color:#25724d">{{ q.num }}</span>
+<span style="font-size:.83rem;font-weight:600;line-height:1.35">{{ q.text }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font:800 10px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;padding:6px 8px;background:#16201b;color:#fff;border-radius:4px">10</span>
+<span style="font:800 13px/1.2 Geist,sans-serif;color:#16201b">Alerts — one feed across every enabled module</span>
+<span style="font:400 12px/1.2 Geist,sans-serif;color:#5c6861">1440 × 1120</span>
+</div>
+
+<div data-screen-label="Alerts" style="width:1440px;height:1120px;border:1px solid #dbe2db;border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(35,45,40,.12);background:#f7f7f2;display:flex;align-items:stretch">
+
+<aside style="width:246px;flex:0 0 246px;background:#16201b;padding:20px 14px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px;padding:0 8px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="flex:0 0 auto"><defs><mask id="oaSide" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaSide)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.9rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+
+<nav style="display:grid;gap:1px;align-content:start">
+<sc-for list="{{ navGroupsAlerts }}" as="g" hint-placeholder-count="10">
+<div style="display:grid;gap:1px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;cursor:pointer;background:{{ g.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.86rem;font-weight:800;color:{{ g.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.label }}</span>
+<span style="font:700 .76rem/1 'Geist Mono',ui-monospace,monospace;color:{{ g.metaFg }}">{{ g.meta }}</span>
+</div>
+<sc-for list="{{ g.items }}" as="item" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px 7px 22px;border-radius:7px;cursor:pointer;background:{{ item.rowBg }}" style-hover="background:rgba(255,255,255,.07)">
+<span style="font-size:.85rem;font-weight:700;color:{{ item.labelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.label }}</span>
+<span style="font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;color:{{ item.countFg }}">{{ item.count }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+
+<div style="margin-top:auto;display:grid;gap:10px">
+<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,.06);display:grid;gap:7px">
+<span style="font:800 .68rem/1 'Geist Mono',ui-monospace,monospace;text-transform:uppercase;color:#8fd3ae">Sync</span>
+<span style="font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.35">Mail and calendar last synced 6:02 AM</span>
+</div>
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:9px 8px;border-radius:8px" style-hover="background:rgba(255,255,255,.06)">
+<span style="width:30px;height:30px;border-radius:999px;background:#25724d;color:#fff;display:grid;place-items:center;font:800 .76rem/1 Geist,sans-serif">DW</span>
+<span style="display:grid;gap:1px;min-width:0">
+<strong style="font-size:.84rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Dana Whitfield</strong>
+<span style="font-size:.74rem;color:rgba(255,255,255,.5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Northgate Co</span>
+</span>
+</div>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;padding:18px 26px 22px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(135deg,rgba(37,114,77,.08),transparent 32rem),linear-gradient(315deg,rgba(49,93,143,.09),transparent 34rem),#f7f7f2">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div>
+<p style="margin:0 0 6px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Alerts</p>
+<h1 style="margin:0;font-size:1.55rem;line-height:1.04;letter-spacing:-.02em">{{ alertHeadline }}</h1>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#5c6861;font-weight:800;cursor:pointer" style-hover="color:#16201b">Muted rules</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Mark all read</button>
+<button type="button" style="height:40px;padding:0 14px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Notification settings</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid #dbe2db">
+<sc-for list="{{ alertFilters }}" as="f" hint-placeholder-count="7">
+<span style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }};font-size:.82rem;font-weight:800;cursor:pointer">{{ f.label }}<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;opacity:.7">{{ f.count }}</span></span>
+</sc-for>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start">
+
+<div style="min-width:0;display:grid;gap:16px;align-content:start">
+<sc-for list="{{ alertGroups }}" as="grp" hint-placeholder-count="3">
+<section style="display:grid;gap:9px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font:800 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#5c6861">{{ grp.label }}</span>
+<span style="font-size:.78rem;color:#5c6861;font-weight:700">{{ grp.count }}</span>
+</div>
+<sc-for list="{{ grp.items }}" as="a" hint-placeholder-count="4">
+<article style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 16px;border:1px solid #dbe2db;border-left:3px solid {{ a.sevColor }};border-radius:8px;background:{{ a.cardBg }};box-shadow:0 22px 60px rgba(35,45,40,.08)">
+<span style="width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font:900 .68rem/1 'Geist Mono',ui-monospace,monospace;background:{{ a.iconBg }};color:{{ a.sevColor }}">{{ a.mod }}</span>
+<div style="min-width:0;display:grid;gap:5px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<strong style="font-size:.93rem;font-weight:800;line-height:1.25;text-wrap:pretty">{{ a.title }}</strong>
+<span style="padding:3px 7px;border-radius:999px;font:800 .66rem/1.3 'Geist Mono',ui-monospace,monospace;background:{{ a.iconBg }};color:{{ a.sevColor }}">{{ a.sev }}</span>
+</div>
+<span style="font-size:.84rem;color:#5c6861;line-height:1.4;text-wrap:pretty">{{ a.detail }}</span>
+<span style="font-size:.76rem;color:#5c6861">{{ a.source }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:7px;flex:0 0 auto">
+<span style="font:600 .74rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861;margin-right:4px">{{ a.time }}</span>
+<button type="button" style="height:32px;padding:0 11px;border:1px solid transparent;border-radius:7px;background:{{ a.btnBg }};color:{{ a.btnFg }};font-size:.8rem;font-weight:800;cursor:pointer;white-space:nowrap">{{ a.primary }}</button>
+<button type="button" style="height:32px;padding:0 10px;border:1px solid #dbe2db;border-radius:7px;background:#fff;color:#5c6861;font-size:.8rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Snooze</button>
+</div>
+</article>
+</sc-for>
+</section>
+</sc-for>
+</div>
+
+<div style="display:grid;gap:14px;align-content:start;min-width:0">
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<p style="margin:0 0 12px;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">By severity</p>
+<div style="display:grid;gap:10px">
+<sc-for list="{{ alertSeverity }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 26px;align-items:center;gap:10px">
+<span style="font-size:.8rem;font-weight:800;color:{{ s.color }}">{{ s.label }}</span>
+<span style="height:9px;border-radius:999px;background:#eef2ec;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ s.pct }};background:{{ s.color }}"></span></span>
+<span style="font:700 .8rem/1 'Geist Mono',ui-monospace,monospace;color:{{ s.color }};text-align:right">{{ s.count }}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin:12px 0 0;font-size:.8rem;color:#5c6861;line-height:1.45;padding-top:12px;border-top:1px solid #dbe2db;text-wrap:pretty">One critical alert can dissolve an entity. It stays at the top until it is filed or dismissed with a reason.</p>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Channels</p>
+<span style="font-size:.76rem;color:#5c6861;font-weight:700">Quiet 9 PM – 6 AM</span>
+</div>
+<div style="display:grid;gap:9px">
+<sc-for list="{{ alertChannels }}" as="c" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px">
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.85rem;font-weight:700">{{ c.label }}</strong>
+<span style="font-size:.77rem;color:#5c6861">{{ c.rule }}</span>
+</span>
+<span style="width:34px;height:20px;border-radius:999px;background:{{ c.trackBg }};padding:2px;display:flex;justify-content:{{ c.knob }}"><span style="width:16px;height:16px;border-radius:999px;background:#fff"></span></span>
+</div>
+</sc-for>
+</div>
+<p style="margin:12px 0 0;font-size:.79rem;color:#5c6861;line-height:1.4;padding-top:12px;border-top:1px solid #dbe2db">Per-alert thresholds live in Settings → Notifications.</p>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Muted</p>
+<span style="font-size:.76rem;color:#5c6861;font-weight:700">3 rules</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ alertMuted }}" as="m" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #dbe2db">
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.83rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.label }}</strong>
+<span style="font-size:.76rem;color:#5c6861">{{ m.until }}</span>
+</span>
+<button type="button" style="height:28px;padding:0 10px;border:1px solid #dbe2db;border-radius:6px;background:#fff;color:#5c6861;font-size:.77rem;font-weight:800;cursor:pointer;white-space:nowrap" style-hover="color:#16201b">Unmute</button>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="border:1px solid #dbe2db;border-radius:8px;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(35,45,40,.12);padding:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px">
+<p style="margin:0;color:#25724d;font-size:.76rem;font-weight:800;text-transform:uppercase">Recently resolved</p>
+<span style="font-size:.76rem;color:#25724d;font-weight:700">9 this month</span>
+</div>
+<div style="display:grid">
+<sc-for list="{{ alertResolved }}" as="r" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:10px 0;border-top:1px solid #dbe2db">
+<span style="width:16px;height:16px;border-radius:999px;background:#dcece2;color:#25724d;display:grid;place-items:center;font-size:9px;font-weight:900">✓</span>
+<span style="display:grid;gap:2px;min-width:0">
+<strong style="font-size:.83rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.label }}</strong>
+<span style="font-size:.76rem;color:#5c6861">{{ r.when }}</span>
+</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;navStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sidebar&quot;,&quot;topnav&quot;],&quot;default&quot;:&quot;sidebar&quot;,&quot;tsType&quot;:&quot;'sidebar' | 'topnav'&quot;,&quot;section&quot;:&quot;Dashboard shell&quot;},&quot;showAiConfidence&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Dashboard shell&quot;},&quot;showConnectors&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Dashboard shell&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const evStyles = {
+      meeting: { bg: "#dfe9f5", border: "1px solid #315d8f", fg: "#315d8f" },
+      focus: { bg: "#dcece2", border: "1px solid #25724d", fg: "#25724d" },
+      suggested: { bg: "#f6ead8", border: "1px dashed #b46c22", fg: "#b46c22" },
+      conflict: { bg: "#f2dfdd", border: "1px solid #a33b32", fg: "#a33b32" }
+    };
+    const ev = (title, time, top, height, kind, left, width) => {
+      const w = width ?? "94%";
+      const narrow = parseFloat(w) < 90;
+      const short = parseFloat(height) < 8;
+      return {
+        title, time, top, height,
+        left: left ?? "3%", width: w,
+        showTime: !short && !narrow,
+        padX: narrow ? "4px" : "7px",
+        fontSize: narrow ? ".64rem" : ".71rem",
+        ...evStyles[kind]
+      };
+    };
+    const rankTone = { P1: ["#f2dfdd", "#a33b32"], P2: ["#dfe9f5", "#315d8f"], P3: ["#eef2ec", "#5c6861"] };
+    const flagTone = { risk: ["#f2dfdd", "#a33b32"], warn: ["#f6ead8", "#b46c22"], info: ["#dfe9f5", "#315d8f"], ok: ["#dcece2", "#25724d"] };
+    const avTone = { PR: ["#dcece2", "#25724d"], MK: ["#f6ead8", "#b46c22"], JL: ["#dfe9f5", "#315d8f"], DW: ["#dcece2", "#25724d"] };
+    const task = (title, source, rank, due, effort, owner, opt) => {
+      const o = opt ?? {};
+      const [rankBg, rankFg] = rankTone[rank];
+      const [flagBg, flagFg] = flagTone[o.flagKind ?? "info"];
+      const [avBg, avFg] = avTone[owner] ?? ["#eef2ec", "#5c6861"];
+      return {
+        title, source, rank, due, effort, owner,
+        rankBg, rankFg, avBg, avFg,
+        hasFlag: !!o.flag, flag: o.flag ?? "", flagBg, flagFg,
+        accent: o.accent ?? "transparent",
+        dueFg: o.flagKind === "risk" ? "#a33b32" : "#5c6861"
+      };
+    };
+    const WORK_DAY = 8, WORK_WEEK = 40;
+    const capRaw = [
+      { name: "Mon", meetings: 2.5, focus: 3.5, dueouts: 1.0 },
+      { name: "Tue", meetings: 1.5, focus: 3.0, dueouts: 1.5 },
+      { name: "Wed", meetings: 3.0, focus: 2.8, dueouts: 1.5 },
+      { name: "Thu", meetings: 3.5, focus: 3.5, dueouts: 1.8 },
+      { name: "Fri", meetings: 2.0, focus: 1.5, dueouts: 1.0 }
+    ];
+    const capTotals = capRaw.map(x => x.meetings + x.focus + x.dueouts);
+    const capCommitted = capTotals.reduce((a, b) => a + b, 0);
+    const capFocus = capRaw.reduce((a, b) => a + b.focus, 0);
+    const capOverDays = capTotals.filter(t => t > WORK_DAY).length;
+    const capOverMins = Math.round((Math.max(...capTotals) - WORK_DAY) * 60);
+    const hm = (h) => Math.floor(h) + " h " + String(Math.round((h % 1) * 60)).padStart(2, "0");
+
+    const msTone = {
+      done: { bg: "#dcece2", fg: "#25724d", border: "1px solid transparent" },
+      current: { bg: "#f6ead8", fg: "#b46c22", border: "1px dashed #b46c22" },
+      todo: { bg: "#eef2ec", fg: "#5c6861", border: "1px solid transparent" }
+    };
+    const ms = (label, state) => ({ label, ...msTone[state] });
+
+    const sevTone = {
+      crit: { sev: "CRITICAL", sevColor: "#a33b32", iconBg: "#f2dfdd", cardBg: "#fffdfc", btnBg: "#a33b32", btnFg: "#ffffff" },
+      warn: { sev: "WARNING", sevColor: "#b46c22", iconBg: "#f6ead8", cardBg: "rgba(255,255,255,.9)", btnBg: "#16201b", btnFg: "#ffffff" },
+      info: { sev: "INFO", sevColor: "#315d8f", iconBg: "#dfe9f5", cardBg: "rgba(255,255,255,.82)", btnBg: "#eef2ec", btnFg: "#16201b" },
+      calm: { sev: "REMINDER", sevColor: "#25724d", iconBg: "#dcece2", cardBg: "rgba(255,255,255,.82)", btnBg: "#eef2ec", btnFg: "#16201b" }
+    };
+    const alert = (kind, mod, title, detail, source, time, primary) => ({
+      kind, mod, title, detail, source, time, primary, ...sevTone[kind]
+    });
+    const alertNeeds = [
+      alert("crit", "BIZ", "Kre8ivTech annual report due in 16 days", "Indiana requires the report by 15 August. Missing it puts the entity into administrative dissolution.", "Business → Compliance · state filing calendar", "16 d", "File now"),
+      alert("crit", "FIN", "Kre8ivDesigns operating account below threshold", "Balance $1,840 against $4,200 of scheduled debits over the next 9 days.", "Finances → Business · Plaid", "2 h", "Review cash"),
+      alert("warn", "FIN", "Unusual charge — $1,240 to Adobe Systems", "Nine times the usual monthly amount on this card. No matching invoice found.", "Finances → Subscriptions · Stripe", "6 h", "Verify"),
+      alert("warn", "PROD", "Thursday is 48 minutes over capacity", "The steering review overlaps your follow-up block and nothing has been moved.", "Productivity → Capacity", "Today", "Rebalance"),
+      alert("warn", "LIFE", "PMP certification expires in 31 days", "60 PDUs required before renewal. 44 recorded.", "Life → Documents", "31 d", "Open record")
+    ];
+    const alertInfos = [
+      alert("info", "FIN", "Three subscriptions rose this month", "Combined increase of $184 against last month. Two renew inside a week.", "Finances → Subscriptions", "1 d", "Review"),
+      alert("info", "BIZ", "Vecturae registered agent renewed", "Paid automatically. Next renewal 12 July 2027.", "Business → Compliance", "2 d", "View"),
+      alert("calm", "HLTH", "Prescription refill available", "Ready for pickup whenever it suits you.", "Health → Medications", "3 d", "Remind later")
+    ];
+    const allAlerts = alertNeeds.concat(alertInfos);
+    const countBy = (fn) => allAlerts.filter(fn).length;
+    const chip = (label, count, fg) => ({ label, count: String(count), bg: "#ffffff", fg, border: "#dbe2db" });
+    const alertFilterDefs = [
+      { label: "All", count: String(allAlerts.length), bg: "#16201b", fg: "#ffffff", border: "#16201b" },
+      chip("Critical", countBy(a => a.kind === "crit"), "#a33b32"),
+      chip("Warning", countBy(a => a.kind === "warn"), "#b46c22"),
+      chip("Business", countBy(a => a.mod === "BIZ"), "#16201b"),
+      chip("Finances", countBy(a => a.mod === "FIN"), "#16201b"),
+      chip("Productivity", countBy(a => a.mod === "PROD"), "#16201b"),
+      chip("Health", countBy(a => a.mod === "HLTH"), "#5c6861")
+    ];
+    const alertSeverityDefs = [
+      ["Critical", "crit", "#a33b32"], ["Warning", "warn", "#b46c22"],
+      ["Info", "info", "#315d8f"], ["Reminder", "calm", "#25724d"]
+    ].map(([label, kind, color]) => {
+      const n = countBy(a => a.kind === kind);
+      return { label, color, count: String(n), pct: Math.round(n / allAlerts.length * 100) + "%" };
+    });
+
+    const navItem = (label, count, active) => ({
+      label,
+      count: count ?? "",
+      rowBg: active ? "#25724d" : "transparent",
+      labelFg: active ? "#ffffff" : "rgba(255,255,255,.66)",
+      countFg: active ? "rgba(255,255,255,.75)" : "rgba(255,255,255,.36)"
+    });
+
+    const IA = [
+      { label: "Dashboard", solo: true, items: [] },
+      { label: "Ask", solo: true, items: [] },
+      { label: "Plan", items: [["Goals"], ["Habits"], ["Projects"], ["Journal"], ["Review"]] },
+      { label: "Productivity", items: [["Briefs"], ["Email", "17"], ["Calendar", "4"], ["Tasks", "6"], ["Capacity"], ["Time"], ["Contacts"]] },
+      { label: "Finances", items: [["Overview"], ["Personal"], ["Business"], ["Subscriptions", "3"], ["Budgets"], ["Taxes"], ["Forecast"], ["Investments"], ["Insurance"], ["Documents"], ["Reports"]] },
+      { label: "Business", items: [["Entities", "21"], ["Compliance", "2"], ["Pipeline"], ["Contracts"], ["Vendors"]] },
+      { label: "Health", items: [["Overview"], ["Exercise"], ["Food"], ["Mental"], ["Spiritual"], ["Appointments"], ["Medications"], ["Metrics"], ["Records"]] },
+      { label: "Life", items: [["Home"], ["Vehicles"], ["People"], ["Travel"], ["Documents"], ["Education"], ["Continuity"]] },
+      { label: "Research", items: [["Seek"], ["Library"], ["News"]] },
+      { label: "Social", items: [["Calendar"], ["Drafts"], ["Publishing"], ["Analytics"]] },
+      { label: "Alerts", solo: true, items: [], count: "5" },
+      { label: "Settings", items: [["Profile"], ["Modules"], ["Security"], ["Integrations", "2/3"], ["Automations"], ["Notifications"], ["Entities"], ["Billing"], ["Team"]] }
+    ];
+
+    const buildNav = (active) => IA.map(g => {
+      const open = !g.solo && g.items.some(i => i[0] === active);
+      const isActiveSolo = g.solo && g.label === active;
+      return {
+        label: g.label,
+        isOpen: open,
+        rowBg: isActiveSolo ? "#25724d" : "transparent",
+        labelFg: (isActiveSolo || open) ? "#ffffff" : "rgba(255,255,255,.66)",
+        meta: g.solo ? (g.count ?? "") : (open ? "\u2013" : "+"),
+        metaFg: isActiveSolo ? "rgba(255,255,255,.75)" : "rgba(255,255,255,.38)",
+        items: open ? g.items.map(([label, count]) => navItem(label, count, label === active)) : []
+      };
+    });
+    const nav = p.navStyle ?? "sidebar";
+    return {
+      isSidebar: nav === "sidebar",
+      isTopNav: nav === "topnav",
+      showAiConfidence: p.showAiConfidence ?? true,
+      showConnectors: p.showConnectors ?? true,
+      navGroups: buildNav("Dashboard"),
+      navGroupsEmail: buildNav("Email"),
+      navGroupsTasks: buildNav("Tasks"),
+      navGroupsAsk: buildNav("Ask"),
+      navGroupsBriefs: buildNav("Briefs"),
+      navGroupsCapacity: buildNav("Capacity"),
+      navGroupsGoals: buildNav("Goals"),
+      navGroupsAlerts: buildNav("Alerts"),
+      alertFilters: alertFilterDefs,
+      alertHeadline: alertNeeds.length + " need action, " + alertInfos.length + " for information",
+      alertGroups: [
+        { label: "Needs action", count: alertNeeds.length + " open", items: alertNeeds },
+        { label: "For information", count: String(alertInfos.length), items: alertInfos }
+      ],
+      alertSeverity: alertSeverityDefs,
+      alertResolved: [
+        { label: "Failed card payment — Kre8ivTech", when: "Resolved yesterday" },
+        { label: "Q2 franchise tax filed", when: "Resolved 21 July" },
+        { label: "Duplicate Notion subscription cancelled", when: "Resolved 18 July" }
+      ],
+      alertChannels: [
+        { label: "Email", rule: "Everything, batched hourly", trackBg: "#25724d", knob: "flex-end" },
+        { label: "SMS", rule: "Critical only", trackBg: "#25724d", knob: "flex-end" },
+        { label: "Push", rule: "Off on this device", trackBg: "#dbe2db", knob: "flex-start" }
+      ],
+      alertMuted: [
+        { label: "Kre8ivHosting incident emails", until: "Muted until 5 Aug" },
+        { label: "Budget warnings under $50", until: "Muted indefinitely" },
+        { label: "Health metrics reminders", until: "Muted — excluded from briefs" }
+      ],
+      goalStats: [
+        { label: "Active goals", value: "6", note: "4 annual, 2 quarterly", color: "#16201b" },
+        { label: "On track", value: "3", note: "Ahead of or at pace", color: "#25724d" },
+        { label: "At risk", value: "2", note: "Behind pace with 5 months left", color: "#b46c22" },
+        { label: "Goal-advancing time", value: "31%", note: "Of committed hours this quarter", color: "#315d8f" }
+      ],
+      goals: [
+        {
+          title: "Grow consulting revenue to $1.2M", meta: "Business · Vecturae Consultants · annual",
+          status: "On track", statusBg: "#dcece2", statusFg: "#25724d", accent: "#25724d",
+          pct: "64%", targetLabel: "$1.2M", due: "31 Dec", pace: "ahead by 6 points", paceFg: "#25724d",
+          linked: "6 tasks · 2 projects linked",
+          milestones: [ms("Q1 $240k", "done"), ms("Q2 $480k", "done"), ms("Q3 $840k", "current"), ms("Q4 $1.2M", "todo")]
+        },
+        {
+          title: "Cut Kre8ivHosting support load by half", meta: "Business · Kre8ivHosting · annual",
+          status: "At risk", statusBg: "#f6ead8", statusFg: "#b46c22", accent: "#b46c22",
+          pct: "22%", targetLabel: "the reduction", due: "31 Dec", pace: "behind by 19 points", paceFg: "#b46c22",
+          linked: "3 tasks linked · no project",
+          milestones: [ms("Document top 10 tickets", "done"), ms("Self-serve portal", "current"), ms("Async-first SLA", "todo"), ms("Halve call hours", "todo")]
+        },
+        {
+          title: "Finish the M.A. — 30 credit hours", meta: "Life · Education · Liberty University",
+          status: "On track", statusBg: "#dcece2", statusFg: "#25724d", accent: "#25724d",
+          pct: "70%", targetLabel: "30 credits", due: "May 2027", pace: "at pace", paceFg: "#25724d",
+          linked: "4 tasks · 1 project linked",
+          milestones: [ms("Fall 9 cr", "done"), ms("Spring 9 cr", "done"), ms("Summer 3 cr", "current"), ms("Thesis", "todo")]
+        },
+        {
+          title: "Every entity compliant, nothing filed late", meta: "Business · 21 entities · annual",
+          status: "Watch", statusBg: "#dfe9f5", statusFg: "#315d8f", accent: "#315d8f",
+          pct: "86%", targetLabel: "21 entities", due: "31 Dec", pace: "3 filings open", paceFg: "#315d8f",
+          linked: "2 tasks linked · Compliance module",
+          milestones: [ms("Registered agents", "done"), ms("Q2 franchise tax", "done"), ms("Aug annual reports", "current"), ms("Year-end licences", "todo")]
+        }
+      ],
+      goalSplit: [
+        { label: "Advanced a goal", pct: "31%", flex: "31", color: "#25724d" },
+        { label: "Reactive — inbound requests", pct: "52%", flex: "52", color: "#b46c22" },
+        { label: "Admin and overhead", pct: "17%", flex: "17", color: "#5c6861" }
+      ],
+      goalReview: [
+        { num: "01", text: "What actually moved?" },
+        { num: "02", text: "What stalled, and why?" },
+        { num: "03", text: "What should be dropped?" }
+      ],
+      goalStalled: [
+        { title: "Cut Kre8ivHosting support load by half", detail: "No linked work moved in 24 days. The self-serve portal milestone has no owner." },
+        { title: "Publish quarterly client letter", detail: "Last touched 6 June. Two drafts sitting unsent in mail." }
+      ],
+      capHeadline: capCommitted.toFixed(1) + " h committed of " + WORK_WEEK,
+      capFocusTotal: hm(capFocus),
+      capFreeText: (WORK_WEEK - capCommitted).toFixed(1) + " h free this week",
+      capTestVerdict: (WORK_WEEK - capCommitted) >= 3 ? "→ fits, " + (WORK_WEEK - capCommitted - 3).toFixed(1) + " h to spare" : "→ over capacity",
+      capTestFg: (WORK_WEEK - capCommitted) >= 3 ? "#25724d" : "#a33b32",
+      capStats: [
+        { label: "Available", value: WORK_WEEK + " h", note: "Mon–Fri, 8 h working days", color: "#16201b" },
+        { label: "Committed", value: capCommitted.toFixed(1) + " h", note: Math.round(capCommitted / WORK_WEEK * 100) + "% of the week is spoken for", color: "#b46c22" },
+        { label: "Focus capacity", value: hm(capFocus), note: "Down 2 h on last week", color: "#25724d" },
+        { label: "Overcommitted", value: capOverDays + " day", note: "Thursday, by " + capOverMins + " minutes", color: "#a33b32" }
+      ],
+      capAxis: [
+        { label: "10 h", top: "0%" },
+        { label: "7.5", top: "25%" },
+        { label: "5", top: "50%" },
+        { label: "2.5", top: "75%" },
+        { label: "0", top: "100%" }
+      ],
+      capDays: capRaw.map((x, i) => {
+        const total = capTotals[i];
+        const over = Math.max(0, total - WORK_DAY);
+        const seg = (v, color) => ({ h: (v / total * 100) + "%", color });
+        const segments = [];
+        if (over > 0) segments.push(seg(over, "#a33b32"));
+        segments.push(seg(x.dueouts, "#b46c22"), seg(x.focus, "#25724d"), seg(x.meetings, "#315d8f"));
+        return {
+          name: x.name, barH: (total / 10 * 100) + "%", segments,
+          total: total.toFixed(1) + " h",
+          totalFg: over > 0 ? "#a33b32" : "#5c6861",
+          nameFg: over > 0 ? "#a33b32" : "#16201b"
+        };
+      }),
+      capEntities: [
+        { entity: "Kre8ivHosting", hours: "148", timePct: "41%", revPct: "9%", gap: "−32", gapFg: "#a33b32" },
+        { entity: "Vecturae Consultants", hours: "96", timePct: "27%", revPct: "48%", gap: "+21", gapFg: "#25724d" },
+        { entity: "Kre8ivTech", hours: "72", timePct: "20%", revPct: "31%", gap: "+11", gapFg: "#25724d" },
+        { entity: "Kre8ivDesigns", hours: "43", timePct: "12%", revPct: "12%", gap: "0", gapFg: "#5c6861" }
+      ],
+      capFixes: [
+        { title: "Move Follow-ups to Friday 8:15 AM", detail: "Clears Thursday's 48-minute overrun and the 4:00 collision in one change." },
+        { title: "Decline two Kre8ivHosting support slots", detail: "Recurring, low revenue per hour. Frees 3 h across the week." }
+      ],
+      capFocusBlocks: capRaw.map(x => ({ flex: String(x.focus * 100), color: x.focus < 2 ? "#8fd3ae" : "#25724d" })),
+      capForecast: [
+        { label: "3 Aug", pct: "72%", color: "#25724d" },
+        { label: "10 Aug", pct: "84%", color: "#b46c22" },
+        { label: "17 Aug", pct: "96%", color: "#a33b32" },
+        { label: "24 Aug", pct: "58%", color: "#25724d" }
+      ],
+      briefFacts: [
+        { value: "3", label: "moves today", color: "#16201b" },
+        { value: "1", label: "at risk", color: "#a33b32" },
+        { value: "1", label: "calendar conflict", color: "#b46c22" },
+        { value: "78%", label: "of the day planned", color: "#25724d" },
+        { value: "16 d", label: "to the next filing", color: "#315d8f" }
+      ],
+      briefSections: [
+        {
+          num: "01", numFg: "#25724d", title: "What changed overnight",
+          body: "Priya escalated the procurement thread at 5:41 PM and Marcus moved the steering review forward by thirty minutes, which is what created today's 4:00 collision. Three new commitments were extracted from mail and are waiting in your task inbox.",
+          hasList: false, list: []
+        },
+        {
+          num: "02", numFg: "#25724d", title: "Today's three moves",
+          body: "Ranked by deadline pressure, who is blocked, and whether you own the deliverable.",
+          hasList: true,
+          list: [
+            { tag: "P1", tagBg: "#f2dfdd", tagFg: "#a33b32", text: "Resolve procurement follow-up before the vendor lock", meta: "11:00 AM", metaFg: "#a33b32" },
+            { tag: "P1", tagBg: "#dcece2", tagFg: "#25724d", text: "Finalize executive readout for the steering review", meta: "4:00 PM", metaFg: "#5c6861" },
+            { tag: "P2", tagBg: "#dfe9f5", tagFg: "#315d8f", text: "Approve the Q3 contractor extension", meta: "blocking 2", metaFg: "#5c6861" }
+          ]
+        },
+        {
+          num: "03", numFg: "#b46c22", title: "Schedule and conflicts",
+          body: "Four meetings, three focus holds, 78% of the day committed. The steering review overlaps your follow-up block; moving follow-ups to Friday 8:15 AM resolves it and keeps both intact.",
+          hasList: false, list: []
+        },
+        {
+          num: "04", numFg: "#25724d", title: "Owed by you",
+          body: "Six open due-outs, two of them dated today. The cost model to Priya is the only one with an external deadline.",
+          hasList: false, list: []
+        },
+        {
+          num: "05", numFg: "#315d8f", title: "Money and compliance",
+          body: "Cash position is unchanged. Kre8ivTech's annual report is due 15 August — sixteen days out, and the only item this month that could administratively dissolve an entity if missed.",
+          hasList: true,
+          list: [
+            { tag: "FILE", tagBg: "#dfe9f5", tagFg: "#315d8f", text: "Kre8ivTech — Indiana annual report", meta: "15 Aug", metaFg: "#315d8f" },
+            { tag: "SUBS", tagBg: "#f6ead8", tagFg: "#b46c22", text: "Three subscriptions rose this month", meta: "+$184", metaFg: "#b46c22" }
+          ]
+        }
+      ],
+      briefArchive: [
+        { date: "Wednesday 29 July", tag: "2 at risk", tagFg: "#a33b32", summary: "Cost model slipped a second day; launch checklist unblocked." },
+        { date: "Tuesday 28 July", tag: "clear", tagFg: "#25724d", summary: "Light day. Vendor shortlist signed off ahead of schedule." },
+        { date: "Monday 27 July", tag: "heavy", tagFg: "#b46c22", summary: "Seven meetings. Two focus blocks lost to overruns." },
+        { date: "Sunday 26 July", tag: "outlook", tagFg: "#315d8f", summary: "Weekly outlook — Thursday flagged as the tightest day." },
+        { date: "Friday 24 July", tag: "clear", tagFg: "#25724d", summary: "All due-outs closed. Week ended at 91% completion." },
+        { date: "Thursday 23 July", tag: "1 at risk", tagFg: "#b46c22", summary: "Offsite venue decision deferred for the third time." },
+        { date: "Wednesday 22 July", tag: "clear", tagFg: "#25724d", summary: "Quiet. Two focus blocks ran their full length." },
+        { date: "Tuesday 21 July", tag: "heavy", tagFg: "#b46c22", summary: "Six meetings, no focus time. Readout work slipped a day." }
+      ],
+      askRows: [
+        { entity: "Kre8ivHosting", hours: "148h", pct: "41%", rev: "9%", color: "#a33b32" },
+        { entity: "Vecturae Consultants", hours: "96h", pct: "27%", rev: "48%", color: "#25724d" },
+        { entity: "Kre8ivTech", hours: "72h", pct: "20%", rev: "31%", color: "#25724d" },
+        { entity: "Kre8ivDesigns", hours: "43h", pct: "12%", rev: "12%", color: "#315d8f" }
+      ],
+      askSources: [
+        { kind: "CAL", label: "412 events, 90 days", fg: "#315d8f" },
+        { kind: "FIN", label: "Revenue by entity", fg: "#25724d" },
+        { kind: "TIME", label: "Tracked hours", fg: "#b46c22" },
+        { kind: "BIZ", label: "4 entities", fg: "#5c6861" }
+      ],
+      askFollowUps: ["Show the support calls", "Compare to last quarter", "What would dropping them free up?"],
+      askSuggestions: [
+        "What did I spend on contractors last quarter?",
+        "Which compliance deadlines land before September?",
+        "Who have I not replied to in over a week?",
+        "How much did subscriptions rise this year?",
+        "What am I forgetting this week?"
+      ],
+      askScope: [
+        { label: "Email — 3 accounts", state: "live", fg: "#25724d" },
+        { label: "Calendar — 4 calendars", state: "live", fg: "#25724d" },
+        { label: "Tasks and due-outs", state: "live", fg: "#25724d" },
+        { label: "Finances — Stripe, Plaid", state: "live", fg: "#25724d" },
+        { label: "Business — 21 entities", state: "live", fg: "#25724d" },
+        { label: "Health", state: "excluded", fg: "#5c6861" }
+      ],
+      paletteJumps: [
+        { label: "Return signed NDA", path: "Tasks", bg: "#f7f7f2" },
+        { label: "Kre8ivTech — annual report", path: "Compliance", bg: "transparent" },
+        { label: "Re: Vendor lock — cost model", path: "Email", bg: "transparent" },
+        { label: "Capacity — week of 27 Jul", path: "Productivity", bg: "transparent" }
+      ],
+      taskStats: [
+        { label: "Due today", value: "3", note: "2 still unstarted", color: "#a33b32" },
+        { label: "At risk", value: "2", note: "Deadline inside 24 h", color: "#b46c22" },
+        { label: "Blocking others", value: "2", note: "4 people waiting", color: "#315d8f" },
+        { label: "Closed this week", value: "11", note: "Up 3 on last week", color: "#25724d" }
+      ],
+      taskColumns: [
+        {
+          label: "Inbox", count: "3", dot: "#b46c22", showAdd: true,
+          tasks: [
+            task("Confirm offsite venue", "From mail · Tomas Silva", "P3", "Tomorrow", "30m", "TS", { flag: "Extracted", flagKind: "warn" }),
+            task("Return signed NDA", "From mail · Legal", "P2", "Friday", "15m", "LG", { flag: "Extracted", flagKind: "warn" }),
+            task("Book Q4 planning room", "Added by you", "P3", "Next week", "10m", "DW")
+          ]
+        },
+        {
+          label: "Today", count: "3", dot: "#a33b32", showAdd: false,
+          tasks: [
+            task("Send revised cost model", "Promised to Priya Raman", "P1", "11:00 AM", "2h", "PR", { flag: "At risk", flagKind: "risk", accent: "#a33b32" }),
+            task("Finalize executive readout", "Steering review deliverable", "P1", "4:00 PM", "3.5h", "MK", { flag: "Focus", flagKind: "ok", accent: "#25724d" }),
+            task("Approve contractor extension", "Blocking Jenna Liu + 1", "P2", "Today", "30m", "JL", { flag: "Blocking 2", flagKind: "info" })
+          ]
+        },
+        {
+          label: "In progress", count: "2", dot: "#315d8f", showAdd: false,
+          tasks: [
+            task("Assign launch blockers", "3 unassigned on the board", "P2", "Friday", "1.5h", "DW", { flag: "Waiting", flagKind: "info" }),
+            task("Draft Q3 spend narrative", "Feeds the readout", "P2", "Thursday", "1h", "DW")
+          ]
+        },
+        {
+          label: "Done", count: "11", dot: "#25724d", showAdd: false,
+          tasks: [
+            task("Circulate week 31 digest", "Closed 6:40 AM", "P3", "Done today", "20m", "DW", { flag: "Complete", flagKind: "ok", accent: "#25724d" }),
+            task("Sign off vendor shortlist", "Closed Tuesday", "P2", "Done Tue", "45m", "PR", { flag: "Complete", flagKind: "ok", accent: "#25724d" })
+          ]
+        }
+      ],
+      navGroupsCalendar: buildNav("Calendar"),
+      hourMarks: ["8 AM", "9", "10", "11", "12", "1 PM", "2", "3", "4", "5", "6"].map((label, i) => ({
+        label, top: (i * 10) + "%"
+      })),
+      weekDays: [
+        {
+          name: "Mon", num: "27", isToday: false, headBg: "#eef2ec", headFg: "#5c6861", numFg: "#5c6861", colBg: "#fbfbf8",
+          events: [
+            ev("Standup", "9:00", "10%", "5%", "meeting"),
+            ev("Deep work — model", "10:00 – 12:00", "20%", "20%", "focus"),
+            ev("Vendor call", "2:00 – 3:00", "60%", "10%", "meeting")
+          ]
+        },
+        {
+          name: "Tue", num: "28", isToday: false, headBg: "#eef2ec", headFg: "#5c6861", numFg: "#5c6861", colBg: "#fbfbf8",
+          events: [
+            ev("Standup", "9:00", "10%", "5%", "meeting"),
+            ev("1:1 Priya", "11:00", "30%", "5%", "meeting"),
+            ev("Decision queue", "1:00 – 2:30", "50%", "15%", "focus")
+          ]
+        },
+        {
+          name: "Wed", num: "29", isToday: false, headBg: "#eef2ec", headFg: "#5c6861", numFg: "#5c6861", colBg: "#fbfbf8",
+          events: [
+            ev("Standup", "9:00", "10%", "5%", "meeting"),
+            ev("Cost model", "9:30 – 11:15", "15%", "17.5%", "focus"),
+            ev("Procurement sync", "3:00 – 4:00", "70%", "10%", "meeting")
+          ]
+        },
+        {
+          name: "Thu", num: "30", isToday: true, headBg: "#25724d", headFg: "#ffffff", numFg: "rgba(255,255,255,.75)", colBg: "#ffffff",
+          events: [
+            ev("Standup", "9:00", "10%", "5%", "meeting"),
+            ev("Deep work", "9:30 – 11:15", "15%", "17.5%", "focus"),
+            ev("1:1 Priya", "11:30", "35%", "5%", "meeting"),
+            ev("Decisions", "1:00 – 2:20", "50%", "13.3%", "focus"),
+            ev("Vendor sync", "2:30", "65%", "5%", "meeting"),
+            ev("Follow-up", "3:15 – 4:45", "72.5%", "15%", "suggested", "3%", "45%"),
+            ev("Steering", "4:00 – 5:00", "80%", "10%", "conflict", "51%", "46%")
+          ]
+        },
+        {
+          name: "Fri", num: "31", isToday: false, headBg: "#eef2ec", headFg: "#5c6861", numFg: "#5c6861", colBg: "#fbfbf8",
+          events: [
+            ev("Launch checklist", "10:00 – 11:00", "20%", "10%", "meeting"),
+            ev("Weekly review", "3:00 – 4:00", "70%", "10%", "meeting")
+          ]
+        }
+      ],
+      weekLoad: [
+        { name: "Mon", pct: "62%", color: "#25724d" },
+        { name: "Tue", pct: "55%", color: "#25724d" },
+        { name: "Wed", pct: "71%", color: "#b46c22" },
+        { name: "Thu", pct: "88%", color: "#a33b32" },
+        { name: "Fri", pct: "44%", color: "#25724d" }
+      ],
+      suggestedHolds: [
+        { title: "Move Follow-ups off the steering collision", when: "Fri 8:15 – 9:45 AM", why: "Thursday 4:00 is double-booked. Friday morning is your emptiest block." },
+        { title: "Cost model finish — 90 minutes", when: "Wed 9:30 – 11:00 AM", why: "Lands a day before the vendor lock closes." },
+        { title: "Steering review prep", when: "Thu 2:00 – 2:30 PM", why: "Last clear slot before the readout is due." }
+      ],
+      unscheduled: [
+        { title: "Assign launch blockers", meta: "1.5h · due Friday" },
+        { title: "Approve contractor extension", meta: "30m · blocking 2 people" },
+        { title: "Return signed NDA", meta: "15m · due Friday" }
+      ],
+      mailFilters: [
+        { label: "All", count: "42", bg: "#16201b", fg: "#ffffff", border: "#16201b" },
+        { label: "P1", count: "3", bg: "#ffffff", fg: "#16201b", border: "#dbe2db" },
+        { label: "P2", count: "6", bg: "#ffffff", fg: "#16201b", border: "#dbe2db" },
+        { label: "Due-outs", count: "6", bg: "#ffffff", fg: "#16201b", border: "#dbe2db" },
+        { label: "FYSA", count: "12", bg: "#ffffff", fg: "#5c6861", border: "#dbe2db" }
+      ],
+      emails: [
+        {
+          initials: "PR", sender: "Priya Raman", time: "Mon", avBg: "#dcece2", avFg: "#25724d",
+          subject: "Re: Vendor lock — revised cost model", snippet: "Procurement needs the revised figures before Thursday…",
+          rank: "P1", rankBg: "#f2dfdd", rankFg: "#a33b32", hasBadge: true, badge: "Due-out · 11:00 AM", badgeBg: "#f2dfdd", badgeFg: "#a33b32",
+          rowBg: "#eef2ec", accent: "#a33b32", senderWeight: "800", subjectWeight: "700"
+        },
+        {
+          initials: "MK", sender: "Marcus Kohl", time: "7:12 AM", avBg: "#f6ead8", avFg: "#b46c22",
+          subject: "Steering review — final numbers by EOD?", snippet: "Committee wants the readout circulated tonight…",
+          rank: "P1", rankBg: "#dcece2", rankFg: "#25724d", hasBadge: true, badge: "Due-out · 4:00 PM", badgeBg: "#dcece2", badgeFg: "#25724d",
+          rowBg: "#ffffff", accent: "#25724d", senderWeight: "800", subjectWeight: "700"
+        },
+        {
+          initials: "JL", sender: "Jenna Liu", time: "Yesterday", avBg: "#dfe9f5", avFg: "#315d8f",
+          subject: "Q3 contractor extension — approval needed", snippet: "Two people are blocked until this is signed off…",
+          rank: "P2", rankBg: "#dfe9f5", rankFg: "#315d8f", hasBadge: true, badge: "Blocking 2", badgeBg: "#f6ead8", badgeFg: "#b46c22",
+          rowBg: "#ffffff", accent: "transparent", senderWeight: "800", subjectWeight: "700"
+        },
+        {
+          initials: "LG", sender: "Legal — Northgate", time: "Yesterday", avBg: "#eef2ec", avFg: "#5c6861",
+          subject: "NDA countersignature outstanding", snippet: "Please return the signed copy by Friday…",
+          rank: "P2", rankBg: "#dfe9f5", rankFg: "#315d8f", hasBadge: true, badge: "Due-out · Friday", badgeBg: "#eef2ec", badgeFg: "#5c6861",
+          rowBg: "#ffffff", accent: "transparent", senderWeight: "700", subjectWeight: "600"
+        },
+        {
+          initials: "TS", sender: "Tomas Silva", time: "Tue", avBg: "#eef2ec", avFg: "#5c6861",
+          subject: "Offsite venue — three options costed", snippet: "Ranked by travel time and per-head cost…",
+          rank: "P3", rankBg: "#eef2ec", rankFg: "#5c6861", hasBadge: true, badge: "Waiting on you", badgeBg: "#eef2ec", badgeFg: "#5c6861",
+          rowBg: "#ffffff", accent: "transparent", senderWeight: "700", subjectWeight: "600"
+        },
+        {
+          initials: "OP", sender: "Ops team digest", time: "6:00 AM", avBg: "#eef2ec", avFg: "#5c6861",
+          subject: "Weekly operations digest — week 31", snippet: "Throughput up 6%, two incidents closed…",
+          rank: "FYSA", rankBg: "#eef2ec", rankFg: "#5c6861", hasBadge: false, badge: "", badgeBg: "", badgeFg: "",
+          rowBg: "#ffffff", accent: "transparent", senderWeight: "600", subjectWeight: "500"
+        },
+        {
+          initials: "WD", sender: "Workday", time: "Mon", avBg: "#eef2ec", avFg: "#5c6861",
+          subject: "Policy update: travel booking window", snippet: "Bookings now require 14 days notice…",
+          rank: "FYSA", rankBg: "#eef2ec", rankFg: "#5c6861", hasBadge: false, badge: "", badgeBg: "", badgeFg: "",
+          rowBg: "#ffffff", accent: "transparent", senderWeight: "600", subjectWeight: "500"
+        }
+      ],
+      topNavItems: ["Dashboard", "Ask", "Plan", "Productivity", "Finances", "Business", "Research", "Settings"].map((label, i) => ({
+        label,
+        hasChildren: i > 1,
+        rowBg: i === 0 ? "rgba(255,255,255,.12)" : "transparent",
+        labelFg: i === 0 ? "#ffffff" : "rgba(255,255,255,.62)"
+      })),
+      priorities: [
+        {
+          rank: "P1", rankBg: "#dcece2", rankFg: "#25724d",
+          status: "Focus", statusBg: "#dcece2", statusFg: "#25724d",
+          confidence: "94%",
+          title: "Finalize executive readout for Thursday steering review",
+          source: "Calendar · email thread · task owner",
+          why: "Ranked first: hard deadline today, four attendees blocked on it, and you own the deliverable.",
+          action: "Open draft", due: "Today, 4:00 PM", effort: "3.5h", impact: "High"
+        },
+        {
+          rank: "P1", rankBg: "#f2dfdd", rankFg: "#a33b32",
+          status: "At risk", statusBg: "#f2dfdd", statusFg: "#a33b32",
+          confidence: "88%",
+          title: "Resolve procurement follow-up before vendor lock window",
+          source: "Email commitment · Priya Raman",
+          why: "At risk: the vendor lock closes at 11:00 AM and no reply has been sent in six days.",
+          action: "Draft reply", due: "Tomorrow, 11:00 AM", effort: "2h", impact: "High"
+        },
+        {
+          rank: "P2", rankBg: "#dfe9f5", rankFg: "#315d8f",
+          status: "Waiting", statusBg: "#dfe9f5", statusFg: "#315d8f",
+          confidence: "71%",
+          title: "Review revised launch checklist and assign blockers",
+          source: "Task board · 3 unassigned blockers",
+          why: "Lower confidence: no explicit due date found, inferred from the Friday launch gate.",
+          action: "Assign owners", due: "Friday", effort: "1.5h", impact: "Medium"
+        }
+      ],
+      dueOuts: [
+        { title: "Send revised cost model", owner: "Promised to Priya Raman", when: "11:00 AM", bg: "#f2dfdd", fg: "#a33b32" },
+        { title: "Approve Q3 contractor extension", owner: "Blocking two people", when: "Today", bg: "#f6ead8", fg: "#b46c22" },
+        { title: "Confirm venue for offsite", owner: "Promised to Marcus Kohl", when: "Tomorrow", bg: "#eef2ec", fg: "#5c6861" },
+        { title: "Return signed NDA", owner: "Legal · Northgate", when: "Friday", bg: "#eef2ec", fg: "#5c6861" }
+      ],
+      connectors: [
+        { mark: "M", label: "Microsoft 365 Mail", signal: "17 commitments found · 6:02 AM", bg: "#dcece2", fg: "#25724d", btn: "Connected", btnBg: "#eef2ec", btnFg: "#16201b" },
+        { mark: "C", label: "Outlook Calendar", signal: "31.5 hours available · 6:02 AM", bg: "#dcece2", fg: "#25724d", btn: "Connected", btnBg: "#eef2ec", btnFg: "#16201b" },
+        { mark: "T", label: "Tasks — Planner, Jira", signal: "Not connected", bg: "#eef2ec", fg: "#5c6861", btn: "Connect", btnBg: "#16201b", btnFg: "#ffffff" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 6 99 80" width="99" height="80" role="img" aria-label="Ops Agenda">
+<defs><mask id="oaI" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs>
+<path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaI)" fill="none" stroke="#16201b" stroke-width="11.2"></path>
+<path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#16201b"></path>
+<path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#16201b"></path>
+</svg>

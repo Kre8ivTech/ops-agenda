@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0}
+body{font-family:Geist,Arial,Helvetica,sans-serif;color:#16201b;background:#f7f7f2;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#25724d;text-decoration:none}
+a:hover{color:#16201b}
+h1,h2,h3,p{margin-top:0}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#dbe2db;border-radius:99px;border:3px solid #f7f7f2}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#f7f7f2">
+
+
+<header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 48px;background:rgba(247,247,242,.93);backdrop-filter:blur(8px);border-bottom:1px solid #dbe2db">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="32" height="26" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing1" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing1)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.92rem;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+<nav style="display:flex;align-items:center;gap:26px;font-size:.86rem;font-weight:600;color:#5c6861">
+<a href="#" style="color:#5c6861">Product</a>
+<a href="#" style="color:#5c6861">Docs</a>
+<a href="#" style="color:#16201b;font-weight:800">Brand</a>
+<a href="#" style="display:inline-flex;align-items:center;height:36px;padding:0 15px;border-radius:8px;background:#16201b;color:#fff;font-weight:800" style-hover="background:#25724d">Sign in</a>
+</nav>
+</header>
+
+<section style="padding:76px 48px 60px;max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:center">
+<div style="max-width:52ch">
+<p style="margin:0 0 12px;font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#25724d">Brand guide — v1.0</p>
+<h1 style="margin:0 0 14px;font-size:3.1rem;line-height:1.02;letter-spacing:-.03em;text-wrap:balance">One loop, closed every morning.</h1>
+<p style="margin:0 0 26px;color:#5c6861;font-size:1.05rem;line-height:1.55;text-wrap:pretty">The mark holds three things at once: the day as an open loop, a check for what's handled, and an ascent that carries the <strong style="color:#16201b;font-weight:700">A</strong> of Agenda straight through the loop and out the other side. Everything approved lives on this page.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<a href="brand/ops-agenda-mark-signal.svg" style="display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:8px;background:#16201b;color:#fff;font-weight:800;font-size:.86rem" style-hover="background:#25724d">Download mark (SVG)</a>
+<a href="brand/favicon.svg" style="display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:8px;background:#fff;border:1px solid #dbe2db;color:#16201b;font-weight:800;font-size:.86rem" style-hover="border-color:#16201b">Favicon</a>
+</div>
+</div>
+<div style="width:360px;height:340px;border-radius:20px;border:1px solid #dbe2db;background:#fff;display:grid;place-items:center;flex:0 0 auto">
+<svg width="272" height="220" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing2" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing2)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">01</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Construction</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">One radius, one stroke weight, one 55° axis.</p>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px">
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;display:grid;place-items:center;padding:40px;position:relative;min-height:360px">
+<sc-if value="{{ showConstruction }}" hint-placeholder-val="{{ true }}">
+<svg width="309" height="250" viewBox="14 6 99 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute">
+<g stroke="#dbe2db" stroke-width=".5">
+<circle cx="54" cy="46" r="31" stroke-dasharray="2 2"></circle>
+<circle cx="54" cy="46" r="36.6"></circle>
+<circle cx="54" cy="46" r="25.4"></circle>
+<path d="M14 46H113M54 6V86M20 81.3H111"></path>
+<path d="M83.93 6 27.97 86M100.8 6 44.83 86"></path>
+</g>
+</svg>
+</sc-if>
+<svg width="309" height="250" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="position:relative"><defs><mask id="oaRing3" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing3)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+</div>
+<div style="display:grid;gap:12px;align-content:start">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">The loop</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">A 31-unit ring at 11.2 weight — the working day. It opens at the bottom right and is cut, never overlapped, where the ascent crosses it.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">The check</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">Rises on the 55° axis through the centre and stops 2.6 units short of the ring's inner edge. That hairline is the mark's only optical breathing room — keep it.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">The ascent</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">The <strong style="color:#16201b;font-weight:700">A</strong> runs parallel to the check, one weight below it, and its legs land flat on a shared baseline. Breaking out of the loop is the point — never tuck it back inside.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:18px 20px">
+<p style="margin:0;color:#16201b;font-size:.88rem;line-height:1.5;font-weight:600;text-wrap:pretty">Scale the mark, never the weight. Every element is 11.2 of 99 units wide.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">02</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Lockups</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Primary first. Stacked only where width runs out.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+<div style="flex:1;min-height:190px;display:grid;place-items:center;padding:32px">
+<div style="display:flex;align-items:center;gap:15px">
+<svg width="54" height="44" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing4" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing4)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.7rem;color:#16201b;letter-spacing:{{ tracking }}">OPS AGENDA</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Primary</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Signal mark, ink logotype. Gap = ⅓ of mark width.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+<div style="flex:1;min-height:190px;display:grid;place-items:center;padding:32px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:13px">
+<svg width="69" height="56" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing5" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing5)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.1rem;color:#16201b;letter-spacing:.07em">OPS AGENDA</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Stacked</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Narrow slots. Tracking opens to .07em.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;display:flex;flex-direction:column">
+<div style="flex:1;min-height:190px;display:grid;place-items:center;padding:32px">
+<svg width="94" height="76" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing6" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing6)" fill="none" stroke="#16201b" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#16201b"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#16201b"></path></svg>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Mark only</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Product chrome, avatars, favicons — anywhere the name already appears.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">03</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Surfaces</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Three approved backgrounds, one treatment each.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden">
+<div style="height:190px;background:#f7f7f2;display:grid;place-items:center">
+<div style="display:flex;align-items:center;gap:13px">
+<svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing7" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing7)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.4rem;color:#16201b;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#fff"><p style="margin:0;font-size:.84rem;color:#5c6861"><strong style="color:#16201b;font-weight:800">Paper #F7F7F2</strong> — signal mark, ink logotype. The default.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden">
+<div style="height:190px;background:#16201b;display:grid;place-items:center">
+<div style="display:flex;align-items:center;gap:13px">
+<svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing8" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing8)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.4rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#fff"><p style="margin:0;font-size:.84rem;color:#5c6861"><strong style="color:#16201b;font-weight:800">Ink #16201B</strong> — all paper, one colour. Never green on ink.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden">
+<div style="height:190px;background:#25724d;display:grid;place-items:center">
+<div style="display:flex;align-items:center;gap:13px">
+<svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing9" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing9)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.4rem;color:#f7f7f2;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#fff"><p style="margin:0;font-size:.84rem;color:#5c6861"><strong style="color:#16201b;font-weight:800">Signal #25724D</strong> — all paper. Campaign surfaces only.</p></div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">04</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Clear space &amp; small sizes</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Half a mark height of air on every side.</p>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px">
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;padding:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
+<div style="display:inline-flex;align-items:center;gap:15px;padding:22px;border:1px dashed #25724d">
+<svg width="54" height="44" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing10" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing10)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:1.6rem;color:#16201b;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+<p style="margin:0;font:600 .74rem/1.5 'Geist Mono',ui-monospace,monospace;color:#5c6861;text-align:center">clear space = ½ mark height, all sides</p>
+</div>
+<div style="display:grid;gap:12px;align-content:start">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:22px 20px;display:flex;align-items:flex-end;gap:24px"><div style="display:flex;flex-direction:column;align-items:center;gap:9px"><svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing11" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing11)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">24</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:9px"><svg width="40" height="32" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing12" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing12)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">32</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:9px"><svg width="59" height="48" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing13" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing13)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">48</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:9px"><svg width="79" height="64" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing14" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing14)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">64</span></div></div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Minimums</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">Mark alone: <strong style="color:#16201b;font-weight:700">24px</strong> tall on screen, 7mm in print — below that the optical gaps close up. Full lockup: <strong style="color:#16201b;font-weight:700">108px</strong> wide. Below that, use the mark.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px;display:flex;align-items:center;gap:16px">
+<div style="width:52px;height:52px;border-radius:12px;background:#16201b;display:grid;place-items:center;flex:0 0 auto"><svg width="33" height="27" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing15" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing15)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg></div>
+<div style="width:52px;height:52px;border-radius:999px;background:#dcece2;display:grid;place-items:center;flex:0 0 auto"><svg width="31" height="25" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing16" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing16)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg></div>
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.45">App icon and avatar: mark centred at 62% of the tile, never the lockup.</p>
+</div>
+</div>
+</div>
+</section>
+
+<sc-if value="{{ showDonts }}" hint-placeholder-val="{{ true }}">
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">05</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Misuse</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Four things that break it.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="height:130px;display:grid;place-items:center;background:#f7f7f2"><svg width="86" height="40" viewBox="14 6 99 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing17" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing17)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg></div>
+<div style="padding:13px 16px;border-top:1px solid #dbe2db;display:flex;gap:9px;align-items:flex-start"><span style="color:#a33b32;font-weight:900;line-height:1.2">✕</span><p style="margin:0;font-size:.83rem;color:#5c6861;line-height:1.4">Don't stretch or condense. Scale proportionally.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="height:130px;display:grid;place-items:center;background:#f7f7f2"><svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing18" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing18)" fill="none" stroke="#315d8f" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#a33b32"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#315d8f"></path></svg></div>
+<div style="padding:13px 16px;border-top:1px solid #dbe2db;display:flex;gap:9px;align-items:flex-start"><span style="color:#a33b32;font-weight:900;line-height:1.2">✕</span><p style="margin:0;font-size:.83rem;color:#5c6861;line-height:1.4">Don't recolour the parts. The mark is one colour, always.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="height:130px;display:grid;place-items:center;background:#f7f7f2"><svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="transform:rotate(-16deg)"><defs><mask id="oaRing19" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing19)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg></div>
+<div style="padding:13px 16px;border-top:1px solid #dbe2db;display:flex;gap:9px;align-items:flex-start"><span style="color:#a33b32;font-weight:900;line-height:1.2">✕</span><p style="margin:0;font-size:.83rem;color:#5c6861;line-height:1.4">Don't rotate. The baseline is always level.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="height:130px;display:grid;place-items:center;background:#16201b"><svg width="50" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing20" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing20)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg></div>
+<div style="padding:13px 16px;border-top:1px solid #dbe2db;display:flex;gap:9px;align-items:flex-start"><span style="color:#a33b32;font-weight:900;line-height:1.2">✕</span><p style="margin:0;font-size:.83rem;color:#5c6861;line-height:1.4">Don't put signal green on ink. Reverse to paper instead.</p></div>
+</div>
+</div>
+</section>
+</sc-if>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">06</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Colour</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Two brand colours. Everything else is a state.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden;background:#fff">
+<div style="height:120px;background:#16201b"></div>
+<div style="padding:14px 16px"><p style="margin:0 0 2px;font-weight:800;font-size:.9rem">Ink</p><p style="margin:0 0 6px;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">#16201B</p><p style="margin:0;font-size:.8rem;color:#5c6861;line-height:1.4">Type, logotype, primary buttons, sidebar.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden;background:#fff">
+<div style="height:120px;background:#25724d"></div>
+<div style="padding:14px 16px"><p style="margin:0 0 2px;font-weight:800;font-size:.9rem">Signal green</p><p style="margin:0 0 6px;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">#25724D</p><p style="margin:0;font-size:.8rem;color:#5c6861;line-height:1.4">The mark, links, the one thing that needs attention.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden;background:#fff">
+<div style="height:120px;background:#f7f7f2;border-bottom:1px solid #dbe2db"></div>
+<div style="padding:14px 16px"><p style="margin:0 0 2px;font-weight:800;font-size:.9rem">Paper</p><p style="margin:0 0 6px;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">#F7F7F2</p><p style="margin:0;font-size:.8rem;color:#5c6861;line-height:1.4">Canvas. Cards sit on it in white.</p></div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;overflow:hidden;background:#fff">
+<div style="height:120px;background:#8fd3ae"></div>
+<div style="padding:14px 16px"><p style="margin:0 0 2px;font-weight:800;font-size:.9rem">Signal on ink</p><p style="margin:0 0 6px;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">#8FD3AE</p><p style="margin:0;font-size:.8rem;color:#5c6861;line-height:1.4">Green accents on dark surfaces only. Never the mark.</p></div>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<span style="display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:12px;height:12px;border-radius:3px;background:#dbe2db"></span>#DBE2DB borders</span>
+<span style="display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:12px;height:12px;border-radius:3px;background:#eef2ec"></span>#EEF2EC wash</span>
+<span style="display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:12px;height:12px;border-radius:3px;background:#5c6861"></span>#5C6861 secondary text</span>
+<span style="display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:12px;height:12px;border-radius:3px;background:#a33b32"></span>#A33B32 at risk</span>
+<span style="display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:12px;height:12px;border-radius:3px;background:#315d8f"></span>#315D8F informational</span>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">07</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Type</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">One face for the name, one for the work.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;padding:26px">
+<p style="margin:0 0 14px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Logotype — Poppins ExtraBold</p>
+<p style="margin:0 0 10px;font-family:Poppins,sans-serif;font-weight:800;font-size:2rem;letter-spacing:.02em;line-height:1">OPS AGENDA</p>
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5">Uppercase, .02em tracking. Used for the logotype only — never for headings or UI.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;padding:26px">
+<p style="margin:0 0 14px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Interface — Geist</p>
+<p style="margin:0 0 4px;font-size:1.7rem;font-weight:800;letter-spacing:-.02em;line-height:1.1">Three moves protect the deadline</p>
+<p style="margin:0 0 10px;font-size:.95rem;color:#5c6861;line-height:1.5">Regular 400 for body, 600 for labels, 800 for headings and buttons.</p>
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5">Everything a user reads inside the product.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;padding:26px">
+<p style="margin:0 0 14px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Data — Geist Mono</p>
+<p style="margin:0 0 10px;font:700 1.25rem/1.3 'Geist Mono',ui-monospace,monospace">P1 · 06:02 AM · 14 items</p>
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5">Timestamps, priorities, IDs, eyebrow labels. Uppercase with .08em tracking when set small.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">08</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Email signature</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Four lines. No images beyond the mark.</p>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px">
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;padding:40px;display:flex;flex-direction:column;justify-content:center;gap:18px">
+<div style="display:flex;align-items:flex-start;gap:18px">
+<svg width="40" height="32" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing26" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing26)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<div style="display:flex;flex-direction:column;gap:3px;padding-left:18px;border-left:1px solid #dbe2db">
+<p style="margin:0;font-size:.95rem;font-weight:800;letter-spacing:-.01em;color:#16201b">Dana Whitfield</p>
+<p style="margin:0;font-size:.86rem;color:#5c6861">Operations Lead · Ops Agenda</p>
+<p style="margin:6px 0 0;font:600 .78rem/1.5 'Geist Mono',ui-monospace,monospace;color:#5c6861">dana@opsagenda.com<br>+1 415 555 0134</p>
+</div>
+</div>
+</div>
+<div style="display:grid;gap:12px;align-content:start">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">The four lines</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">Name in Geist 800. Role and company on one line. Email and phone in Geist Mono. Nothing else — no quotes, no pronoun blocks, no social icons, no “sent from” lines.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">The mark</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">Signal green at 32px, left of a hairline rule. It is the only image in the signature — mail clients that block images still leave a readable block.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:18px 20px">
+<p style="margin:0 0 8px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Plain-text fallback</p>
+<p style="margin:0;font:600 .78rem/1.6 'Geist Mono',ui-monospace,monospace;color:#16201b">Dana Whitfield<br>Operations Lead · Ops Agenda<br>dana@opsagenda.com · +1 415 555 0134</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">09</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Print &amp; collateral</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Uncoated stock, one ink where possible.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:20px;align-items:start">
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:32px;background:#eef2ec;display:flex;justify-content:center">
+<div style="width:100%;max-width:320px;aspect-ratio:1.545;background:#f7f7f2;border:1px solid #dbe2db;padding:22px;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:9px">
+<svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing27" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing27)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.72rem;letter-spacing:.03em;color:#16201b">OPS AGENDA</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<p style="margin:0;font-size:.86rem;font-weight:800;letter-spacing:-.01em">Dana Whitfield</p>
+<p style="margin:0;font-size:.74rem;color:#5c6861">Operations Lead</p>
+<p style="margin:6px 0 0;font:600 .66rem/1.5 'Geist Mono',ui-monospace,monospace;color:#5c6861">dana@opsagenda.com · +1 415 555 0134</p>
+</div>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Card — front</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">85 × 55mm. Mark top-left, name block on the baseline. Nothing centred.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:32px;background:#eef2ec;display:flex;justify-content:center">
+<div style="width:100%;max-width:320px;aspect-ratio:1.545;background:#16201b;display:grid;place-items:center">
+<svg width="59" height="48" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing28" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing28)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Card — back</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Ink flood, mark reversed to paper at 16mm. No URL, no tagline.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:24px;background:#eef2ec;display:flex;justify-content:center">
+<div style="width:100%;max-width:216px;aspect-ratio:.773;background:#fff;border:1px solid #dbe2db;padding:18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:7px;padding-bottom:12px;border-bottom:1px solid #dbe2db">
+<svg width="25" height="20" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing29" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing29)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.6rem;letter-spacing:.03em">OPS AGENDA</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<span style="height:6px;width:62%;background:#eef2ec;border-radius:2px"></span>
+<span style="height:6px;width:100%;background:#eef2ec;border-radius:2px"></span>
+<span style="height:6px;width:96%;background:#eef2ec;border-radius:2px"></span>
+<span style="height:6px;width:84%;background:#eef2ec;border-radius:2px"></span>
+</div>
+<span style="margin-top:auto;font:600 .58rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">opsagenda.com</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Letterhead</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">A4 and US Letter. Lockup at 20mm above a hairline rule; 20mm margins; domain in mono at the foot.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:24px;background:#eef2ec;display:flex;flex-direction:column;gap:12px;align-items:center">
+<div style="width:100%;max-width:300px;aspect-ratio:1.778;background:#16201b;padding:22px;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="25" height="20" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing30" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing30)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.58rem;letter-spacing:.03em;color:#f7f7f2">OPS AGENDA</span>
+</div>
+<div>
+<p style="margin:0 0 4px;font:700 .56rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#8fd3ae">Q3 operations review</p>
+<p style="margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.02em;color:#f7f7f2;line-height:1.1">One loop, closed every morning.</p>
+</div>
+</div>
+<div style="width:100%;max-width:300px;aspect-ratio:1.778;background:#f7f7f2;border:1px solid #dbe2db;padding:22px;display:flex;flex-direction:column;gap:10px">
+<p style="margin:0;font-size:.9rem;font-weight:800;letter-spacing:-.02em">Where the day is at risk</p>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="height:6px;width:88%;background:#dbe2db;border-radius:2px"></span>
+<span style="height:6px;width:70%;background:#dbe2db;border-radius:2px"></span>
+<span style="height:6px;width:78%;background:#dbe2db;border-radius:2px"></span>
+</div>
+<span style="margin-top:auto;font:600 .56rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">03 / 18</span>
+</div>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Slide masters</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Two masters only: ink section opener, paper content. Mark top-left at 12mm, slide number in mono bottom-right.</p>
+</div>
+</div>
+
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:20px 22px">
+<p style="margin:0 0 10px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Ink values</p>
+<div style="display:grid;gap:8px;font:600 .8rem/1.5 'Geist Mono',ui-monospace,monospace;color:#5c6861">
+<p style="margin:0"><span style="color:#16201b">Ink</span> · #16201B · CMYK 31/0/16/87</p>
+<p style="margin:0"><span style="color:#16201b">Signal green</span> · #25724D · CMYK 68/0/32/55</p>
+<p style="margin:0"><span style="color:#16201b">Paper</span> · #F7F7F2 · CMYK 0/0/2/3</p>
+</div>
+<p style="margin:12px 0 0;color:#5c6861;font-size:.84rem;line-height:1.5;text-wrap:pretty">Confirm a spot match with the printer before any run over 500 — do not let them substitute a stock green.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:20px 22px">
+<p style="margin:0 0 10px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Stock &amp; finish</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.55;text-wrap:pretty">400gsm uncoated for cards, 120gsm uncoated for letterhead. No lamination, no spot gloss, no foil, no rounded corners. The brand is matte.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:20px 22px">
+<p style="margin:0 0 10px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Production</p>
+<p style="margin:0;color:#16201b;font-size:.88rem;line-height:1.55;font-weight:600;text-wrap:pretty">3mm bleed, 5mm safe margin, mark never smaller than 7mm. Supply vector artwork with the logotype outlined — never a raster of the mark.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">10</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Social avatars</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Mark only. The lockup never survives the crop.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start;margin-bottom:20px">
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:36px;background:#eef2ec;display:flex;justify-content:center;gap:20px;align-items:center">
+<span style="width:112px;height:112px;border-radius:999px;background:#16201b;display:grid;place-items:center;flex:0 0 auto">
+<svg width="69" height="56" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing31" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing31)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+</span>
+<span style="width:112px;height:112px;border-radius:999px;background:#f7f7f2;border:1px solid #dbe2db;display:grid;place-items:center;flex:0 0 auto">
+<svg width="69" height="56" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing32" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing32)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+</span>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Circular — X, LinkedIn, Slack</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Ink is primary. Paper only where the platform frame is already dark.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:36px;background:#eef2ec;display:flex;justify-content:center;gap:20px;align-items:center">
+<span style="width:112px;height:112px;border-radius:26px;background:#16201b;display:grid;place-items:center;flex:0 0 auto">
+<svg width="69" height="56" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing33" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing33)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+</span>
+<span style="width:112px;height:112px;background:#25724d;display:grid;place-items:center;flex:0 0 auto">
+<svg width="69" height="56" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing34" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing34)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+</span>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Square — GitHub, YouTube</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Radius 23% for rounded platforms, hard square where the platform doesn't crop. Green only for campaign accounts.</p>
+</div>
+</div>
+
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<div style="padding:36px;background:#eef2ec;display:grid;place-items:center">
+<span style="position:relative;width:160px;height:160px;background:#16201b;display:grid;place-items:center">
+<span style="position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(247,247,242,.45)"></span>
+<span style="position:absolute;inset:19px;border:1px dashed rgba(143,211,174,.6)"></span>
+<svg width="99" height="80" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg" style="position:relative"><defs><mask id="oaRing35" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing35)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg>
+</span>
+</div>
+<div style="padding:14px 18px;border-top:1px solid #dbe2db;background:#f7f7f2">
+<p style="margin:0 0 2px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Safe area</p>
+<p style="margin:0;color:#5c6861;font-size:.82rem">Export square, design for the circle. Mark at 62% of the tile, inside a 12% inset — the ascent must never touch the crop.</p>
+</div>
+</div>
+
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:22px;display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap">
+<span style="display:flex;flex-direction:column;align-items:center;gap:9px"><span style="width:48px;height:48px;border-radius:999px;background:#16201b;display:grid;place-items:center"><svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing36" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing36)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg></span><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">48</span></span>
+<span style="display:flex;flex-direction:column;align-items:center;gap:9px"><span style="width:64px;height:64px;border-radius:999px;background:#16201b;display:grid;place-items:center"><svg width="49" height="40" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing37" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing37)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg></span><span style="font:600 .68rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">64</span></span>
+<p style="margin:0;flex:1;min-width:180px;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">Avatars stop at 48px. Below that platforms serve a favicon — use <span style="font:600 .82rem/1 'Geist Mono',ui-monospace,monospace">favicon.svg</span>, not a downscaled avatar.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:20px 22px">
+<p style="margin:0 0 10px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Export</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.55;text-wrap:pretty">One 1024 × 1024 PNG master per variant, sRGB, no transparency — platforms composite transparent avatars onto white and the reversed mark disappears.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:20px 22px">
+<p style="margin:0 0 10px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Never</p>
+<p style="margin:0;color:#16201b;font-size:.88rem;line-height:1.55;font-weight:600;text-wrap:pretty">No lockup, no initials, no photograph, no seasonal recolour. A person's account uses their face; the company account uses the mark.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 90px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">11</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Assets</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Vector only. Never re-draw the mark.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden">
+<a href="brand/ops-agenda-mark-signal.svg" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid #dbe2db;color:#16201b" style-hover="background:#f7f7f2"><span style="display:flex;align-items:center;gap:14px"><svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing21" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing21)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font-weight:700;font-size:.92rem">Mark — signal green</span></span><span style="font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">ops-agenda-mark-signal.svg</span></a>
+<a href="brand/ops-agenda-mark-ink.svg" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid #dbe2db;color:#16201b" style-hover="background:#f7f7f2"><span style="display:flex;align-items:center;gap:14px"><svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing22" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing22)" fill="none" stroke="#16201b" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#16201b"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#16201b"></path></svg><span style="font-weight:700;font-size:.92rem">Mark — ink</span></span><span style="font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">ops-agenda-mark-ink.svg</span></a>
+<a href="brand/ops-agenda-mark-paper.svg" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid #dbe2db;color:#16201b" style-hover="background:#f7f7f2"><span style="display:flex;align-items:center;gap:14px"><span style="width:29px;height:24px;background:#16201b;display:grid;place-items:center"><svg width="25" height="20" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing23" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing23)" fill="none" stroke="#f7f7f2" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#f7f7f2"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#f7f7f2"></path></svg></span><span style="font-weight:700;font-size:.92rem">Mark — paper (reversed)</span></span><span style="font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">ops-agenda-mark-paper.svg</span></a>
+<a href="brand/favicon.svg" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;color:#16201b" style-hover="background:#f7f7f2"><span style="display:flex;align-items:center;gap:14px"><svg width="30" height="24" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing24" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing24)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg><span style="font-weight:700;font-size:.92rem">Favicon</span></span><span style="font:600 .78rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">favicon.svg</span></a>
+</div>
+<p style="margin:16px 0 0;color:#5c6861;font-size:.86rem;line-height:1.5;max-width:70ch;text-wrap:pretty">The lockup files pair these with Poppins ExtraBold. Outline the logotype before sending anything outside the company — no live text in distributed artwork.</p>
+</section>
+
+<footer style="border-top:1px solid #dbe2db;padding:26px 48px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:10px">
+<svg width="25" height="20" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="oaRing25" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#oaRing25)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font:600 .8rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">Brand guide v1.0 — July 2026</span>
+</div>
+<p style="margin:0;font-size:.84rem;color:#5c6861">Questions about usage? <a href="#" style="font-weight:700">Ask the design team</a></p>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showConstruction&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;showDonts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;logotypeTracking&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2,&quot;min&quot;:0,&quot;max&quot;:8,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;/100 em&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Logotype&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showConstruction: this.props.showConstruction ?? true,
+      showDonts: this.props.showDonts ?? true,
+      tracking: (this.props.logotypeTracking ?? 2) / 100 + "em",
+    };
+  }
+}
+</script>
+</body>
+</html>

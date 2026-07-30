@@ -9,6 +9,8 @@ build/*
 .next/
 .vinext/
 .wrangler/
+packages/infra/cdk.out/
+packages/infra/cdk.context.json
 
 # Logs
 logs/
@@ -24,6 +26,9 @@ logs/
 .env.local
 .env.*.local
 
+# Agent tool state (not project content)
+.claude-flow/
+
 # Claude Code memory bank (local session state)
 CLAUDE-activeContext.md
 CLAUDE-patterns.md
@@ -31,3 +36,23 @@ CLAUDE-decisions.md
 CLAUDE-troubleshooting.md
 CLAUDE-config-variables.md
 CLAUDE-temp.md
+
+# Archived / superseded material (kept locally, not source)
+_archive/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Vercel / tooling
+.vercel
+*.tsbuildinfo
+.eslintcache

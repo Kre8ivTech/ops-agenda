@@ -1,40 +1,47 @@
 {
-  "name": "ops-agenda-priority-site",
+  "name": "ops-agenda",
   "version": "0.1.0",
   "private": true,
+  "description": "AI-powered SaaS that turns email and calendar data into structured, actionable daily and weekly agendas.",
+  "author": "Jeremiah Castillo <info@kre8ivtech.com>",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kre8ivTech/ops-agenda.git"
+  },
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.0.0 <23.0.0",
+    "pnpm": ">=10.0.0"
   },
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
-    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
-    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
-    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
-  },
-  "dependencies": {
-    "drizzle-orm": "0.45.2",
-    "next": "16.2.6",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "dev": "pnpm --filter @ops-agenda/web dev",
+    "build": "pnpm --filter @ops-agenda/web build",
+    "start": "pnpm --filter @ops-agenda/web start",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r test",
+    "test:watch": "pnpm --filter @ops-agenda/web test:watch",
+    "test:coverage": "pnpm --filter @ops-agenda/web test:coverage",
+    "test:e2e": "pnpm --filter @ops-agenda/web test:e2e",
+    "test:e2e:ui": "pnpm --filter @ops-agenda/web test:e2e:ui",
+    "test:rls": "pnpm --filter @ops-agenda/web test:rls",
+    "db:generate": "pnpm --filter @ops-agenda/web db:generate",
+    "db:migrate": "pnpm --filter @ops-agenda/web db:migrate",
+    "db:push": "pnpm --filter @ops-agenda/web db:push",
+    "db:studio": "pnpm --filter @ops-agenda/web db:studio",
+    "synth": "pnpm --filter @ops-agenda/infra synth",
+    "cdk:synth": "pnpm --filter @ops-agenda/infra synth",
+    "cdk:diff": "pnpm --filter @ops-agenda/infra diff",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@tailwindcss/postcss": "4.2.1",
-    "@types/node": "22.19.19",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
-    "tailwindcss": "4.2.1",
-    "typescript": "5.9.3",
-    "vinext": "0.0.50",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
-  },
-  "type": "module"
+    "husky": "^9.1.0",
+    "prettier": "^3.5.0",
+    "prettier-plugin-tailwindcss": "^0.6.11"
+  }
 }

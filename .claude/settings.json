@@ -12,8 +12,10 @@
   },
   "extraKnownMarketplaces": {
     "everything-claude-code": {
-      "source": "github",
-      "repo": "affaan-m/everything-claude-code"
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/everything-claude-code"
+      }
     }
   },
   "enabledPlugins": {

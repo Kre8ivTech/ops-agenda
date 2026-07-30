@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@500;600;700;800&family=Poppins:wght@800&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0}
+body{font-family:Geist,Arial,Helvetica,sans-serif;color:#16201b;background:#f7f7f2;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#25724d;text-decoration:none}
+a:hover{color:#16201b}
+h1,h2,h3,p{margin-top:0}
+input{font:inherit}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#dbe2db;border-radius:99px;border:3px solid #f7f7f2}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#f7f7f2">
+
+<header style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 48px;background:rgba(247,247,242,.93);backdrop-filter:blur(8px);border-bottom:1px solid #dbe2db">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="32" height="26" viewBox="14 6 99 80" xmlns="http://www.w3.org/2000/svg"><defs><mask id="dsMark" maskUnits="userSpaceOnUse" x="14" y="6" width="99" height="80"><rect x="14" y="6" width="99" height="80" fill="#fff"></rect><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#000" stroke="#000" stroke-width="2.6"></path></mask></defs><path d="M50.76 76.83A31 31 0 1 1 82.75 57.61" mask="url(#dsMark)" fill="none" stroke="#25724d" stroke-width="11.2"></path><path d="M47.48 67.87L33.47 43.93L43.13 38.27L48.56 46.79L63.93 24.81L73.11 31.23Z" fill="#25724d"></path><path d="M75.35 32.59L107.38 81.3L94 81.3L75.08 52.55L54.96 81.3L41.29 81.3Z" fill="#25724d"></path></svg>
+<span style="font-family:Poppins,Geist,sans-serif;font-weight:800;font-size:.92rem;letter-spacing:.02em">OPS AGENDA</span>
+</div>
+<nav style="display:flex;align-items:center;gap:26px;font-size:.86rem;font-weight:600;color:#5c6861">
+<a href="#" style="color:#5c6861">Product</a>
+<a href="Ops Agenda - Brand Guide.dc.html" style="color:#5c6861">Brand</a>
+<a href="#" style="color:#16201b;font-weight:800">Design system</a>
+<a href="#" style="display:inline-flex;align-items:center;height:36px;padding:0 15px;border-radius:8px;background:#16201b;color:#fff;font-weight:800" style-hover="background:#25724d">Sign in</a>
+</nav>
+</header>
+
+<section style="padding:72px 48px 56px;max-width:1240px;margin:0 auto">
+<p style="margin:0 0 12px;font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#25724d">Design system — v1.0</p>
+<h1 style="margin:0 0 14px;font-size:3.1rem;line-height:1.02;letter-spacing:-.03em;max-width:20ch;text-wrap:balance">Everything the product is allowed to look like.</h1>
+<p style="margin:0;color:#5c6861;font-size:1.05rem;line-height:1.55;max-width:62ch;text-wrap:pretty">One neutral ramp, one signal colour, three status colours. Two typefaces. Eight-pixel radii and a single elevation. If a screen needs something that isn't here, it needs a decision — not a new value.</p>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">01</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Colour tokens</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Every colour in the product. There are no others.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;overflow:hidden">
+<div style="display:grid;grid-template-columns:56px 1fr 130px 2.2fr;gap:16px;align-items:center;padding:11px 18px;background:#eef2ec;border-bottom:1px solid #dbe2db;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#5c6861"><span></span><span>Token</span><span>Value</span><span>Where it is allowed</span></div>
+<sc-for list="{{ colors }}" as="c" hint-placeholder-count="13">
+<div style="display:grid;grid-template-columns:56px 1fr 130px 2.2fr;gap:16px;align-items:center;padding:12px 18px;border-bottom:1px solid #dbe2db">
+<span style="width:40px;height:28px;border-radius:6px;border:1px solid #dbe2db;background:{{ c.hex }}"></span>
+<span style="font-size:.9rem;font-weight:700">{{ c.name }}</span>
+<span style="font:600 .8rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ c.hex }}</span>
+<span style="font-size:.85rem;color:#5c6861;line-height:1.45">{{ c.use }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">02</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Type ramp</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Geist for reading, Geist Mono for anything a machine produced.</p>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;overflow:hidden">
+<sc-for list="{{ type }}" as="t" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:20px;align-items:baseline;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:{{ t.family }};font-size:{{ t.size }};font-weight:{{ t.weight }};letter-spacing:{{ t.tracking }};color:{{ t.color }};text-transform:{{ t.transform }}">{{ t.sample }}</span>
+<span style="font:600 .74rem/1.4 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ t.spec }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;gap:12px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Weights</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">400 body, 600 labels and nav, 700 emphasis inside sentences, 800 headings and buttons. 900 is reserved for numerals in mono.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Line length</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.5;text-wrap:pretty">Body copy caps at 62ch, supporting text at 44ch. Every paragraph gets <span style="font:600 .84rem/1 'Geist Mono',ui-monospace,monospace">text-wrap: pretty</span>.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:18px 20px">
+<p style="margin:0;color:#16201b;font-size:.88rem;line-height:1.5;font-weight:600;text-wrap:pretty">Mono earns its place: timestamps, IDs, priorities, counts, hex values. Never for prose.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">03</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Space, radius, elevation</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">A 4px base. One shadow.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:22px">
+<p style="margin:0 0 16px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Spacing</p>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ spacing }}" as="s" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:center">
+<span style="font:600 .76rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">{{ s.label }}</span>
+<span style="height:12px;border-radius:3px;background:#dcece2;width:{{ s.w }}"></span>
+</div>
+</sc-for>
+</div>
+<p style="margin:16px 0 0;color:#5c6861;font-size:.85rem;line-height:1.5">Gaps inside a card: 8–14. Between cards: 18–20. Section padding: 48 horizontal, 76 vertical.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:22px">
+<p style="margin:0 0 16px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Radius</p>
+<div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span style="width:60px;height:48px;border:1px solid #dbe2db;background:#eef2ec;border-radius:7px"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">7 · dense</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span style="width:60px;height:48px;border:1px solid #dbe2db;background:#eef2ec;border-radius:8px"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">8 · default</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span style="width:60px;height:48px;border:1px solid #dbe2db;background:#eef2ec;border-radius:12px"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">12 · panel</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span style="width:60px;height:48px;border:1px solid #dbe2db;background:#eef2ec;border-radius:999px"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">999 · pill</span></div>
+</div>
+<p style="margin:16px 0 0;color:#5c6861;font-size:.85rem;line-height:1.5">Pills are only for filters, status and avatars — never for buttons that perform an action.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:22px">
+<p style="margin:0 0 16px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Elevation</p>
+<div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><span style="width:92px;height:60px;border:1px solid #dbe2db;border-radius:8px;background:#fff"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">flat</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><span style="width:92px;height:60px;border:1px solid #dbe2db;border-radius:8px;background:#fff;box-shadow:0 22px 60px rgba(35,45,40,.12)"></span><span style="font:600 .72rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">panel</span></div>
+</div>
+<p style="margin:16px 0 0;color:#5c6861;font-size:.85rem;line-height:1.5"><span style="font:600 .8rem/1.5 'Geist Mono',ui-monospace,monospace">0 22px 60px rgba(35,45,40,.12)</span> — used on floating panels only. Everything else separates with a 1px #DBE2DB border.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">04</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Buttons</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">One primary per view. Everything else is quiet.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<button type="button" style="height:48px;padding:0 20px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-weight:800;cursor:pointer" style-hover="background:#25724d">Open today's brief</button>
+<button type="button" style="height:48px;padding:0 20px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#16201b;font-weight:800;cursor:pointer" style-hover="border-color:#16201b">Secondary</button>
+<button type="button" style="height:48px;padding:0 20px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Quiet</button>
+</div>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">h48 · r8 · 800 · hover → #25724D</p>
+</sc-if>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<button type="button" style="height:36px;padding:0 12px;border:1px solid transparent;border-radius:8px;background:#16201b;color:#fff;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">Handle now</button>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#eef2ec;color:#16201b;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Mark handled</button>
+<button type="button" style="height:36px;padding:0 12px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#5c6861;font-size:.83rem;font-weight:800;cursor:pointer" style-hover="color:#16201b">Dismiss</button>
+</div>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">h36 · r8 · .83rem — toolbars and row actions</p>
+</sc-if>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<button type="button" style="height:34px;padding:0 11px;border:1px solid transparent;border-radius:7px;background:#16201b;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#25724d">Act</button>
+<button type="button" style="height:34px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#eef2ec;color:#16201b;font-size:.82rem;font-weight:800;cursor:pointer" style-hover="background:#dcece2">Defer</button>
+<button type="button" disabled="true" style="height:34px;padding:0 11px;border:1px solid #dbe2db;border-radius:7px;background:#f7f7f2;color:#5c6861;opacity:.55;font-size:.82rem;font-weight:800;cursor:not-allowed">Disabled</button>
+</div>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">h34 · r7 — inside list rows only</p>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">05</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Forms</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Label above, hint below, error replaces the hint.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:grid;gap:14px;align-content:start">
+<label style="display:grid;gap:6px">
+<span style="font-size:.8rem;font-weight:800;color:#16201b">Work email</span>
+<input type="email" value="{{ email }}" onChange="{{ setEmail }}" style="height:46px;padding:0 13px;border:1px solid #dbe2db;border-radius:8px;background:#fff;color:#16201b;outline:none;width:100%" style-focus="border-color:#25724d"></input>
+<span style="font-size:.78rem;color:#5c6861">We only read metadata — never message bodies.</span>
+</label>
+<label style="display:grid;gap:6px">
+<span style="font-size:.8rem;font-weight:800;color:#16201b">Entity name</span>
+<input type="text" placeholder="Vecturae Consultants LLC" style="height:46px;padding:0 13px;border:1px solid #a33b32;border-radius:8px;background:#fff;color:#16201b;outline:none;width:100%"></input>
+<span style="font-size:.78rem;color:#a33b32;font-weight:600">An entity with this name already exists.</span>
+</label>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:grid;gap:16px;align-content:start">
+<div onClick="{{ toggleRemember }}" style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#5c6861;cursor:pointer;user-select:none">
+<span style="width:16px;height:16px;border-radius:4px;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;flex:0 0 auto;background:{{ rememberBg }};border:1.5px solid {{ rememberBorder }}">{{ rememberTick }}</span>
+Keep me signed in on this device
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span onClick="{{ toggleAuto }}" style="width:42px;height:24px;border-radius:999px;background:{{ autoBg }};position:relative;cursor:pointer;flex:0 0 auto;transition:background .15s ease">
+<span style="position:absolute;top:3px;left:{{ autoLeft }};width:18px;height:18px;border-radius:999px;background:#fff;transition:left .15s ease"></span>
+</span>
+<span style="font-size:.85rem;color:#5c6861">Generate the brief at 6:00 automatically</span>
+</div>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">input h46 · r8 · focus #25724D · error #A33B32</p>
+</sc-if>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:grid;gap:12px;align-content:start">
+<p style="margin:0;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Rules</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty">Labels are 800 and always visible — no placeholder-only fields. Placeholders show a real example, never a restatement of the label. Errors name the cause, not the rule.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">06</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Status &amp; priority</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Colour carries meaning here and nowhere else.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<span style="padding:4px 7px;border-radius:999px;background:#dcece2;color:#25724d;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P1</span>
+<span style="padding:4px 7px;border-radius:999px;background:#f2dfdd;color:#a33b32;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P1 AT RISK</span>
+<span style="padding:4px 7px;border-radius:999px;background:#dfe9f5;color:#315d8f;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P2</span>
+<span style="padding:4px 7px;border-radius:999px;background:#eef2ec;color:#5c6861;font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">P3</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:#5c6861"><span style="width:8px;height:8px;border-radius:999px;background:#25724d;box-shadow:0 0 0 3px #dcece2"></span>Synced</span>
+<span style="display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:#5c6861"><span style="width:8px;height:8px;border-radius:999px;background:#a33b32;box-shadow:0 0 0 3px #f2dfdd"></span>Degraded</span>
+<span style="display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:#5c6861"><span style="width:8px;height:8px;border-radius:999px;background:#5c6861;box-shadow:0 0 0 3px #eef2ec"></span>Pending</span>
+</div>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">dot 8px · ring 0 0 0 3px wash</p>
+</sc-if>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border:1px solid #dbe2db;border-radius:8px;background:#f2dfdd">
+<span style="width:7px;height:7px;border-radius:999px;background:#a33b32;margin-top:6px;flex:0 0 auto"></span>
+<p style="margin:0;font-size:.86rem;line-height:1.45;color:#16201b"><strong style="font-weight:800">Outlook sync is degraded.</strong> Two accounts stopped returning calendar data at 4:12 AM.</p>
+</div>
+<div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border:1px solid #dbe2db;border-radius:8px;background:#dfe9f5">
+<span style="width:7px;height:7px;border-radius:999px;background:#315d8f;margin-top:6px;flex:0 0 auto"></span>
+<p style="margin:0;font-size:.86rem;line-height:1.45;color:#16201b">Tomorrow's brief will include the new Vendors module.</p>
+</div>
+<div style="display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border:1px solid #dbe2db;border-radius:8px;background:#dcece2">
+<span style="width:7px;height:7px;border-radius:999px;background:#25724d;margin-top:6px;flex:0 0 auto"></span>
+<p style="margin:0;font-size:.86rem;line-height:1.45;color:#16201b">All 14 items handled. Nothing is at risk before noon.</p>
+</div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:grid;gap:12px;align-content:start">
+<p style="margin:0;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Meaning</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty"><strong style="color:#16201b;font-weight:700">Green</strong> is settled or on track. <strong style="color:#16201b;font-weight:700">Red</strong> is at risk and needs a person today. <strong style="color:#16201b;font-weight:700">Blue</strong> is informational and never urgent. Grey is inert. A screen with three reds has failed the user before they read a word.</p>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">07</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Surfaces</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Metric, panel, list row, evidence quote.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:20px">
+<sc-for list="{{ metrics }}" as="m" hint-placeholder-count="4">
+<div style="display:grid;gap:5px;align-content:start;padding:14px 15px;border:1px solid #dbe2db;border-radius:8px;background:#fff">
+<span style="font-size:.74rem;font-weight:800;text-transform:uppercase;color:#5c6861">{{ m.label }}</span>
+<strong style="font-size:1.35rem;letter-spacing:-.02em;color:{{ m.color }}">{{ m.value }}</strong>
+<span style="font-size:.78rem;color:#5c6861;line-height:1.4;text-wrap:pretty">{{ m.note }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start">
+<div style="border:1px solid #dbe2db;border-radius:8px;background:#fff;box-shadow:0 22px 60px rgba(35,45,40,.12);overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 18px;border-bottom:1px solid #dbe2db;background:#eef2ec">
+<span style="font:800 .74rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#5c6861">Panel header</span>
+<span style="display:inline-flex;align-items:center;gap:7px;font-size:.78rem;color:#5c6861"><span style="width:7px;height:7px;border-radius:999px;background:#25724d;box-shadow:0 0 0 3px #dcece2"></span>Live</span>
+</div>
+<div style="padding:18px">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:12px 13px;border:1px solid #dbe2db;border-left:3px solid {{ r.accent }};border-radius:8px;background:#fff;margin-bottom:9px">
+<span style="padding:4px 7px;border-radius:999px;background:{{ r.pillBg }};color:{{ r.pillFg }};font:800 .7rem/1 'Geist Mono',ui-monospace,monospace">{{ r.p }}</span>
+<span style="font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.title }}</span>
+<span style="font-size:.8rem;color:{{ r.metaFg }};white-space:nowrap;font-weight:{{ r.metaWeight }}">{{ r.meta }}</span>
+</div>
+</sc-for>
+<p style="margin:14px 0 0;color:#5c6861;line-height:1.4;font-size:.82rem;padding-left:11px;border-left:2px solid #dbe2db">Flagged because the vendor replied twice with no owner assigned. Evidence quotes always sit behind a 2px rule and never carry colour.</p>
+</div>
+</div>
+<div style="display:grid;gap:12px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Cards</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty">White on paper, 1px border, radius 8. A card never nests inside another card — use a rule instead.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:18px 20px">
+<p style="margin:0 0 4px;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Rows</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty">A flagged row carries a 3px left border in its status colour. Handled rows drop to a plain border — never a strikethrough, never grey text.</p>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#eef2ec;padding:18px 20px">
+<p style="margin:0;color:#16201b;font-size:.88rem;line-height:1.5;font-weight:600;text-wrap:pretty">Every flagged item must say why it is flagged, in one sentence, in the user's words.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:0 48px 76px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">08</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Navigation &amp; filters</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Ink sidebar, pill filters, counts always visible.</p>
+</div>
+<div style="display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start">
+<div style="border-radius:12px;background:#16201b;padding:18px 14px;display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;background:{{ n.bg }};cursor:pointer">
+<span style="width:6px;height:6px;border-radius:999px;background:{{ n.dot }}"></span>
+<span style="font-size:.86rem;font-weight:{{ n.weight }};color:{{ n.fg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ n.label }}</span>
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;color:{{ n.countFg }}">{{ n.count }}</span>
+</div>
+</sc-for>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+<span onClick="{{ f.onSelect }}" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:999px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }};font-size:.83rem;font-weight:{{ f.weight }};cursor:pointer">{{ f.label }} <span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;opacity:.7">{{ f.count }}</span></span>
+</sc-for>
+</div>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;max-width:60ch;text-wrap:pretty">Filters are pills at h34 and always show a live count. The selected pill fills with the wash, never with signal green — green is reserved for state, not for selection.</p>
+<sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;font:600 .76rem/1.6 'Geist Mono',ui-monospace,monospace;color:#5c6861">sidebar item h~40 · r8 · active rgba(255,255,255,.08) · counts in mono</p>
+</sc-if>
+</div>
+</div>
+</section>
+
+<sc-if value="{{ showVoice }}" hint-placeholder-val="{{ true }}">
+<section style="padding:0 48px 90px;max-width:1240px;margin:0 auto">
+<div style="display:flex;align-items:baseline;gap:14px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid #dbe2db">
+<span style="font:700 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.1em;color:#25724d">09</span>
+<h2 style="margin:0;font-size:1.4rem;letter-spacing:-.02em">Voice &amp; motion</h2>
+<p style="margin:0;color:#5c6861;font-size:.9rem">Say what happened. Move only to explain.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;overflow:hidden">
+<div style="padding:14px 18px;border-bottom:1px solid #dbe2db;background:#eef2ec;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#5c6861">Write this</div>
+<div style="padding:18px 20px;display:grid;gap:10px">
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#16201b">Procurement is the only thing at risk before noon.</p>
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#16201b">Two accounts stopped returning calendar data at 4:12 AM.</p>
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#16201b">Marked handled. It will drop off tomorrow's brief.</p>
+</div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;overflow:hidden">
+<div style="padding:14px 18px;border-bottom:1px solid #dbe2db;background:#f2dfdd;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#a33b32">Not this</div>
+<div style="padding:18px 20px;display:grid;gap:10px">
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#5c6861">Oops! Looks like something needs your attention 🎯</p>
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#5c6861">An error occurred. Please try again later.</p>
+<p style="margin:0;font-size:.9rem;line-height:1.5;color:#5c6861">Great job! You're all caught up!</p>
+</div>
+</div>
+<div style="border:1px solid #dbe2db;border-radius:12px;background:#fff;padding:24px;display:grid;gap:12px;align-content:start">
+<p style="margin:0;font:700 .7rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Motion</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty">150ms ease for state changes, 220ms for panels entering. Nothing animates on load, nothing bounces, nothing loops. If motion isn't showing a cause and effect, remove it.</p>
+<p style="margin:0;color:#5c6861;font-size:.88rem;line-height:1.5;text-wrap:pretty">Hover is a colour change only — no lift, no scale, no shadow growth.</p>
+</div>
+</div>
+</section>
+</sc-if>
+
+<footer style="border-top:1px solid #dbe2db;padding:26px 48px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+<span style="font:600 .8rem/1 'Geist Mono',ui-monospace,monospace;color:#5c6861">Design system v1.0 — July 2026</span>
+<p style="margin:0;font-size:.84rem;color:#5c6861">Brand marks and lockups live in the <a href="Ops Agenda - Brand Guide.dc.html" style="font-weight:700">brand guide</a>.</p>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showSpecs&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;showVoice&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { email: "dana@opsagenda.com", remember: true, auto: true, filter: "Needs attention" };
+
+  renderVals() {
+    const s = this.state;
+    return {
+      showSpecs: this.props.showSpecs ?? true,
+      showVoice: this.props.showVoice ?? true,
+
+      email: s.email,
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      toggleRemember: () => this.setState({ remember: !s.remember }),
+      rememberBg: s.remember ? "#25724d" : "#fff",
+      rememberBorder: s.remember ? "#25724d" : "#dbe2db",
+      rememberTick: s.remember ? "✓" : "",
+      toggleAuto: () => this.setState({ auto: !s.auto }),
+      autoBg: s.auto ? "#25724d" : "#dbe2db",
+      autoLeft: s.auto ? "21px" : "3px",
+
+      colors: [
+        { name: "Ink", hex: "#16201B", use: "Body type, headings, primary buttons, sidebar." },
+        { name: "Signal green", hex: "#25724D", use: "The mark, links, on-track state, primary hover." },
+        { name: "Paper", hex: "#F7F7F2", use: "App canvas. Cards sit on it in white." },
+        { name: "White", hex: "#FFFFFF", use: "Cards, inputs, table rows." },
+        { name: "Border", hex: "#DBE2DB", use: "Every 1px division. Never a shadow instead." },
+        { name: "Wash", hex: "#EEF2EC", use: "Table headers, quiet buttons, inert pills." },
+        { name: "Green wash", hex: "#DCECE2", use: "Settled pills, status rings, icon tiles." },
+        { name: "Secondary text", hex: "#5C6861", use: "Supporting copy, labels, meta. Never on ink." },
+        { name: "Green on ink", hex: "#8FD3AE", use: "Green accents on dark surfaces only." },
+        { name: "At risk", hex: "#A33B32", use: "Needs a person today. Errors, degraded sync." },
+        { name: "At-risk wash", hex: "#F2DFDD", use: "Backing for at-risk pills and banners." },
+        { name: "Informational", hex: "#315D8F", use: "Neutral notices. Never urgent." },
+        { name: "Info wash", hex: "#DFE9F5", use: "Backing for informational pills and banners." },
+      ],
+
+      type: [
+        { sample: "Your day, already prioritized", family: "Geist", size: "2.3rem", weight: 800, tracking: "-.02em", color: "#16201b", transform: "none", spec: "Display · 2.3rem / 800 / -.02em" },
+        { sample: "Three moves protect the deadline", family: "Geist", size: "1.7rem", weight: 800, tracking: "-.02em", color: "#16201b", transform: "none", spec: "Heading · 1.7rem / 800" },
+        { sample: "Resolve procurement follow-up", family: "Geist", size: "1rem", weight: 700, tracking: "0", color: "#16201b", transform: "none", spec: "Row title · 1rem / 700" },
+        { sample: "Sign in to open today's brief.", family: "Geist", size: ".95rem", weight: 400, tracking: "0", color: "#5c6861", transform: "none", spec: "Body · .95rem / 400 / 1.5" },
+        { sample: "Work email", family: "Geist", size: ".8rem", weight: 800, tracking: "0", color: "#16201b", transform: "none", spec: "Field label · .8rem / 800" },
+        { sample: "Capacity", family: "Geist", size: ".74rem", weight: 800, tracking: "0", color: "#5c6861", transform: "uppercase", spec: "Eyebrow · .74rem / 800 / caps" },
+        { sample: "P1 · 06:02 AM · 14 items", family: "'Geist Mono', ui-monospace, monospace", size: ".8rem", weight: 700, tracking: ".02em", color: "#5c6861", transform: "none", spec: "Data · Geist Mono .8rem / 700" },
+      ],
+
+      spacing: [
+        { label: "4", w: "4px" }, { label: "8", w: "8px" }, { label: "12", w: "12px" },
+        { label: "18", w: "18px" }, { label: "24", w: "24px" }, { label: "48", w: "48px" },
+      ],
+
+      metrics: [
+        { label: "At risk", value: "1", color: "#a33b32", note: "Procurement follow-up, due 11:00." },
+        { label: "Handled today", value: "9", color: "#25724d", note: "Six cleared before the 6:00 brief." },
+        { label: "Capacity", value: "72%", color: "#16201b", note: "Four hours of meetings booked." },
+        { label: "Sources", value: "6 of 7", color: "#16201b", note: "Outlook calendar is degraded." },
+      ],
+
+      rows: [
+        { p: "P1", title: "Finalize executive readout", meta: "4:00 PM", accent: "#25724d", pillBg: "#dcece2", pillFg: "#25724d", metaFg: "#5c6861", metaWeight: 400 },
+        { p: "P1", title: "Resolve procurement follow-up", meta: "At risk", accent: "#a33b32", pillBg: "#f2dfdd", pillFg: "#a33b32", metaFg: "#a33b32", metaWeight: 700 },
+        { p: "P2", title: "Review revised launch checklist", meta: "Friday", accent: "#dbe2db", pillBg: "#dfe9f5", pillFg: "#315d8f", metaFg: "#5c6861", metaWeight: 400 },
+      ],
+
+      nav: [
+        { label: "Today", count: "14", bg: "rgba(255,255,255,.08)", fg: "#fff", weight: 800, dot: "#8fd3ae", countFg: "#8fd3ae" },
+        { label: "Mail", count: "7", bg: "transparent", fg: "rgba(255,255,255,.72)", weight: 600, dot: "rgba(255,255,255,.28)", countFg: "rgba(255,255,255,.5)" },
+        { label: "Pipeline", count: "3", bg: "transparent", fg: "rgba(255,255,255,.72)", weight: 600, dot: "rgba(255,255,255,.28)", countFg: "rgba(255,255,255,.5)" },
+        { label: "Vendors", count: "2", bg: "transparent", fg: "rgba(255,255,255,.72)", weight: 600, dot: "rgba(255,255,255,.28)", countFg: "rgba(255,255,255,.5)" },
+        { label: "Compliance", count: "1", bg: "transparent", fg: "rgba(255,255,255,.72)", weight: 600, dot: "#a33b32", countFg: "rgba(255,255,255,.5)" },
+      ],
+
+      filters: ["All", "Needs attention", "Settled"].map((label, i) => {
+        const on = s.filter === label;
+        return {
+          label,
+          count: ["24", "6", "18"][i],
+          onSelect: () => this.setState({ filter: label }),
+          bg: on ? "#eef2ec" : "#fff",
+          border: on ? "#16201b" : "#dbe2db",
+          fg: on ? "#16201b" : "#5c6861",
+          weight: on ? 800 : 600,
+        };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

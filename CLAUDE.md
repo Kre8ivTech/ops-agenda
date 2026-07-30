@@ -8,20 +8,20 @@ answers before making changes.
 
 ## AI Guidance
 
-* Ignore GEMINI.md and GEMINI-*.md files
-* To save main context space, for code searches, inspections, troubleshooting or analysis, use code-searcher subagent where appropriate - giving the subagent full context background for the task(s) you assign it.
-* ALWAYS read and understand relevant files before proposing code edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you MUST open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
-* After receiving tool results, carefully reflect on their quality and determine optimal next steps before proceeding. Use your thinking to plan and iterate based on this new information, and then take the best next action.
-* After completing a task that involves tool use, provide a quick summary of what you've done.
-* For maximum efficiency, whenever you need to perform multiple independent operations, invoke all relevant tools simultaneously rather than sequentially.
-* Before you finish, please verify your solution
-* Do what has been asked; nothing more, nothing less.
-* NEVER create files unless they're absolutely necessary for achieving your goal.
-* ALWAYS prefer editing an existing file to creating a new one.
-* NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
-* If you create any temporary new files, scripts, or helper files for iteration, clean up these files by removing them at the end of the task.
-* When you update or modify core context files, also update markdown documentation and memory bank
-* When asked to commit changes, exclude CLAUDE.md and CLAUDE-*.md referenced memory bank system files from any commits. Never delete these files.
+- Ignore GEMINI.md and GEMINI-*.md files
+- To save main context space, for code searches, inspections, troubleshooting or analysis, use code-searcher subagent where appropriate - giving the subagent full context background for the task(s) you assign it.
+- ALWAYS read and understand relevant files before proposing code edits. Do not speculate about code you have not inspected. If the user references a specific file/path, you MUST open and inspect it before explaining or proposing fixes. Be rigorous and persistent in searching code for key facts. Thoroughly review the style, conventions, and abstractions of the codebase before implementing new features or abstractions.
+- After receiving tool results, carefully reflect on their quality and determine optimal next steps before proceeding. Use your thinking to plan and iterate based on this new information, and then take the best next action.
+- After completing a task that involves tool use, provide a quick summary of what you've done.
+- For maximum efficiency, whenever you need to perform multiple independent operations, invoke all relevant tools simultaneously rather than sequentially.
+- Before you finish, please verify your solution
+- Do what has been asked; nothing more, nothing less.
+- NEVER create files unless they're absolutely necessary for achieving your goal.
+- ALWAYS prefer editing an existing file to creating a new one.
+- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+- If you create any temporary new files, scripts, or helper files for iteration, clean up these files by removing them at the end of the task.
+- When you update or modify core context files, also update markdown documentation and memory bank
+- When asked to commit changes, exclude CLAUDE.md and CLAUDE-*.md referenced memory bank system files from any commits. Never delete these files.
 
 <investigate_before_answering>
 Never speculate about code you have not opened. If the user references a specific file, you MUST read the file before answering. Make sure to investigate and read relevant files BEFORE answering questions about the codebase. Never make any claims about code before investigating unless you are certain of the correct answer - give grounded and hallucination-free answers.
@@ -41,12 +41,12 @@ This project uses a structured memory bank system with specialized context files
 
 ### Core Context Files
 
-* **CLAUDE-activeContext.md** - Current session state, goals, and progress (if exists)
-* **CLAUDE-patterns.md** - Established code patterns and conventions (if exists)
-* **CLAUDE-decisions.md** - Architecture decisions and rationale (if exists)
-* **CLAUDE-troubleshooting.md** - Common issues and proven solutions (if exists)
-* **CLAUDE-config-variables.md** - Configuration variables reference (if exists)
-* **CLAUDE-temp.md** - Temporary scratch pad (only read when referenced)
+- **CLAUDE-activeContext.md** - Current session state, goals, and progress (if exists)
+- **CLAUDE-patterns.md** - Established code patterns and conventions (if exists)
+- **CLAUDE-decisions.md** - Architecture decisions and rationale (if exists)
+- **CLAUDE-troubleshooting.md** - Common issues and proven solutions (if exists)
+- **CLAUDE-config-variables.md** - Configuration variables reference (if exists)
+- **CLAUDE-temp.md** - Temporary scratch pad (only read when referenced)
 
 **Important:** Always reference the active context file first to understand what's currently being worked on and maintain session continuity.
 
@@ -58,17 +58,66 @@ When asked to backup Memory Bank System files, you will copy the core context fi
 
 When working on Claude Code features (hooks, skills, subagents, MCP servers, etc.), use the `claude-docs-consultant` skill to selectively fetch official documentation from docs.claude.com.
 
+## Development Commands
+
+**Package manager:** pnpm@10 (enforced via `engines` in `package.json`). Do not use npm or yarn.
+
+```bash
+pnpm dev              # Start Next.js dev server (localhost:3000)
+pnpm build            # Production build (Next.js standalone output)
+pnpm typecheck        # tsc --noEmit
+pnpm lint             # ESLint
+pnpm lint:fix         # ESLint with auto-fix
+pnpm format           # Prettier --write
+pnpm format:check     # Prettier --check (used in CI)
+pnpm test             # Vitest unit tests (one-shot)
+pnpm test:watch       # Vitest in watch mode
+pnpm test:coverage    # Vitest with v8 coverage (50% thresholds)
+pnpm test:e2e         # Playwright end-to-end tests
+pnpm verify           # Full gate: typecheck + lint + format:check + test + build
+```
+
+Run a single test file: `pnpm vitest run src/lib/priority.test.ts`
+
+**CI note:** Set `SKIP_ENV_VALIDATION=true` to bypass t3-env validation when secrets are not present (typecheck-only CI jobs). Copy `.env.example` to `.env.local` for local setup.
+
+## Code Architecture
+
+### Source layout
+
+```
+src/
+  app/          # Next.js App Router — pages and layouts only
+  lib/          # Pure, framework-agnostic utilities and shared types
+    env.ts      # t3-env config — fails the BUILD if vars are missing or malformed
+    priority.ts # Priority taxonomy (P1/P2/P3/FYSA), Zod schemas, sort + parse helpers
+e2e/            # Playwright end-to-end specs (excluded from Vitest)
+```
+
+### Key patterns
+
+- **Environment validation** (`src/lib/env.ts`): Uses `@t3-oss/env-nextjs`. Every new service variable must be declared here with a Zod schema before use. Server vars are stripped from the client bundle automatically. Do not declare a var until it is actually wired up — unused required vars break local dev.
+
+- **AI output parsing** (`src/lib/priority.ts`): All AI classification responses are parsed through `classificationSchema` (Zod). `parseClassification()` returns a discriminated result `{ ok: true, value } | { ok: false, error }` — never throws — so callers can degrade gracefully to raw data per the PRD requirement.
+
+- **Test split**: Unit tests live in `src/**/*.test.ts` under Vitest (jsdom). End-to-end tests live in `e2e/` under Playwright. The Vitest config explicitly excludes `e2e/` to prevent overlap.
+
+- **Module boundaries**: Each core module (Daily Ops Brief, Priority Inbox, Calendar Intelligence, etc.) must stay independently deployable. Cross-module communication goes through SQS events — no direct coupling.
+
 ## Project Overview
 
-**Ops Agenda** is an AI-powered SaaS application that transforms email and calendar data into structured, actionable daily/weekly agendas. Built with Next.js, Supabase, OpenAI, deployed on Vercel.
+**Ops Agenda** is an AI-powered SaaS application that transforms email and calendar data into structured, actionable daily/weekly agendas. Built with Next.js on AWS (ECS + RDS + Cognito + Bedrock).
 
 ### North Star
+
 Daily Ops Brief — a single-screen dashboard with narrative summary, timeline, Top 3 priorities, due-outs, meeting prep, and focus blocks.
 
 ### Core Modules
+
 Daily Ops Brief, Priority Inbox (P1/P2/P3/FYSA), Due-Out Detection, Calendar Intelligence, Weekly Outlook, Draft Reply, M365 Sync, AI Pipeline, Onboarding
 
 ### Key Constraints
+
 - No raw email bodies stored — metadata and AI summaries only
 - No autonomous actions — AI suggests, user approves
 - JSON-only AI output — schema validated on every response
@@ -77,15 +126,28 @@ Daily Ops Brief, Priority Inbox (P1/P2/P3/FYSA), Due-Out Detection, Calendar Int
 - SOC 2 aligned (encryption, audit logs, tenant isolation)
 
 ### Identity
+
 - **Company:** Kre8ivTech | **Author:** Jeremiah Castillo | **License:** Proprietary
 - **Contact:** info@kre8ivtech.com | **Repo:** https://github.com/Kre8ivTech/ops-agenda
 
 ### Tech Stack
-- **Framework:** Next.js (App Router) | **DB:** Supabase (PostgreSQL) | **AI:** OpenAI (GPT-4o)
-- **Hosting:** Vercel | **Jobs:** Inngest | **Cache:** Upstash Redis | **Storage:** Supabase Storage
-- **Auth:** Microsoft OAuth 2.0 (NextAuth.js) | **Payments:** Stripe
+
+- **Framework:** Next.js 15+ (App Router, TypeScript strict, standalone output)
+- **DB:** Amazon RDS PostgreSQL (forced RLS, IAM auth)
+- **AI:** Amazon Bedrock (Phase 2), OpenAI reserved as fallback
+- **Hosting:** Amazon ECS (EC2 launch type) + CloudFront
+- **Jobs:** Amazon SQS + Lambda + EventBridge
+- **Cache:** Deferred to Phase 2/3 (ElastiCache has no free-tier coverage)
+- **Storage:** Amazon S3 (audit mirror, exports, attachments)
+- **Secrets:** AWS Systems Manager Parameter Store (Standard tier)
+- **Auth:** Amazon Cognito (Hosted UI, OIDC + PKCE, MFA ready)
+- **IaC / CI/CD:** AWS CDK (TypeScript) + GitHub Actions (OIDC)
+- **Payments:** Stripe (Phase 3)
+
+> **Decision note (2026-07-29):** The project owner selected AWS over the previously documented Supabase/Vercel/Inngest stack to maintain direct control over security, VPC networking, tenant isolation, and SOC 2 evidence collection while maximizing free-tier usage. See `TECHSTACK.md` for full rationale.
 
 ### Key References
+
 - PRD: Product Requirements Document v1.0 (Approved for Build, 2026-02-09)
 - Tech stack: `TECHSTACK.md` | Requirements: `setup/docs/TECHNOLOGY_DISCOVERY.md`
 - Governance: `setup/docs/AGENT_HANDBOOK.md` (source of truth)
@@ -126,39 +188,39 @@ ls -la              # OK for single directory view
 
 ### BANNED - Never Use These Slow Tools
 
-* ❌ `tree` - NOT INSTALLED, use `fd` instead
-* ❌ `find` - use `fd` or `rg --files`
-* ❌ `grep` or `grep -r` - use `rg` instead
-* ❌ `ls -R` - use `rg --files` or `fd`
-* ❌ `cat file | grep` - use `rg pattern file`
+- ❌ `tree` - NOT INSTALLED, use `fd` instead
+- ❌ `find` - use `fd` or `rg --files`
+- ❌ `grep` or `grep -r` - use `rg` instead
+- ❌ `ls -R` - use `rg --files` or `fd`
+- ❌ `cat file | grep` - use `rg pattern file`
 
 ### Use These Faster Tools Instead
 
 ```bash
-# ripgrep (rg) - content search 
+# ripgrep (rg) - content search
 rg "search_term"                # Search in all files
 rg -i "case_insensitive"        # Case-insensitive
 rg "pattern" -t py              # Only Python files
 rg "pattern" -g "*.md"          # Only Markdown
 rg -1 "pattern"                 # Filenames with matches
 rg -c "pattern"                 # Count matches per file
-rg -n "pattern"                 # Show line numbers 
+rg -n "pattern"                 # Show line numbers
 rg -A 3 -B 3 "error"            # Context lines
 rg " (TODO| FIXME | HACK)"      # Multiple patterns
 
-# ripgrep (rg) - file listing 
+# ripgrep (rg) - file listing
 rg --files                      # List files (respects •gitignore)
-rg --files | rg "pattern"       # Find files by name 
-rg --files -t md                # Only Markdown files 
+rg --files | rg "pattern"       # Find files by name
+rg --files -t md                # Only Markdown files
 
-# fd - file finding 
-fd -e js                        # All •js files (fast find) 
-fd -x command {}                # Exec per-file 
-fd -e md -x ls -la {}           # Example with ls 
+# fd - file finding
+fd -e js                        # All •js files (fast find)
+fd -x command {}                # Exec per-file
+fd -e md -x ls -la {}           # Example with ls
 
-# jq - JSON processing 
-jq. data.json                   # Pretty-print 
-jq -r .name file.json           # Extract field 
+# jq - JSON processing
+jq. data.json                   # Pretty-print
+jq -r .name file.json           # Extract field
 jq '.id = 0' x.json             # Modify field
 ```
 

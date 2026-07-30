@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+# 1. Preserve the machine-wide secret scan. Husky repoints core.hooksPath at
+#    .husky for this repo, which would otherwise silently disable the global
+#    hook at ~/.config/ai-code-trust/git-hooks/pre-commit. Chain it explicitly.
+GLOBAL_HOOK="$HOME/.config/ai-code-trust/git-hooks/pre-commit"
+if [ -x "$GLOBAL_HOOK" ]; then
+  "$GLOBAL_HOOK" || {
+    echo "pre-commit: secret scan failed - commit aborted." >&2
+    exit 1
+  }
+fi
+
+# 2. Lint and format only what is staged. Probe for the real binary: an empty
+#    node_modules/ directory exists before install completes.
+if [ ! -x node_modules/.bin/lint-staged ]; then
+  echo "pre-commit: lint-staged not installed - skipping lint/format." >&2
+  echo "            run 'pnpm install' to enable this gate." >&2
+  exit 0
+fi
+node_modules/.bin/lint-staged

@@ -1,0 +1,12 @@
+# ai-trust-scan / Semgrep exclusions
+# These paths contain intentionally fake/example secrets in skill documentation,
+# generated design-tool HTML/JS, and internal setup tooling; they are not
+# production code and should not block the commit gate.
+setup/skills/
+setup/tools/
+design_handoff_ops_agenda_platform/design/
+
+# pnpm-workspace.yaml intentionally omits minimumReleaseAge and trustPolicy
+# because the Next.js 16 / Vite / Rollup platform-binary release cycle causes
+# false-positive "trust downgrade" install failures. blockExoticSubdeps remains.
+pnpm-workspace.yaml

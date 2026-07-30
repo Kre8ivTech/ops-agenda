@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800;900&family=Geist+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0}
+body{font-family:Geist,Arial,Helvetica,sans-serif;color:#16201b;background:#f7f7f2;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#25724d;text-decoration:none}
+a:hover{color:#16201b}
+h1,h2,h3,p{margin-top:0}
+</style>
+</helmet>
+
+<section style="padding:56px 56px 80px;display:flex;flex-direction:column;gap:32px">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap;max-width:1500px">
+<div style="max-width:56ch">
+<p style="margin:0 0 8px;color:#25724d;font:800 .74rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase">Turn 1 — Identity exploration</p>
+<h1 style="margin:0 0 10px;font-size:2rem;line-height:1.05;letter-spacing:-.02em">Ops Agenda mark &amp; logo</h1>
+<p style="margin:0;color:#5c6861;line-height:1.5;text-wrap:pretty">Five directions, all built on the product palette already in the prototype. Each is shown as a bare mark, a horizontal lockup, a 24px chip on ink, and an app tile — the four places it actually has to survive.</p>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 11px/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:11px;height:11px;border-radius:3px;background:#16201b"></span>#16201B ink</span>
+<span style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 11px/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:11px;height:11px;border-radius:3px;background:#25724d"></span>#25724D signal</span>
+<span style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #dbe2db;font:600 11px/1 'Geist Mono',ui-monospace,monospace;color:#5c6861"><span style="width:11px;height:11px;border-radius:3px;background:#f7f7f2;border:1px solid #dbe2db"></span>#F7F7F2 paper</span>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+
+<div id="1a" style="width:452px;border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(22,32,27,.05)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="padding:5px 9px;border-radius:6px;background:#16201b;color:#fff;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace">1a</span>
+<span style="font-weight:800;letter-spacing:-.01em">Ranked Stack</span>
+</div>
+<div style="height:210px;display:grid;place-items:center;background:#f7f7f2;border-bottom:1px solid #dbe2db">
+<svg width="104" height="104" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="4" width="19" height="3.6" rx="1.8" fill="#25724d"></rect><rect x="2.5" y="10.2" width="13.5" height="3.6" rx="1.8" fill="#16201b"></rect><rect x="2.5" y="16.4" width="8" height="3.6" rx="1.8" fill="#16201b" opacity=".38"></rect></svg>
+</div>
+<div style="padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="4" width="19" height="3.6" rx="1.8" fill="#25724d"></rect><rect x="2.5" y="10.2" width="13.5" height="3.6" rx="1.8" fill="#16201b"></rect><rect x="2.5" y="16.4" width="8" height="3.6" rx="1.8" fill="#16201b" opacity=".38"></rect></svg>
+<span style="font-weight:800;font-size:1.22rem;letter-spacing:-.02em">{{ wordmark }}</span>
+</div>
+<sc-if value="{{ showProofs }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:10px;align-items:stretch">
+<div style="flex:1;display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;background:#16201b">
+<svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="4" width="19" height="3.6" rx="1.8" fill="#8fd3ae"></rect><rect x="2.5" y="10.2" width="13.5" height="3.6" rx="1.8" fill="#f7f7f2"></rect><rect x="2.5" y="16.4" width="8" height="3.6" rx="1.8" fill="#f7f7f2" opacity=".42"></rect></svg>
+<span style="color:#f7f7f2;font-weight:800;font-size:.88rem;letter-spacing:-.01em">{{ wordmark }}</span>
+</div>
+<div style="width:56px;height:56px;border-radius:13px;background:#dcece2;display:grid;place-items:center;flex:0 0 auto">
+<svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="4" width="19" height="3.6" rx="1.8" fill="#25724d"></rect><rect x="2.5" y="10.2" width="13.5" height="3.6" rx="1.8" fill="#16201b"></rect><rect x="2.5" y="16.4" width="8" height="3.6" rx="1.8" fill="#16201b" opacity=".38"></rect></svg>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showRationale }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">The product in one glyph: a prioritized list, P1 in signal green. Strongest at 16px of any option here and it echoes the priority pills in the brief.</p>
+</sc-if>
+</div>
+</div>
+
+<div id="1b" style="width:452px;border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(22,32,27,.05)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="padding:5px 9px;border-radius:6px;background:#16201b;color:#fff;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace">1b</span>
+<span style="font-weight:800;letter-spacing:-.01em">Converge</span>
+</div>
+<div style="height:210px;display:grid;place-items:center;background:#f7f7f2;border-bottom:1px solid #dbe2db">
+<svg width="104" height="104" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-linecap="round"><path d="M2.8 5.2h3.4a5 5 0 0 1 5 5v1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 18.8h3.4a5 5 0 0 0 5-5v-1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 12h8.4" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M12.6 12h8.6" stroke="#25724d" stroke-width="3.4"></path></g></svg>
+</div>
+<div style="padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-linecap="round"><path d="M2.8 5.2h3.4a5 5 0 0 1 5 5v1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 18.8h3.4a5 5 0 0 0 5-5v-1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 12h8.4" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M12.6 12h8.6" stroke="#25724d" stroke-width="3.4"></path></g></svg>
+<span style="font-weight:800;font-size:1.22rem;letter-spacing:-.02em">{{ wordmark }}</span>
+</div>
+<sc-if value="{{ showProofs }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:10px;align-items:stretch">
+<div style="flex:1;display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;background:#16201b">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-linecap="round"><path d="M3.4 6.2h2.4a5.8 5.8 0 0 1 5.8 5.8" stroke="#f7f7f2" stroke-width="3" opacity=".55"></path><path d="M3.4 17.8h2.4a5.8 5.8 0 0 0 5.8-5.8" stroke="#f7f7f2" stroke-width="3" opacity=".55"></path><path d="M11.6 12h9" stroke="#8fd3ae" stroke-width="4"></path></g></svg>
+<span style="color:#f7f7f2;font-weight:800;font-size:.88rem;letter-spacing:-.01em">{{ wordmark }}</span>
+</div>
+<div style="width:56px;height:56px;border-radius:13px;background:#dcece2;display:grid;place-items:center;flex:0 0 auto">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-linecap="round"><path d="M2.8 5.2h3.4a5 5 0 0 1 5 5v1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 18.8h3.4a5 5 0 0 0 5-5v-1.8" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M2.8 12h8.4" stroke="#16201b" stroke-width="2.3" opacity=".45"></path><path d="M12.6 12h8.6" stroke="#25724d" stroke-width="3.4"></path></g></svg>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showRationale }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">Three scattered inputs resolving into one line — literally the 6:00 brief. Most conceptual of the set — the small sizes run a simplified two-stroke cut, shown on the ink chip.</p>
+</sc-if>
+</div>
+</div>
+
+<div id="1c" style="width:452px;border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(22,32,27,.05)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="padding:5px 9px;border-radius:6px;background:#16201b;color:#fff;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace">1c</span>
+<span style="font-weight:800;letter-spacing:-.01em">Agenda Sheet</span>
+</div>
+<div style="height:210px;display:grid;place-items:center;background:#f7f7f2;border-bottom:1px solid #dbe2db">
+<svg width="104" height="104" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.6 3.4h8.2L20.2 9.8v10.8a1.8 1.8 0 0 1-1.8 1.8H5.6a1.8 1.8 0 0 1-1.8-1.8V5.2a1.8 1.8 0 0 1 1.8-1.8Z" stroke="#16201b" stroke-width="1.8"></path><path d="M13.8 3.4v6.4h6.4" stroke="#16201b" stroke-width="1.8"></path><rect x="7.2" y="12.7" width="9.6" height="2.2" rx="1.1" fill="#25724d"></rect><rect x="7.2" y="16.8" width="6.2" height="2.2" rx="1.1" fill="#16201b" opacity=".32"></rect></svg>
+</div>
+<div style="padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.6 3.4h8.2L20.2 9.8v10.8a1.8 1.8 0 0 1-1.8 1.8H5.6a1.8 1.8 0 0 1-1.8-1.8V5.2a1.8 1.8 0 0 1 1.8-1.8Z" stroke="#16201b" stroke-width="1.8"></path><path d="M13.8 3.4v6.4h6.4" stroke="#16201b" stroke-width="1.8"></path><rect x="7.2" y="12.7" width="9.6" height="2.2" rx="1.1" fill="#25724d"></rect><rect x="7.2" y="16.8" width="6.2" height="2.2" rx="1.1" fill="#16201b" opacity=".32"></rect></svg>
+<span style="font-weight:800;font-size:1.22rem;letter-spacing:-.02em">{{ wordmark }}</span>
+</div>
+<sc-if value="{{ showProofs }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:10px;align-items:stretch">
+<div style="flex:1;display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;background:#16201b">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.6 3.4h8.2L20.2 9.8v10.8a1.8 1.8 0 0 1-1.8 1.8H5.6a1.8 1.8 0 0 1-1.8-1.8V5.2a1.8 1.8 0 0 1 1.8-1.8Z" stroke="#f7f7f2" stroke-width="1.8"></path><path d="M13.8 3.4v6.4h6.4" stroke="#f7f7f2" stroke-width="1.8"></path><rect x="7.2" y="12.7" width="9.6" height="2.2" rx="1.1" fill="#8fd3ae"></rect><rect x="7.2" y="16.8" width="6.2" height="2.2" rx="1.1" fill="#f7f7f2" opacity=".4"></rect></svg>
+<span style="color:#f7f7f2;font-weight:800;font-size:.88rem;letter-spacing:-.01em">{{ wordmark }}</span>
+</div>
+<div style="width:56px;height:56px;border-radius:13px;background:#dcece2;display:grid;place-items:center;flex:0 0 auto">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.6 3.4h8.2L20.2 9.8v10.8a1.8 1.8 0 0 1-1.8 1.8H5.6a1.8 1.8 0 0 1-1.8-1.8V5.2a1.8 1.8 0 0 1 1.8-1.8Z" stroke="#16201b" stroke-width="1.8"></path><path d="M13.8 3.4v6.4h6.4" stroke="#16201b" stroke-width="1.8"></path><rect x="7.2" y="12.7" width="9.6" height="2.2" rx="1.1" fill="#25724d"></rect><rect x="7.2" y="16.8" width="6.2" height="2.2" rx="1.1" fill="#16201b" opacity=".32"></rect></svg>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showRationale }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">The safest, most literal read — a daily sheet with today's top item called out. Instantly legible, least ownable: document glyphs are crowded territory.</p>
+</sc-if>
+</div>
+</div>
+
+<div id="1d" style="width:452px;border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(22,32,27,.05)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="padding:5px 9px;border-radius:6px;background:#16201b;color:#fff;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace">1d</span>
+<span style="font-weight:800;letter-spacing:-.01em">Six O'Clock</span>
+</div>
+<div style="height:210px;display:grid;place-items:center;background:#f7f7f2;border-bottom:1px solid #dbe2db">
+<svg width="104" height="104" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.6 15.6a8.4 8.4 0 0 1 16.8 0Z" fill="#25724d"></path><rect x="2.4" y="17.4" width="19.2" height="2.4" rx="1.2" fill="#16201b"></rect><rect x="7.6" y="21" width="8.8" height="2.4" rx="1.2" fill="#16201b" opacity=".3"></rect></svg>
+</div>
+<div style="padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.6 15.6a8.4 8.4 0 0 1 16.8 0Z" fill="#25724d"></path><rect x="2.4" y="17.4" width="19.2" height="2.4" rx="1.2" fill="#16201b"></rect><rect x="7.6" y="21" width="8.8" height="2.4" rx="1.2" fill="#16201b" opacity=".3"></rect></svg>
+<span style="font-weight:800;font-size:1.22rem;letter-spacing:-.02em">{{ wordmark }}</span>
+</div>
+<sc-if value="{{ showProofs }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:10px;align-items:stretch">
+<div style="flex:1;display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;background:#16201b">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.6 15.6a8.4 8.4 0 0 1 16.8 0Z" fill="#8fd3ae"></path><rect x="2.4" y="17.4" width="19.2" height="2.4" rx="1.2" fill="#f7f7f2"></rect><rect x="7.6" y="21" width="8.8" height="2.4" rx="1.2" fill="#f7f7f2" opacity=".38"></rect></svg>
+<span style="color:#f7f7f2;font-weight:800;font-size:.88rem;letter-spacing:-.01em">{{ wordmark }}</span>
+</div>
+<div style="width:56px;height:56px;border-radius:13px;background:#dcece2;display:grid;place-items:center;flex:0 0 auto">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.6 15.6a8.4 8.4 0 0 1 16.8 0Z" fill="#25724d"></path><rect x="2.4" y="17.4" width="19.2" height="2.4" rx="1.2" fill="#16201b"></rect><rect x="7.6" y="21" width="8.8" height="2.4" rx="1.2" fill="#16201b" opacity=".3"></rect></svg>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showRationale }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">A sunrise sitting on two agenda rules — the 6:00 AM generation moment. Warmest of the five, and the only one that carries a mood rather than a mechanic.</p>
+</sc-if>
+</div>
+</div>
+
+<div id="1e" style="width:452px;border:1px solid #dbe2db;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(22,32,27,.05)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #dbe2db">
+<span style="padding:5px 9px;border-radius:6px;background:#16201b;color:#fff;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace">1e</span>
+<span style="font-weight:800;letter-spacing:-.01em">A-Tile</span>
+</div>
+<div style="height:210px;display:grid;place-items:center;background:#f7f7f2;border-bottom:1px solid #dbe2db">
+<svg width="104" height="104" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.2" y="2.2" width="19.6" height="19.6" rx="5.6" fill="#16201b"></rect><path d="M7.5 16.9 12 7.1l4.5 9.8" stroke="#f7f7f2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.7 13.6h4.6" stroke="#8fd3ae" stroke-width="2.2" stroke-linecap="round"></path></svg>
+</div>
+<div style="padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.2" y="2.2" width="19.6" height="19.6" rx="5.6" fill="#16201b"></rect><path d="M7.5 16.9 12 7.1l4.5 9.8" stroke="#f7f7f2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.7 13.6h4.6" stroke="#8fd3ae" stroke-width="2.2" stroke-linecap="round"></path></svg>
+<span style="font-weight:800;font-size:1.22rem;letter-spacing:-.02em">{{ wordmark }}</span>
+</div>
+<sc-if value="{{ showProofs }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:10px;align-items:stretch">
+<div style="flex:1;display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;background:#16201b">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.2" y="2.2" width="19.6" height="19.6" rx="5.6" fill="#f7f7f2"></rect><path d="M7.5 16.9 12 7.1l4.5 9.8" stroke="#16201b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.7 13.6h4.6" stroke="#25724d" stroke-width="2.2" stroke-linecap="round"></path></svg>
+<span style="color:#f7f7f2;font-weight:800;font-size:.88rem;letter-spacing:-.01em">{{ wordmark }}</span>
+</div>
+<div style="width:56px;height:56px;border-radius:13px;background:#16201b;display:grid;place-items:center;flex:0 0 auto">
+<svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.6 17.6 12 5.9l5.4 11.7" stroke="#f7f7f2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.2 13.6h5.6" stroke="#8fd3ae" stroke-width="2.2" stroke-linecap="round"></path></svg>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showRationale }}" hint-placeholder-val="{{ true }}">
+<p style="margin:0;color:#5c6861;font-size:.86rem;line-height:1.5;text-wrap:pretty">Monogram route: an “A” whose crossbar is the signal green. Container-first, so it owns an app icon and avatar slot immediately — but says less about the product.</p>
+</sc-if>
+</div>
+</div>
+
+</div>
+
+<div style="max-width:940px;border:1px dashed #dbe2db;border-radius:12px;padding:20px 22px;background:#eef2ec">
+<p style="margin:0 0 6px;font:800 .72rem/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#25724d">Next step</p>
+<p style="margin:0;color:#5c6861;font-size:.9rem;line-height:1.55;text-wrap:pretty">Pick one or two ids and I'll take them to a full system — optical sizing at 16/24/32px, clear-space rule, stacked and mono lockups, favicon and OG tile — then swap it into the prototype's sidebar, sign-in and onboarding, replacing the placeholder mark that's in there now.</p>
+</div>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;wordmarkCase&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Title case&quot;,&quot;Uppercase&quot;],&quot;default&quot;:&quot;Title case&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Wordmark&quot;},&quot;showProofs&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;showRationale&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const upper = (this.props.wordmarkCase ?? "Title case") === "Uppercase";
+    return {
+      wordmark: upper ? "OPS AGENDA" : "Ops Agenda",
+      showProofs: this.props.showProofs ?? true,
+      showRationale: this.props.showRationale ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

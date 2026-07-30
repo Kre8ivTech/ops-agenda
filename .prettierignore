@@ -1,0 +1,58 @@
+# Prettier governs CODE in this repo, not prose.
+#
+# The docs tree is hand-maintained and edited concurrently by multiple agents and
+# humans; letting `prettier --write .` reflow it produced a 200-file, 7k-line
+# cosmetic diff that buried real changes. Keep it out.
+
+node_modules/
+_archive/
+pnpm-lock.yaml
+
+# Build & test output
+**/.next/
+**/.vinext/
+**/.wrangler/
+**/coverage/
+**/playwright-report/
+**/test-results/
+**/next-env.d.ts
+packages/infra/cdk.out/
+packages/web/drizzle/meta/
+generated/
+
+# Local agent/tool state
+.agents/
+.ijfw/
+
+# Legacy priority-site files left in working tree after platform rewrite
+app/
+build/sites-vite-plugin.ts
+db/
+docs/
+drizzle.config.ts
+eslint.config.mjs
+infra/
+next.config.ts
+postcss.config.mjs
+tests/
+vite.config.ts
+worker/
+
+# Hand-maintained documentation and agent instructions
+setup/
+design_handoff_ops_agenda_platform/
+.claude/
+.cursor/
+.cline/
+AGENTS.md
+AI_GUIDE.md
+BLACKBOX.md
+CHANGELOG.md
+CLAUDE.md
+CODEX.md
+README.md
+TECHSTACK.md
+.clinerules
+.windsurfrules
+.github/copilot-instructions.md
+.github/pull_request_template.md
