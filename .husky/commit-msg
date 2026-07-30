@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+if [ ! -x node_modules/.bin/commitlint ]; then
+  echo "commit-msg: commitlint not installed - skipping message check." >&2
+  exit 0
+fi
+node_modules/.bin/commitlint --edit "$1"

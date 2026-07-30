@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Catch what lint-staged cannot: cross-file type errors and broken tests.
+if [ ! -x node_modules/.bin/tsc ] || [ ! -x node_modules/.bin/vitest ]; then
+  echo "pre-push: toolchain not installed - skipping typecheck/tests." >&2
+  exit 0
+fi
+node_modules/.bin/tsc --noEmit && node_modules/.bin/vitest run

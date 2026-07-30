@@ -1,0 +1,7 @@
+{
+  "*.{ts,tsx,mts,cts}": ["prettier --write"],
+  "*.{js,jsx,mjs,cjs}": ["prettier --write"],
+  "*.{json,md,css,yml,yaml}": ["prettier --write"],
+  "packages/web/**/*.{ts,tsx}": ["eslint --fix --max-warnings=0 --no-warn-ignored"],
+  "packages/infra/**/*.ts": ["eslint --fix --max-warnings=0 --no-warn-ignored"]
+}

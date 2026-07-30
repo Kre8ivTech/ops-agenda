@@ -1,0 +1,36 @@
+# Prettier governs CODE in this repo, not prose.
+#
+# The docs tree is hand-maintained and edited concurrently by multiple agents and
+# humans; letting `prettier --write .` reflow it produced a 200-file, 7k-line
+# cosmetic diff that buried real changes. Keep it out.
+
+node_modules/
+_archive/
+pnpm-lock.yaml
+
+# Build & test output
+**/.next/
+**/coverage/
+**/playwright-report/
+**/test-results/
+**/next-env.d.ts
+packages/infra/cdk.out/
+
+# Hand-maintained documentation and agent instructions
+setup/
+design_handoff_ops_agenda_platform/
+.claude/
+.cursor/
+.cline/
+AGENTS.md
+AI_GUIDE.md
+BLACKBOX.md
+CHANGELOG.md
+CLAUDE.md
+CODEX.md
+README.md
+TECHSTACK.md
+.clinerules
+.windsurfrules
+.github/copilot-instructions.md
+.github/pull_request_template.md
