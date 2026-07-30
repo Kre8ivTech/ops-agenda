@@ -18,7 +18,7 @@ export const STACK_CONFIG = {
     instanceType: 't3.micro',
     desiredCapacity: 1,
     containerPort: 3000,
-    cpu: 1024,
-    memory: 2048,
+    cpu: 512,
+    memory: 512, // t3.micro only has 1 GiB; keep container footprint small
   },
 } as const;
