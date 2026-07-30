@@ -2,14 +2,15 @@ import { formatDueLabel, priorityLabel, whyLine, type DashboardTask } from '@/li
 import { ButtonLink } from '@/components/ui/button';
 import { MarkHandledButton } from '@/components/dashboard/mark-handled-button';
 
-const PRIORITY_PILL: Record<string, string> = {
+/** Priority pill colours per `05-design-system.md` §Status. Shared with the record table. */
+export const PRIORITY_PILL: Record<string, string> = {
   p1: 'bg-wash-green text-signal',
   p2: 'bg-info-wash text-info',
   p3: 'bg-wash text-text-secondary',
   fysa: 'bg-wash text-text-secondary',
 };
 
-function statusPill(task: DashboardTask): { label: string; className: string } {
+export function statusPill(task: DashboardTask): { label: string; className: string } {
   if (task.flagState === 'at_risk') {
     return { label: 'At risk', className: 'bg-risk-wash text-risk' };
   }

@@ -1,13 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { eq, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { buildAuditEvent } from '@/lib/audit';
 import { getSession } from '@/lib/auth';
 import { auditEvent, task, type TaskSelect } from '@/lib/db/schema';
 import { createDb, withTenant } from '@/lib/db';
 import { env } from '@/lib/env';
+import type { SortDirection, TaskFilter, TaskSort } from '@/lib/tasks/filters';
 
 const tenantSchema = z.object({
   accountId: z.string().uuid(),
@@ -106,6 +107,107 @@ export async function listDashboardTasks(tenant: { accountId: string; userId: st
   return [...rows].sort(sortForDashboard);
 }
 
+export interface TaskQuery {
+  filter?: TaskFilter;
+  search?: string;
+  sort?: TaskSort;
+  direction?: SortDirection;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface TaskQueryResult {
+  rows: TaskSelect[];
+  total: number;
+  counts: { all: number; needsAttention: number; settled: number };
+  page: number;
+  pageSize: number;
+}
+
+const DEFAULT_PAGE_SIZE = 20;
+const MAX_PAGE_SIZE = 100;
+
+function orderByFor(sort: TaskSort, direction: SortDirection) {
+  const dir = direction === 'desc' ? desc : asc;
+  switch (sort) {
+    case 'title':
+      return dir(task.title);
+    case 'due_on':
+      return dir(task.dueOn);
+    case 'created_at':
+      return dir(task.createdAt);
+    case 'priority':
+    default:
+      return dir(
+        sql`case ${task.priority} when 'p1' then 0 when 'p2' then 1 when 'p3' then 2 else 3 end`,
+      );
+  }
+}
+
+/**
+ * Server-side filter/search/sort/pagination for the Tasks record table
+ * (`08-portal-requirements.md` ST-03/ST-04). Chip counts come from a single
+ * aggregate query rather than one query per chip.
+ */
+export async function queryTasks(
+  tenant: { accountId: string; userId: string },
+  query: TaskQuery = {},
+): Promise<TaskQueryResult> {
+  await authorize(tenant, query);
+  const db = getDb();
+  const page = Math.max(1, query.page ?? 1);
+  const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, query.pageSize ?? DEFAULT_PAGE_SIZE));
+  const search = query.search?.trim();
+
+  return withTenant(db, tenant, async (tx) => {
+    const notDeleted = isNull(task.deletedAt);
+    const scoped = search ? and(notDeleted, ilike(task.title, `%${search}%`)) : notDeleted;
+
+    const needsAttentionCond = and(
+      isNull(task.handledAt),
+      or(
+        inArray(task.flagState, ['attention', 'at_risk']),
+        and(isNotNull(task.dueOn), lte(task.dueOn, new Date())),
+      ),
+    );
+    const settledCond = or(isNotNull(task.handledAt), eq(task.flagState, 'settled'));
+
+    const [counts] = await tx
+      .select({
+        all: sql<number>`count(*) filter (where ${scoped})`.mapWith(Number),
+        needsAttention:
+          sql<number>`count(*) filter (where ${scoped} and ${needsAttentionCond})`.mapWith(Number),
+        settled: sql<number>`count(*) filter (where ${scoped} and ${settledCond})`.mapWith(Number),
+      })
+      .from(task);
+
+    const filter = query.filter ?? 'all';
+    const whereCond =
+      filter === 'needs_attention'
+        ? and(scoped, needsAttentionCond)
+        : filter === 'settled'
+          ? and(scoped, settledCond)
+          : scoped;
+
+    const rows = await tx
+      .select()
+      .from(task)
+      .where(whereCond)
+      .orderBy(orderByFor(query.sort ?? 'priority', query.direction ?? 'asc'))
+      .limit(pageSize)
+      .offset((page - 1) * pageSize);
+
+    const total =
+      filter === 'needs_attention'
+        ? counts.needsAttention
+        : filter === 'settled'
+          ? counts.settled
+          : counts.all;
+
+    return { rows, total, counts, page, pageSize };
+  });
+}
+
 export async function createTask(input: z.input<typeof createTaskSchema>) {
   const tenant = await requireTenantSession();
   await authorize(tenant, input);
@@ -145,10 +247,8 @@ export async function createTask(input: z.input<typeof createTaskSchema>) {
   });
 }
 
-export async function updateTask(
-  tenant: { accountId: string; userId: string },
-  input: z.input<typeof updateTaskSchema>,
-) {
+export async function updateTask(input: z.input<typeof updateTaskSchema>) {
+  const tenant = await requireTenantSession();
   await authorize(tenant, input);
   const data = updateTaskSchema.parse(input);
   const db = getDb();
@@ -269,10 +369,8 @@ export async function reopenTask(input: z.infer<typeof taskIdSchema>) {
   });
 }
 
-export async function deleteTask(
-  tenant: { accountId: string; userId: string },
-  input: z.infer<typeof deleteTaskSchema>,
-) {
+export async function deleteTask(input: z.infer<typeof deleteTaskSchema>) {
+  const tenant = await requireTenantSession();
   await authorize(tenant, input);
   const { id } = deleteTaskSchema.parse(input);
   const db = getDb();

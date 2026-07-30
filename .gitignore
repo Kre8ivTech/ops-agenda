@@ -56,3 +56,7 @@ playwright/.cache/
 .vercel
 *.tsbuildinfo
 .eslintcache
+
+# Drizzle migrations are checked in — some machine-level `*.sql` ignore
+# rules would otherwise silently drop them (and the `test:rls` gate with them).
+!packages/web/drizzle/*.sql
