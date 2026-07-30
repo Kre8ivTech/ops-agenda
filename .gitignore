@@ -6,6 +6,7 @@ vendor/
 dist/
 build/
 .next/
+packages/infra/cdk.out/
 
 # Logs
 logs/

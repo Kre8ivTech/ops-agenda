@@ -1,0 +1,36 @@
+{
+  "name": "@ops-agenda/infra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ops Agenda AWS infrastructure (CDK)",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy",
+    "diff": "cdk diff",
+    "bootstrap": "cdk bootstrap",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.0.0",
+    "aws-cdk": "^2.177.0",
+    "eslint": "^9.39.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.65.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.177.0",
+    "constructs": "^10.4.0",
+    "source-map-support": "^0.5.21"
+  },
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  }
+}

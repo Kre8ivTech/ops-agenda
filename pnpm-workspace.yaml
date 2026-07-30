@@ -1,0 +1,16 @@
+packages:
+  - 'packages/*'
+
+# Security: only allow packages from the default registry to be installed as
+# transitive dependencies; block git/tarball/local exotic sub-dependencies.
+blockExoticSubdeps: true
+
+# Wait at least 7 days before installing newly published package versions.
+minimumReleaseAge: 10080
+
+# Prevent malicious package updates from downgrading security settings.
+trustPolicy: no-downgrade
+
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

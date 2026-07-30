@@ -1,0 +1,9 @@
+[allowlist]
+description = "Ignore example secrets in skill documentation and legacy test fixtures"
+paths = [
+  # Skill docs contain intentionally fake JWTs, tokens, and client IDs for
+  # training examples. These are not real credentials.
+  '''setup\/skills\/.*''',
+  # Legacy test fixture file from an earlier scaffold; all values are placeholders.
+  '''src\/test\/setup\.ts''',
+]

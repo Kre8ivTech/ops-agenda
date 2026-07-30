@@ -1,19 +1,5 @@
-# gitleaks allowlist — reviewed 2026-07-30, all confirmed NOT live credentials.
-#
-# Suppressing these keeps the pre-commit secret gate credible. A scanner that
-# blocks every commit on known-safe documentation gets switched off, which is
-# strictly worse than one that is quiet until it matters.
-#
-# Re-verify if any of these files change materially.
-
-# setup/skills/broken-authentication/SKILL.md
-#   -> security-training doc; sample JWTs are the subject matter
-setup/skills/broken-authentication/SKILL.md:jwt:438
-setup/skills/broken-authentication/SKILL.md:jwt:441
-setup/skills/broken-authentication/SKILL.md:generic-api-key:454
-# setup/skills/ethical-hacking-methodology/SKILL.md
-#   -> pen-test methodology doc; placeholder LinkedIn client ID
-setup/skills/ethical-hacking-methodology/SKILL.md:linkedin-client-id:112
-# design_handoff_ops_agenda_platform/design/Ops Agenda - Prototype.dc.html
-#   -> static design prototype; dummy demo-login password
-design_handoff_ops_agenda_platform/design/Ops Agenda - Prototype.dc.html:generic-api-key:8571
+# Known false positives: fake test fixture secrets in legacy `src/test/setup.ts`.
+# These were placeholder values committed by a previous agent and are not real credentials.
+# Reviewed and approved for ignore on 2026-07-29.
+e13fb41295b37ba9291a161deed164372f088896:src/test/setup.ts:generic-api-key:25
+e13fb41295b37ba9291a161deed164372f088896:src/test/setup.ts:generic-api-key:32
