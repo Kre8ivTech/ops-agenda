@@ -7,6 +7,7 @@ dist/
 build/
 .next/
 packages/infra/cdk.out/
+packages/infra/cdk.context.json
 
 # Logs
 logs/
