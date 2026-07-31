@@ -7,6 +7,7 @@ import { Compute } from './compute.js';
 import { Database } from './database.js';
 import { Networking } from './networking.js';
 import { Queue } from './queue.js';
+import { Repository } from './repository.js';
 import { Storage } from './storage.js';
 import { OpsAgendaStackProps, STACK_CONFIG } from './config.js';
 
@@ -14,12 +15,17 @@ export class OpsAgendaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: OpsAgendaStackProps) {
     super(scope, id, props);
 
-    const appUrl = `https://${props.envName}.opsagenda.example.com`; // override with custom domain in production
+    const appUrl = props.domainName
+      ? `https://${props.domainName}`
+      : `https://${props.envName}.opsagenda.example.com`; // placeholder until a domain is assigned
 
     const networking = new Networking(this, 'Networking', {
       cidr: STACK_CONFIG.vpc.cidr,
       maxAzs: STACK_CONFIG.vpc.maxAzs,
+      containerPort: STACK_CONFIG.ecs.containerPort,
     });
+
+    const repository = new Repository(this, 'Repository');
 
     const database = new Database(this, 'Database', {
       vpc: networking.vpc,
@@ -34,6 +40,9 @@ export class OpsAgendaStack extends cdk.Stack {
       logoutUrls: [appUrl],
     });
 
+    const storage = new Storage(this, 'Storage');
+    const queue = new Queue(this, 'Queue');
+
     const compute = new Compute(this, 'Compute', {
       vpc: networking.vpc,
       albSecurityGroup: networking.albSecurityGroup,
@@ -43,14 +52,28 @@ export class OpsAgendaStack extends cdk.Stack {
       containerPort: STACK_CONFIG.ecs.containerPort,
       cpu: STACK_CONFIG.ecs.cpu,
       memory: STACK_CONFIG.ecs.memory,
+      repository: repository.repository,
+      imageTag: props.imageTag ?? 'latest',
+      appUrl,
+      awsRegion: this.region,
+      databaseSecret: database.secret,
+      databaseHost: database.instance.dbInstanceEndpointAddress,
+      databasePort: database.instance.dbInstanceEndpointPort,
+      databaseName: database.databaseName,
+      userPool: auth.userPool,
+      cognitoUserPoolId: auth.userPool.userPoolId,
+      cognitoClientId: auth.userPoolClient.userPoolClientId,
+      cognitoDomain: auth.cognitoDomain,
+      auditBucket: storage.auditBucket,
+      syncQueue: queue.syncQueue,
+      signupAccessCodes: props.signupAccessCodes,
     });
-
-    const storage = new Storage(this, 'Storage');
-    const queue = new Queue(this, 'Queue');
 
     const cdn = new Cdn(this, 'Cdn', {
       loadBalancer: compute.loadBalancer,
       assetBucket: storage.assetBucket,
+      domainName: props.domainName,
+      certificateArn: props.certificateArn,
     });
 
     // SSM parameters for the application to read at runtime
@@ -144,6 +167,11 @@ export class OpsAgendaStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'AuditBucketName', {
       value: storage.auditBucket.bucketName,
       description: 'Immutable audit log bucket',
+    });
+
+    new cdk.CfnOutput(this, 'EcrRepositoryUri', {
+      value: repository.repository.repositoryUri,
+      description: 'ECR repository for the web app image',
     });
   }
 }

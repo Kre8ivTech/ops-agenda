@@ -1,10 +1,15 @@
 import * as cdk from 'aws-cdk-lib';
 import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 import { Construct } from 'constructs';
 
 export interface ComputeProps {
@@ -16,6 +21,25 @@ export interface ComputeProps {
   readonly containerPort: number;
   readonly cpu: number;
   readonly memory: number;
+
+  readonly repository: ecr.IRepository;
+  readonly imageTag: string;
+  readonly appUrl: string;
+  readonly awsRegion: string;
+
+  readonly databaseSecret: secretsmanager.ISecret;
+  readonly databaseHost: string;
+  readonly databasePort: string;
+  readonly databaseName: string;
+
+  readonly userPool: cognito.IUserPool;
+  readonly cognitoUserPoolId: string;
+  readonly cognitoClientId: string;
+  readonly cognitoDomain: string;
+
+  readonly auditBucket: s3.IBucket;
+  readonly syncQueue: sqs.IQueue;
+  readonly signupAccessCodes?: string;
 }
 
 export class Compute extends Construct {
@@ -54,6 +78,10 @@ export class Compute extends Construct {
             'service-role/AmazonEC2ContainerServiceforEC2Role',
           ),
           iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchAgentServerPolicy'),
+          // SSM Session Manager: lets an operator port-forward to RDS (which has
+          // no public endpoint) through this instance for one-off migrations,
+          // without opening SSH or giving RDS a public IP.
+          iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
         ],
       }),
     });
@@ -75,8 +103,28 @@ export class Compute extends Construct {
 
     cluster.addAsgCapacityProvider(capacityProvider);
 
+    const taskRole = new iam.Role(this, 'TaskRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+
+    // Unauthenticated-flow Cognito APIs (SignUp/ConfirmSignUp/ForgotPassword/
+    // ConfirmForgotPassword) still require IAM permission when called from the
+    // server-side AWS SDK, scoped to this user pool only.
+    taskRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: [
+          'cognito-idp:SignUp',
+          'cognito-idp:ConfirmSignUp',
+          'cognito-idp:ForgotPassword',
+          'cognito-idp:ConfirmForgotPassword',
+        ],
+        resources: [props.userPool.userPoolArn],
+      }),
+    );
+
     const taskDefinition = new ecs.Ec2TaskDefinition(this, 'TaskDef', {
       networkMode: ecs.NetworkMode.BRIDGE,
+      taskRole,
     });
 
     const logGroup = new logs.LogGroup(this, 'AppLogGroup', {
@@ -85,12 +133,16 @@ export class Compute extends Construct {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Placeholder on port 80 so the ALB/target group health checks pass in dev
-    // before the real Next.js container image is deployed. The real app will
-    // restore port 3000 and the /api/health endpoint.
-    const placeholderPort = 80;
+    const sessionSecret = new secretsmanager.Secret(this, 'SessionSecret', {
+      description: 'iron-webcrypto session-sealing key for the web app',
+      generateSecretString: {
+        excludePunctuation: true,
+        passwordLength: 48,
+      },
+    });
+
     const container = taskDefinition.addContainer('nextjs', {
-      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/docker/library/node:22-alpine'),
+      image: ecs.ContainerImage.fromEcrRepository(props.repository, props.imageTag),
       memoryLimitMiB: props.memory,
       cpu: props.cpu,
       logging: ecs.LogDrivers.awsLogs({
@@ -98,18 +150,29 @@ export class Compute extends Construct {
         logGroup,
       }),
       environment: {
-        PORT: placeholderPort.toString(),
         NODE_ENV: 'production',
+        PORT: props.containerPort.toString(),
+        AWS_REGION: props.awsRegion,
+        NEXT_PUBLIC_APP_URL: props.appUrl,
+        DB_HOST: props.databaseHost,
+        DB_PORT: props.databasePort,
+        DB_NAME: props.databaseName,
+        COGNITO_USER_POOL_ID: props.cognitoUserPoolId,
+        COGNITO_CLIENT_ID: props.cognitoClientId,
+        COGNITO_DOMAIN: props.cognitoDomain,
+        AUDIT_BUCKET_NAME: props.auditBucket.bucketName,
+        SYNC_QUEUE_URL: props.syncQueue.queueUrl,
+        ...(props.signupAccessCodes ? { SIGNUP_ACCESS_CODES: props.signupAccessCodes } : {}),
       },
-      command: [
-        'sh',
-        '-c',
-        `node -e 'require("http").createServer((_,res)=>res.end("ok")).listen(${placeholderPort})'`,
-      ],
+      secrets: {
+        DB_USER: ecs.Secret.fromSecretsManager(props.databaseSecret, 'username'),
+        DB_PASSWORD: ecs.Secret.fromSecretsManager(props.databaseSecret, 'password'),
+        SESSION_SECRET: ecs.Secret.fromSecretsManager(sessionSecret),
+      },
       healthCheck: {
         command: [
           'CMD-SHELL',
-          `node -e 'require("http").get("http://localhost:${placeholderPort}/", r => process.exit(r.statusCode === 200 ? 0 : 1)).on("error", () => process.exit(1))'`,
+          `node -e 'require("http").get("http://localhost:${props.containerPort}/api/health", r => process.exit(r.statusCode === 200 ? 0 : 1)).on("error", () => process.exit(1))'`,
         ],
         interval: cdk.Duration.seconds(30),
         timeout: cdk.Duration.seconds(5),
@@ -119,8 +182,8 @@ export class Compute extends Construct {
     });
 
     container.addPortMappings({
-      containerPort: placeholderPort,
-      hostPort: placeholderPort, // fixed host port so the ALB security group can allow it
+      containerPort: props.containerPort,
+      hostPort: props.containerPort, // fixed host port so the ALB security group can allow it
       protocol: ecs.Protocol.TCP,
     });
 
@@ -131,6 +194,7 @@ export class Compute extends Construct {
       minHealthyPercent: 0,
       maxHealthyPercent: 100,
       circuitBreaker: { rollback: true },
+      enableExecuteCommand: true,
       capacityProviderStrategies: [
         { capacityProvider: capacityProvider.capacityProviderName, weight: 1, base: 1 },
       ],
@@ -150,16 +214,16 @@ export class Compute extends Construct {
 
     const targetGroup = new elbv2.ApplicationTargetGroup(this, 'TargetGroup', {
       vpc: props.vpc,
-      port: placeholderPort,
+      port: props.containerPort,
       protocol: elbv2.ApplicationProtocol.HTTP,
       targets: [
         this.service.loadBalancerTarget({
           containerName: 'nextjs',
-          containerPort: placeholderPort,
+          containerPort: props.containerPort,
         }),
       ],
       healthCheck: {
-        path: '/',
+        path: '/api/health',
         interval: cdk.Duration.seconds(30),
         healthyThresholdCount: 2,
         unhealthyThresholdCount: 3,

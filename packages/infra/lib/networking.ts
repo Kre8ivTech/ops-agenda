@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 export interface NetworkingProps {
   readonly cidr: string;
   readonly maxAzs: number;
+  readonly containerPort: number;
 }
 
 export class Networking extends Construct {
@@ -54,14 +55,8 @@ export class Networking extends Construct {
     });
     this.ecsSecurityGroup.addIngressRule(
       this.albSecurityGroup,
-      ec2.Port.tcp(80),
+      ec2.Port.tcp(props.containerPort),
       'ALB to application container',
-    );
-    // Placeholder nginx listens on port 80 until the real Next.js image is deployed.
-    this.ecsSecurityGroup.addIngressRule(
-      this.albSecurityGroup,
-      ec2.Port.tcp(80),
-      'ALB to placeholder nginx',
     );
 
     this.rdsSecurityGroup = new ec2.SecurityGroup(this, 'RdsSg', {

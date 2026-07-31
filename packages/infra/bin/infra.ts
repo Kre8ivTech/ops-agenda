@@ -15,6 +15,12 @@ new OpsAgendaStack(app, `OpsAgenda-${envName}`, {
     region,
   },
   envName,
+  // Custom domain is optional — omit both to fall back to the CloudFront
+  // default domain and a placeholder appUrl (used for Cognito callbacks).
+  domainName: process.env.APP_DOMAIN_NAME,
+  certificateArn: process.env.APP_CERTIFICATE_ARN,
+  imageTag: process.env.APP_IMAGE_TAG,
+  signupAccessCodes: process.env.SIGNUP_ACCESS_CODES,
   tags: {
     Project: 'OpsAgenda',
     Environment: envName,

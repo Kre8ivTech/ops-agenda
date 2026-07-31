@@ -2,6 +2,14 @@ import * as cdk from 'aws-cdk-lib';
 
 export interface OpsAgendaStackProps extends cdk.StackProps {
   readonly envName: string;
+  /** Custom domain for the CloudFront distribution, e.g. "app.opsagenda.com". */
+  readonly domainName?: string;
+  /** ACM certificate ARN in us-east-1 for `domainName` (required by CloudFront). */
+  readonly certificateArn?: string;
+  /** Tag of the web app image already pushed to the ECR repository. */
+  readonly imageTag?: string;
+  /** Comma-separated self-serve signup access codes (see SIGNUP_ACCESS_CODES). */
+  readonly signupAccessCodes?: string;
 }
 
 export const STACK_CONFIG = {

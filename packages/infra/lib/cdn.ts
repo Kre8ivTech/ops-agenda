@@ -1,3 +1,4 @@
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -7,6 +8,9 @@ import { Construct } from 'constructs';
 export interface CdnProps {
   readonly loadBalancer: elbv2.IApplicationLoadBalancer;
   readonly assetBucket: s3.IBucket;
+  /** Custom domain to alias on the distribution, e.g. "app.opsagenda.com". */
+  readonly domainName?: string;
+  /** ACM certificate ARN in us-east-1. Required when `domainName` is set. */
   readonly certificateArn?: string;
 }
 
@@ -51,9 +55,11 @@ export class Cdn extends Construct {
       },
       httpVersion: cloudfront.HttpVersion.HTTP3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-      certificate: props.certificateArn
-        ? undefined // ACM cert for custom domain would be attached separately
-        : undefined,
+      domainNames: props.domainName ? [props.domainName] : undefined,
+      certificate:
+        props.domainName && props.certificateArn
+          ? acm.Certificate.fromCertificateArn(this, 'Certificate', props.certificateArn)
+          : undefined,
     });
   }
 }
