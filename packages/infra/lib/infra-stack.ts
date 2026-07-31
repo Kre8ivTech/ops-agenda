@@ -71,7 +71,6 @@ export class OpsAgendaStack extends cdk.Stack {
 
     const cdn = new Cdn(this, 'Cdn', {
       loadBalancer: compute.loadBalancer,
-      assetBucket: storage.assetBucket,
       domainName: props.domainName,
       certificateArn: props.certificateArn,
     });

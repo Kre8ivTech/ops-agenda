@@ -2,12 +2,10 @@ import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 export interface CdnProps {
   readonly loadBalancer: elbv2.IApplicationLoadBalancer;
-  readonly assetBucket: s3.IBucket;
   /** Custom domain to alias on the distribution, e.g. "app.opsagenda.com". */
   readonly domainName?: string;
   /** ACM certificate ARN in us-east-1. Required when `domainName` is set. */
@@ -20,12 +18,13 @@ export class Cdn extends Construct {
   constructor(scope: Construct, id: string, props: CdnProps) {
     super(scope, id);
 
+    // The Next.js app is built with `output: 'standalone'` and no
+    // `assetPrefix`, so `.next/static` and `public/` are served directly by
+    // the ECS-hosted server (see Dockerfile). All requests — including
+    // `_next/static/*` — go to the ALB origin; there is no separate S3 asset
+    // pipeline populating a CDN-only bucket.
     const albOrigin = new origins.HttpOrigin(props.loadBalancer.loadBalancerDnsName, {
       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
-    });
-
-    const assetOrigin = origins.S3BucketOrigin.withOriginAccessControl(props.assetBucket, {
-      originAccessLevels: [cloudfront.AccessLevel.READ],
     });
 
     this.distribution = new cloudfront.Distribution(this, 'Distribution', {
@@ -38,20 +37,6 @@ export class Cdn extends Construct {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.SECURITY_HEADERS,
         compress: true,
-      },
-      additionalBehaviors: {
-        '_next/static/*': {
-          origin: assetOrigin,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          compress: true,
-        },
-        'assets/*': {
-          origin: assetOrigin,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          compress: true,
-        },
       },
       httpVersion: cloudfront.HttpVersion.HTTP3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
