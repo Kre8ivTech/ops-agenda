@@ -9,6 +9,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -62,6 +63,30 @@ const tenantBase = {
   updatedBy: uuid('updated_by'),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 };
+
+/**
+ * Platform operators (Kre8ivTech staff) who can view and manage every tenant
+ * account, independent of the per-account `user` table. This table has no
+ * `account_id` and is not tenant data — RLS grants read access to any
+ * authenticated app connection (membership itself is the gate: rows are only
+ * ever written by trusted operators via direct database access, never through
+ * app-facing mutations), which lets other tables' RLS policies check platform
+ * admin status without a chicken-and-egg dependency on tenant context.
+ */
+export const platformAdmin = pgTable(
+  'platform_admin',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    cognitoSub: varchar('cognito_sub', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    name: varchar('name', { length: 255 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+  },
+  (table) => [uniqueIndex('platform_admin_cognito_sub_idx').on(table.cognitoSub)],
+);
 
 export const account = pgTable('account', {
   id: uuid('id')
@@ -180,6 +205,7 @@ export const auditEvent = pgTable(
       .default(sql`gen_random_uuid()`),
     accountId: uuid('account_id').notNull(),
     actorUserId: uuid('actor_user_id'),
+    actorPlatformAdminId: uuid('actor_platform_admin_id').references(() => platformAdmin.id),
     action: varchar('action', { length: 100 }).notNull(),
     targetType: varchar('target_type', { length: 100 }).notNull(),
     targetId: uuid('target_id').notNull(),
@@ -239,6 +265,7 @@ export const entityRelations = relations(entity, ({ one }) => ({
   account: one(account, { fields: [entity.accountId], references: [account.id] }),
 }));
 
+export type PlatformAdminInsert = InferInsertModel<typeof platformAdmin>;
 export type AccountInsert = InferInsertModel<typeof account>;
 export type UserInsert = InferInsertModel<typeof user>;
 export type EntityInsert = InferInsertModel<typeof entity>;

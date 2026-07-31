@@ -22,6 +22,8 @@ export interface AuditContext {
   requestId?: string;
   accountId: string;
   userId: string;
+  /** Set when a platform admin acts on a tenant on the operator's behalf. */
+  actorPlatformAdminId?: string;
   ip?: string;
   userAgent?: string;
 }
@@ -96,7 +98,8 @@ export function appLog(
 export function buildAuditEvent(ctx: AuditContext, payload: AuditPayload): AuditEventInsert {
   return {
     accountId: ctx.accountId,
-    actorUserId: ctx.userId,
+    actorUserId: ctx.userId || null,
+    actorPlatformAdminId: ctx.actorPlatformAdminId ?? null,
     action: payload.action,
     targetType: payload.targetType,
     targetId: payload.targetId,

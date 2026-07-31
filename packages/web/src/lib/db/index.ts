@@ -40,3 +40,21 @@ export async function withTenant<T>(
     return callback(tx);
   });
 }
+
+/**
+ * Execute a callback with the acting platform admin's Cognito sub set in the
+ * transaction. This does NOT set `app.account_id`, so normal tenant isolation
+ * policies stay in effect; it only satisfies the additional `platform_admin_*`
+ * read policies that let operators list rows across every account. Writes
+ * still require `withTenant` scoped to a specific target account.
+ */
+export async function withPlatformAdmin<T>(
+  db: Database,
+  cognitoSub: string,
+  callback: (tx: Transaction) => Promise<T>,
+): Promise<T> {
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`SELECT set_config('app.actor_sub', ${cognitoSub}::text, true)`);
+    return callback(tx);
+  });
+}
