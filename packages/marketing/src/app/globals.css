@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+:root {
+  --ink: #16201b;
+  --signal: #25724d;
+  --paper: #f7f7f2;
+  --white: #ffffff;
+  --border: #dbe2db;
+  --wash: #eef2ec;
+  --wash-green: #dcece2;
+  --text-secondary: #5c6861;
+  --signal-on-ink: #8fd3ae;
+  --risk: #a33b32;
+  --risk-wash: #f2dfdd;
+  --info: #315d8f;
+  --info-wash: #dfe9f5;
+  --shadow-panel: 0 22px 60px rgba(35, 45, 40, 0.12);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-signal: var(--signal);
+  --color-paper: var(--paper);
+  --color-white: var(--white);
+  --color-border: var(--border);
+  --color-wash: var(--wash);
+  --color-wash-green: var(--wash-green);
+  --color-text-secondary: var(--text-secondary);
+  --color-signal-on-ink: var(--signal-on-ink);
+  --color-risk: var(--risk);
+  --color-risk-wash: var(--risk-wash);
+  --color-info: var(--info);
+  --color-info-wash: var(--info-wash);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-lockup: var(--font-poppins), var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --shadow-panel: 0 22px 60px rgba(35, 45, 40, 0.12);
+  --radius-dense: 7px;
+  --radius-default: 8px;
+  --radius-panel: 12px;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  text-wrap: pretty;
+}

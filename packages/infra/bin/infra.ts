@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import * as path from 'node:path';
 import * as cdk from 'aws-cdk-lib';
 import 'source-map-support/register';
 import { OpsAgendaStack } from '../lib/infra-stack.js';
+import { MarketingStack } from '../lib/marketing-stack.js';
 
 const app = new cdk.App();
 
@@ -26,3 +28,18 @@ new OpsAgendaStack(app, `OpsAgenda-${envName}`, {
     Environment: envName,
   },
 });
+
+// Bare-domain marketing site — independent lifecycle from the app stack
+// above, only deployed once MARKETING_DOMAIN_NAME is set.
+if (process.env.MARKETING_DOMAIN_NAME) {
+  new MarketingStack(app, 'OpsAgendaMarketing', {
+    env: { account, region: 'us-east-1' }, // CloudFront certs must be us-east-1
+    domainName: process.env.MARKETING_DOMAIN_NAME,
+    certificateArn: process.env.MARKETING_CERTIFICATE_ARN,
+    siteSourcePath: path.resolve(process.cwd(), '../marketing/out'),
+    tags: {
+      Project: 'OpsAgenda',
+      Environment: 'marketing',
+    },
+  });
+}
