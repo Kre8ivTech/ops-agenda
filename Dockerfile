@@ -18,6 +18,10 @@ WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
 COPY --from=deps /repo/packages/web/node_modules ./packages/web/node_modules
 COPY . .
+# NEXT_PUBLIC_* is inlined at build time; pass the real origin for production images.
+ARG NEXT_PUBLIC_APP_URL=http://localhost:3000
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV SKIP_ENV_VALIDATION=true
 RUN pnpm --filter @ops-agenda/web build
 
 # ---- runner: minimal image serving the standalone server ----

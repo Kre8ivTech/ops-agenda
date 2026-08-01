@@ -28,6 +28,9 @@ export const env = createEnv({
       .transform((v) => v === 'true'),
     AUDIT_BUCKET_NAME: z.string().optional(),
     SYNC_QUEUE_URL: z.string().url().optional(),
+    // Public origin for OAuth redirects. Server-only so ECS runtime env wins —
+    // NEXT_PUBLIC_* is inlined at `next build` and would stick as localhost.
+    APP_URL: z.string().url().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
@@ -45,6 +48,7 @@ export const env = createEnv({
     AUTH_DEV_BYPASS: process.env.AUTH_DEV_BYPASS,
     AUDIT_BUCKET_NAME: process.env.AUDIT_BUCKET_NAME,
     SYNC_QUEUE_URL: process.env.SYNC_QUEUE_URL,
+    APP_URL: process.env.APP_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
   // Lets CI run typecheck/lint without a populated .env.

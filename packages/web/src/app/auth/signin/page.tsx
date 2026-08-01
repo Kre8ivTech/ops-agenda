@@ -1,8 +1,8 @@
 import { AuthBanner } from '@/components/auth/auth-shell';
 import { SignInBriefPreview } from '@/components/auth/signin-brief-preview';
+import { SignInForm } from '@/components/auth/signin-form';
 import { Lockup } from '@/components/chrome/lockup';
-import { ButtonLink } from '@/components/ui/button';
-import { TextField } from '@/components/ui/text-field';
+import { Button, ButtonLink } from '@/components/ui/button';
 import { isDevAuthBypassEnabled } from '@/lib/auth';
 
 function MicrosoftMark() {
@@ -14,13 +14,6 @@ function MicrosoftMark() {
       <span className="size-[9px] bg-[#ffb900]" />
     </span>
   );
-}
-
-function cognitoStartHref(returnTo?: string): string {
-  if (!returnTo || returnTo.startsWith('//') || !returnTo.startsWith('/')) {
-    return '/api/auth/signin';
-  }
-  return `/api/auth/signin?returnTo=${encodeURIComponent(returnTo)}`;
 }
 
 export default async function SignInPage({
@@ -35,9 +28,10 @@ export default async function SignInPage({
 }) {
   const params = await searchParams;
   const returnTo = params.returnTo ?? params.callbackUrl;
-  const signInHref = cognitoStartHref(returnTo);
+  const safeReturnTo =
+    returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : undefined;
   const localPreviewHref = `/api/auth/dev-login?returnTo=${encodeURIComponent(
-    returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/dashboard',
+    safeReturnTo ?? '/dashboard',
   )}`;
   const showLocalPreview = isDevAuthBypassEnabled();
 
@@ -64,58 +58,8 @@ export default async function SignInPage({
             <AuthBanner>Password updated. Sign in with your new password.</AuthBanner>
           ) : null}
 
-          {/*
-            Fields match the design handoff for visual fidelity. Credentials are
-            entered on Cognito Hosted UI — Sign in navigates to /api/auth/signin
-            and never POSTs a password to this app.
-          */}
           <div className="grid gap-3.5">
-            <TextField
-              label="Work email"
-              type="email"
-              name="email"
-              autoComplete="username"
-              defaultValue="dana.whitfield@northgate.co"
-            />
-            <TextField
-              label="Password"
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              defaultValue="0123456789ab"
-              className="tracking-[0.18em]"
-              labelAside={
-                <a
-                  href="/auth/forgot-password"
-                  className="text-text-secondary hover:text-signal text-[0.78rem] font-semibold"
-                  data-testid="forgot-password-link"
-                >
-                  Forgot?
-                </a>
-              }
-            />
-
-            <label className="text-text-secondary flex cursor-pointer items-center gap-2 text-[0.85rem]">
-              <span className="relative inline-flex size-4 shrink-0 items-center justify-center">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="peer absolute inset-0 cursor-pointer opacity-0"
-                  aria-label="Keep me signed in on this device"
-                />
-                <span
-                  className="bg-wash peer-checked:bg-signal peer-focus-visible:outline-signal grid size-4 place-items-center rounded text-[10px] font-black text-transparent peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2"
-                  aria-hidden
-                >
-                  ✓
-                </span>
-              </span>
-              Keep me signed in on this device
-            </label>
-
-            <ButtonLink href={signInHref} className="w-full" data-testid="sign-in-cognito">
-              Sign in
-            </ButtonLink>
+            <SignInForm returnTo={safeReturnTo} />
             {showLocalPreview ? (
               <ButtonLink
                 href={localPreviewHref}
@@ -135,15 +79,17 @@ export default async function SignInPage({
           </div>
 
           <div className="grid gap-2.5">
-            <ButtonLink
-              href={signInHref}
+            <Button
+              type="button"
               variant="secondary"
               className="w-full"
+              disabled
+              title="Microsoft 365 sign-in will be enabled with the connector"
               data-testid="sign-in-microsoft"
             >
               <MicrosoftMark />
               Continue with Microsoft 365
-            </ButtonLink>
+            </Button>
             <p className="text-text-secondary m-0 text-[0.78rem] leading-[1.45]">
               Grants read-only access to mail and calendar metadata —{' '}
               <strong className="text-ink font-bold">Mail.Read</strong>,{' '}

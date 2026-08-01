@@ -26,6 +26,12 @@ export const confirmSignUpSchema = z.object({
   code: z.string().trim().min(1, 'Enter the verification code.'),
 });
 
+export const signInSchema = z.object({
+  email: z.string().trim().email('Enter a valid work email.').max(254),
+  password: z.string().min(1, 'Enter your password.'),
+  returnTo: z.string().optional(),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().trim().email('Enter a valid work email.').max(254),
 });
@@ -43,6 +49,7 @@ export const resetPasswordSchema = z
   });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
+export type SignInInput = z.infer<typeof signInSchema>;
 export type ConfirmSignUpInput = z.infer<typeof confirmSignUpSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

@@ -15,7 +15,14 @@ export function createDb(connectionString?: string) {
     throw new Error('DATABASE_URL is not configured');
   }
   if (!pool) {
-    pool = new Pool({ connectionString });
+    pool = new Pool({
+      connectionString,
+      // RDS requires encrypted connections (rds.force_ssl=1). The `pg` driver does
+      // not parse sslmode from the URL by default, so we enable SSL explicitly in
+      // production. `rejectUnauthorized: false` trusts the RDS-issued certificate
+      // without bundling the AWS RDS CA; the connection is still encrypted.
+      ...(process.env.NODE_ENV === 'production' && { ssl: { rejectUnauthorized: false } }),
+    });
   }
   return drizzle(pool, { schema, logger: process.env.NODE_ENV === 'development' });
 }

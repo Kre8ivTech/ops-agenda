@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 import { SignOutButton } from '@/components/sign-out-button';
 import { requirePlatformAdmin } from '@/lib/auth/platform-admin';
@@ -8,9 +9,19 @@ const NAV = [
   { href: '/admin', label: 'Overview' },
   { href: '/admin/accounts', label: 'Accounts' },
   { href: '/admin/users', label: 'Users' },
+  { href: '/admin/connections', label: 'Connections' },
+  { href: '/admin/integrations', label: 'Integrations' },
+  { href: '/admin/ai', label: 'AI' },
   { href: '/admin/modules', label: 'Modules' },
+  { href: '/admin/platform-admins', label: 'Admins' },
   { href: '/admin/audit', label: 'Audit log' },
+  { href: '/admin/system', label: 'System' },
 ] as const;
+
+function isActive(pathname: string, href: string): boolean {
+  if (href === '/admin') return pathname === '/admin';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   let email: string;
@@ -19,6 +30,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   } catch {
     redirect('/dashboard');
   }
+
+  const headersList = await headers();
+  const pathname = headersList.get('x-next-pathname') ?? headersList.get('x-invoke-path') ?? '/admin';
 
   return (
     <div className="bg-paper min-h-dvh">
@@ -32,7 +46,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-[0.85rem] font-bold text-white/72 hover:text-white"
+                className={`text-[0.85rem] font-bold transition-colors ${
+                  isActive(pathname, item.href)
+                    ? 'text-white'
+                    : 'text-white/55 hover:text-white/85'
+                }`}
               >
                 {item.label}
               </Link>

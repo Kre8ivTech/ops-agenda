@@ -60,8 +60,14 @@ function cognitoDomain(): string {
   return domain;
 }
 
+function appOrigin(): string {
+  // Prefer server APP_URL (runtime ECS env). NEXT_PUBLIC_APP_URL is a build-time
+  // fallback for local dev only — it is inlined by Next and must not own OAuth.
+  return env.APP_URL ?? env.NEXT_PUBLIC_APP_URL;
+}
+
 function redirectUri(): string {
-  return `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`;
+  return `${appOrigin()}/api/auth/callback`;
 }
 
 export function sanitizeReturnTo(returnTo?: string | null): string {

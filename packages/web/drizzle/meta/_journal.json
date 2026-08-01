@@ -15,6 +15,20 @@
       "when": 1785526614632,
       "tag": "0001_add_platform_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785537900000,
+      "tag": "0002_user_cognito_self_lookup",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785554231078,
+      "tag": "0003_add_integrations_and_ai",
+      "breakpoints": true
     }
   ]
 }

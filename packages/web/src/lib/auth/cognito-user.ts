@@ -5,6 +5,7 @@ import {
   ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
   ForgotPasswordCommand,
+  InitiateAuthCommand,
   SignUpCommand,
   type CognitoIdentityProviderServiceException,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -35,6 +36,7 @@ export type CognitoUserErrorCode =
   | 'invalid_parameter'
   | 'not_authorized'
   | 'user_not_confirmed'
+  | 'mfa_required'
   | 'generic';
 
 export class CognitoUserError extends Error {
@@ -82,6 +84,55 @@ function mapCognitoError(err: unknown): CognitoUserError {
       return new CognitoUserError('user_not_confirmed', 'Confirm your email before signing in.');
     default:
       return new CognitoUserError('generic', 'Something went wrong. Try again.');
+  }
+}
+
+export async function cognitoSignIn(input: {
+  email: string;
+  password: string;
+}): Promise<{ idToken: string; accessToken: string; refreshToken?: string }> {
+  const clientId = requireClientId();
+  const username = input.email.toLowerCase();
+  const hash = secretHash(username);
+  try {
+    const result = await client.send(
+      new InitiateAuthCommand({
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: clientId,
+        AuthParameters: {
+          USERNAME: username,
+          PASSWORD: input.password,
+          ...(hash ? { SECRET_HASH: hash } : {}),
+        },
+      }),
+    );
+
+    if (result.ChallengeName) {
+      if (result.ChallengeName === 'SOFTWARE_TOKEN_MFA' || result.ChallengeName === 'SMS_MFA') {
+        throw new CognitoUserError(
+          'mfa_required',
+          'Multi-factor authentication is required for this account. MFA challenge UI is not available yet.',
+        );
+      }
+      throw new CognitoUserError(
+        'generic',
+        'Additional verification is required before you can sign in.',
+      );
+    }
+
+    const auth = result.AuthenticationResult;
+    if (!auth?.IdToken || !auth.AccessToken) {
+      throw new CognitoUserError('generic', 'Authentication did not return tokens.');
+    }
+
+    return {
+      idToken: auth.IdToken,
+      accessToken: auth.AccessToken,
+      refreshToken: auth.RefreshToken,
+    };
+  } catch (err) {
+    if (err instanceof CognitoUserError) throw err;
+    throw mapCognitoError(err);
   }
 }
 

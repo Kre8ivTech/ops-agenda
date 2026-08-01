@@ -13,6 +13,7 @@ import {
   selectDueOuts,
   selectTopPriorities,
 } from '@/lib/dashboard/brief';
+import { generateBrief } from '@/lib/ai/brief';
 import { refreshDashboardAction } from '@/lib/dashboard/actions';
 import { listDashboardTasks } from '@/lib/tasks/actions';
 
@@ -45,10 +46,26 @@ export default async function DashboardPage() {
   }
   const priorities = selectTopPriorities(tasks, 3);
   const dueOuts = selectDueOuts(tasks, 6);
-  const narrative = buildNarrative(tasks, now);
   const planned = plannedPercent(tasks, now);
   const capacity = capacityStatus(tasks, now);
   const firstName = greetingName(session);
+
+  // Try AI-generated brief, fall back to local computation
+  let narrative: { headline: string; body: string };
+  const aiBrief = await generateBrief({
+    userName: session.name ?? firstName,
+    timezone: 'America/New_York',
+    tasks,
+    date: now,
+    accountId: session.accountId,
+    userId: session.userId,
+  }).catch(() => null);
+
+  if (aiBrief) {
+    narrative = { headline: aiBrief.headline, body: aiBrief.body };
+  } else {
+    narrative = buildNarrative(tasks, now);
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-[18px]">

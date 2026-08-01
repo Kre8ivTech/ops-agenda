@@ -41,9 +41,11 @@ export class Auth extends Construct {
     this.userPoolClient = new cognito.UserPoolClient(this, 'WebClient', {
       userPool: this.userPool,
       authFlows: {
-        userPassword: false,
+        // Branded /auth/signin posts email+password via InitiateAuth (USER_PASSWORD_AUTH).
+        // OAuth code grant remains for future federated IdPs (e.g. Microsoft).
+        userPassword: true,
         userSrp: false,
-        custom: true, // server-side auth code exchange
+        custom: true,
       },
       oAuth: {
         flows: {

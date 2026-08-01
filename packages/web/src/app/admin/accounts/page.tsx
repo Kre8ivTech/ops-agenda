@@ -1,17 +1,24 @@
+import Link from 'next/link';
+
 import { listAllAccounts, setAccountStatus } from '@/lib/admin/actions';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonLink } from '@/components/ui/button';
 
 export default async function AdminAccountsPage() {
   const accounts = await listAllAccounts();
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Accounts</p>
-        <h1 className="text-ink m-0 text-[1.7rem] font-extrabold tracking-[-0.02em]">
-          All tenant accounts
-        </h1>
-        <p className="text-text-secondary m-0 mt-2 text-[0.9rem]">{accounts.length} total</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Accounts</p>
+          <h1 className="text-ink m-0 text-[1.7rem] font-extrabold tracking-[-0.02em]">
+            All tenant accounts
+          </h1>
+          <p className="text-text-secondary m-0 mt-2 text-[0.9rem]">{accounts.length} total</p>
+        </div>
+        <ButtonLink href="/admin/accounts/new" size="medium">
+          + Create account
+        </ButtonLink>
       </div>
 
       <div className="border-border overflow-hidden rounded-[8px] border bg-white">
@@ -29,7 +36,14 @@ export default async function AdminAccountsPage() {
           <tbody className="divide-border divide-y">
             {accounts.map((acc) => (
               <tr key={acc.id}>
-                <td className="px-4 py-3 font-bold text-ink">{acc.name}</td>
+                <td className="px-4 py-3">
+                  <Link
+                    href={`/admin/accounts/${acc.id}`}
+                    className="text-signal hover:text-ink font-bold"
+                  >
+                    {acc.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-3 text-text-secondary">{acc.plan}</td>
                 <td className="px-4 py-3">
                   <span

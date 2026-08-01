@@ -8,6 +8,7 @@ import { getSession } from '@/lib/auth';
 import { auditEvent, task, type TaskSelect } from '@/lib/db/schema';
 import { createDb, withTenant } from '@/lib/db';
 import { env } from '@/lib/env';
+import { classifyAndUpdateTask } from '@/lib/ai/classify';
 import type { SortDirection, TaskFilter, TaskSort } from '@/lib/tasks/filters';
 
 const tenantSchema = z.object({
@@ -241,6 +242,14 @@ export async function createTask(input: z.input<typeof createTaskSchema>) {
         },
       ),
     );
+
+    // Non-blocking AI classification — fire-and-forget so task creation is instant.
+    // Only triggers if priority is the default (p3), meaning user didn't explicitly set it.
+    if (created.priority === 'p3') {
+      classifyAndUpdateTask(tenant, created.id).catch(() => {
+        // Swallow — AI classification must never break task creation
+      });
+    }
 
     revalidateTaskSurfaces();
     return created;

@@ -153,6 +153,8 @@ export class Compute extends Construct {
         NODE_ENV: 'production',
         PORT: props.containerPort.toString(),
         AWS_REGION: props.awsRegion,
+        // Server-only origin used for Cognito redirect_uri (runtime-safe).
+        APP_URL: props.appUrl,
         NEXT_PUBLIC_APP_URL: props.appUrl,
         DB_HOST: props.databaseHost,
         DB_PORT: props.databasePort,
