@@ -29,6 +29,13 @@
       "when": 1785554231078,
       "tag": "0003_add_integrations_and_ai",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785565494535,
+      "tag": "0004_add_connectors_oauth",
+      "breakpoints": true
     }
   ]
 }

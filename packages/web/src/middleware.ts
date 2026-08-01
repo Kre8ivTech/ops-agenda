@@ -15,6 +15,7 @@ const PUBLIC_PATHS = new Set([
   '/api/auth/signout',
   '/api/auth/dev-login',
   '/api/health',
+  '/api/connectors/callback',
 ]);
 
 function isPublic(path: string): boolean {
