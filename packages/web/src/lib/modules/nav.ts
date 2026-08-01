@@ -42,6 +42,18 @@ export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
     },
     { id: 'alerts', label: 'Alerts', href: '/alerts' },
     { id: 'settings', label: 'Settings', href: '/settings' },
+    {
+      id: 'connections',
+      label: 'Connections',
+      items: [
+        {
+          id: 'connections-manage',
+          label: 'Email & Calendar',
+          href: '/settings/connections',
+          nested: true,
+        },
+      ],
+    },
   ];
 }
 
