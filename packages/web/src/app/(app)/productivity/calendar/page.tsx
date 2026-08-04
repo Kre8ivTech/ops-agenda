@@ -53,7 +53,7 @@ function formatDateFull(date: Date): string {
 export default async function CalendarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string; view?: string }>;
+  searchParams: Promise<{ date?: string; view?: string; event?: string }>;
 }) {
   const session = await getSession();
 
@@ -74,6 +74,7 @@ export default async function CalendarPage({
   const today = toDateString(new Date());
   const view = params.view === 'day' ? 'day' : 'week';
   const selectedDate = params.date || today;
+  const selectedEventId = params.event;
 
   // Server action for sync
   async function handleSync() {
@@ -82,7 +83,7 @@ export default async function CalendarPage({
   }
 
   if (view === 'week') {
-    return <WeekView selectedDate={selectedDate} today={today} handleSync={handleSync} />;
+    return <WeekView selectedDate={selectedDate} today={today} selectedEventId={selectedEventId} />;
   }
 
   return <DayView selectedDate={selectedDate} today={today} handleSync={handleSync} />;
@@ -95,19 +96,17 @@ export default async function CalendarPage({
 async function WeekView({
   selectedDate,
   today,
-  handleSync,
+  selectedEventId,
 }: {
   selectedDate: string;
   today: string;
-  handleSync: () => Promise<void>;
+  selectedEventId?: string;
 }) {
   const monday = getMonday(selectedDate);
   const friday = addDays(monday, 4);
   const startOfWeek = monday + 'T00:00:00';
   const endOfWeek = friday + 'T23:59:59';
 
-  const prevMonday = addDays(monday, -7);
-  const nextMonday = addDays(monday, 7);
   const todayMonday = getMonday(today);
 
   // Build day headers
@@ -141,7 +140,7 @@ async function WeekView({
   });
 
   return (
-    <div className="flex h-[calc(100dvh-120px)] flex-col gap-4">
+    <div className="flex h-[calc(100dvh-120px)] flex-col gap-3">
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -163,21 +162,14 @@ async function WeekView({
           <ButtonLink href={`/productivity/calendar?view=week&date=${selectedDate}&focus=1`} size="medium" variant="primary">
             Protect focus time
           </ButtonLink>
-          {/* Sync */}
-          <form action={handleSync}>
-            <Button type="submit" variant="secondary" size="medium">↻ Sync</Button>
-          </form>
         </div>
       </div>
 
-      {/* Week navigation */}
-      <div className="flex items-center gap-3">
-        <ButtonLink href={`/productivity/calendar?view=week&date=${prevMonday}`} size="medium">
-          ← Prev
-        </ButtonLink>
-        <ButtonLink href={`/productivity/calendar?view=week&date=${nextMonday}`} size="medium">
-          Next →
-        </ButtonLink>
+      {/* Unbooked hours line */}
+      <div className="flex items-center justify-end">
+        <span className="text-[0.82rem] text-text-secondary">
+          {summary.unbookedHours.toFixed(1)} h unbooked
+        </span>
       </div>
 
       {unavailable ? (
@@ -186,8 +178,13 @@ async function WeekView({
         </div>
       ) : (
         <div className="flex min-h-0 flex-1 gap-4">
-          <WeekGrid days={days} events={events} selectedDate={selectedDate} />
-          <WeekSidebar summary={summary} />
+          <WeekGrid days={days} events={events} selectedEventId={selectedEventId} />
+          <WeekSidebar
+            summary={summary}
+            selectedEvent={selectedEventId ? events.find((e) => e.id === selectedEventId) ?? null : null}
+            suggestedHolds={[]}
+            needsTime={[]}
+          />
         </div>
       )}
     </div>

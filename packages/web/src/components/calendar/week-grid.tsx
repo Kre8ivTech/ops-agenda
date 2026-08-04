@@ -10,12 +10,13 @@ import type { CalendarEventRow } from '@/lib/calendar/actions';
 const HOUR_START = 8;
 const HOUR_END = 18;
 const TOTAL_HOURS = HOUR_END - HOUR_START;
-const HOUR_LABELS = Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => {
-  const h = HOUR_START + i;
-  if (h === 12) return '12 PM';
-  if (h > 12) return `${h - 12} PM`;
-  return `${h} AM`;
-});
+
+const HOUR_LABELS: string[] = [];
+for (let h = HOUR_START; h <= HOUR_END; h++) {
+  if (h < 12) HOUR_LABELS.push(`${h} AM`);
+  else if (h === 12) HOUR_LABELS.push('12 PM');
+  else HOUR_LABELS.push(`${h - 12} PM`);
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,11 +32,41 @@ interface WeekDay {
 export interface WeekGridProps {
   days: WeekDay[];
   events: CalendarEventRow[];
-  selectedDate?: string;
+  selectedEventId?: string;
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Event classification
+// ---------------------------------------------------------------------------
+
+/** Determines if an event is a "protected" focus/deep-work block */
+function isProtected(event: CalendarEventRow): boolean {
+  const t = (event.title ?? '').toLowerCase();
+  return (
+    t.includes('deep work') ||
+    t.includes('focus') ||
+    t.includes('protected') ||
+    event.calendarColor === 'green' ||
+    !!event.prepSuggestion
+  );
+}
+
+function eventBlockClasses(event: CalendarEventRow, isSelected: boolean): string {
+  const base = 'absolute inset-x-[3px] overflow-hidden rounded-[4px] border px-2 py-1 cursor-pointer transition-shadow';
+  const selected = isSelected ? ' ring-2 ring-ink shadow-md' : '';
+
+  if (event.hasConflict) {
+    return `${base} bg-white border-border${selected}`;
+  }
+  if (isProtected(event)) {
+    return `${base} bg-wash-green border-signal/40${selected}`;
+  }
+  // Regular meeting
+  return `${base} bg-white border-border${selected}`;
+}
+
+// ---------------------------------------------------------------------------
+// Positioning
 // ---------------------------------------------------------------------------
 
 function eventTop(startAt: Date): string {
@@ -46,25 +77,23 @@ function eventTop(startAt: Date): string {
 
 function eventHeight(startAt: Date, endAt: Date): string {
   const durationH = (endAt.getTime() - startAt.getTime()) / (1000 * 60 * 60);
-  return `${(Math.min(durationH, TOTAL_HOURS) / TOTAL_HOURS) * 100}%`;
+  const clamped = Math.min(durationH, TOTAL_HOURS);
+  return `${(clamped / TOTAL_HOURS) * 100}%`;
 }
 
-function eventStyle(event: CalendarEventRow): string {
-  if (event.hasConflict) return 'bg-risk-wash border-risk';
-  if (event.prepSuggestion) return 'bg-wash-green border-signal';
-  return 'bg-info-wash border-info';
-}
-
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+function formatTimeShort(date: Date): string {
+  const h = date.getHours();
+  const m = date.getMinutes();
+  const hour = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return m === 0 ? `${hour}:00` : `${hour}:${m.toString().padStart(2, '0')}`;
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function WeekGrid({ days, events, selectedDate }: WeekGridProps) {
-  // Group events by date
+export function WeekGrid({ days, events, selectedEventId }: WeekGridProps) {
+  // Group events by date (non-all-day only)
   const eventsByDate = new Map<string, CalendarEventRow[]>();
   for (const event of events) {
     if (event.isAllDay) continue;
@@ -75,69 +104,63 @@ export function WeekGrid({ days, events, selectedDate }: WeekGridProps) {
   }
 
   return (
-    <section className="border-border flex min-h-0 flex-1 flex-col overflow-hidden rounded-[8px] border bg-white/88 shadow-panel">
-      {/* Legend */}
-      <div className="border-border flex items-center justify-between gap-4 border-b px-4 py-3">
+    <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[8px] border border-border bg-white shadow-panel">
+      {/* Legend row */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <div className="flex items-center gap-3">
-          <span className="text-signal text-[0.76rem] font-extrabold uppercase">
-            {days[0]?.num} – {days[days.length - 1]?.num}{' '}
-            {new Date(days[0]?.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long' })}
+          <span className="text-[0.76rem] font-extrabold uppercase text-signal">
+            {days[0]?.num} – {days[days.length - 1]?.num} July
           </span>
-          <div className="text-text-secondary flex items-center gap-3 text-[0.8rem]">
+          <div className="flex items-center gap-3 text-[0.78rem] text-text-secondary">
             <span className="inline-flex items-center gap-1.5">
-              <span className="bg-info-wash border-info inline-block h-2.5 w-2.5 rounded-[3px] border" />
+              <span className="inline-block h-[10px] w-[10px] rounded-[3px] border border-info bg-info-wash" />
               Meeting
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="bg-wash-green border-signal inline-block h-2.5 w-2.5 rounded-[3px] border" />
-              Protected hold
+              <span className="inline-block h-[10px] w-[10px] rounded-[3px] border border-signal bg-wash-green" />
+              Protected
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-2.5 w-2.5 rounded-[3px] border border-dashed border-amber-600 bg-amber-50" />
+              <span className="inline-block h-[10px] w-[10px] rounded-[3px] border border-dashed border-amber-600 bg-[#f6ead8]" />
               Suggested
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="bg-risk-wash border-risk inline-block h-2.5 w-2.5 rounded-[3px] border" />
+              <span className="inline-block h-[10px] w-[10px] rounded-[3px] border border-risk bg-risk-wash" />
               Conflict
             </span>
           </div>
         </div>
       </div>
 
-      {/* Column headers */}
-      <div className="grid grid-cols-[52px_repeat(5,minmax(0,1fr))] gap-1.5 px-4 pt-3 pb-1.5">
+      {/* Day headers */}
+      <div className="grid grid-cols-[52px_repeat(5,minmax(0,1fr))] gap-[6px] px-4 pt-3 pb-1">
         <span />
         {days.map((d) => (
-          <Link
+          <div
             key={d.date}
-            href={`/productivity/calendar?view=day&date=${d.date}`}
-            className={`flex items-baseline justify-between gap-1.5 rounded-[7px] px-2.5 py-2 transition-colors ${
-              d.isToday
-                ? 'bg-wash-green'
-                : d.date === selectedDate
-                  ? 'bg-wash'
-                  : 'hover:bg-wash/50'
+            className={`flex items-baseline justify-between rounded-[7px] px-2.5 py-[7px] ${
+              d.isToday ? 'bg-signal text-white' : 'bg-wash'
             }`}
           >
-            <span className={`text-[0.8rem] font-extrabold ${d.isToday ? 'text-signal' : 'text-ink'}`}>
+            <span className={`text-[0.8rem] font-extrabold ${d.isToday ? 'text-white' : 'text-ink'}`}>
               {d.name}
             </span>
-            <span className={`font-mono text-[0.78rem] font-bold ${d.isToday ? 'text-signal' : 'text-text-secondary'}`}>
+            <span className={`font-mono text-[0.78rem] font-bold ${d.isToday ? 'text-white/80' : 'text-text-secondary'}`}>
               {d.num}
             </span>
-          </Link>
+          </div>
         ))}
       </div>
 
-      {/* Grid body */}
-      <div className="relative flex min-h-0 flex-1 overflow-y-auto">
-        <div className="grid min-h-[600px] w-full grid-cols-[52px_repeat(5,minmax(0,1fr))] gap-1.5 px-4 pb-4">
-          {/* Hour labels */}
+      {/* Time grid */}
+      <div className="relative flex-1 overflow-y-auto">
+        <div className="grid min-h-[700px] grid-cols-[52px_repeat(5,minmax(0,1fr))] gap-[6px] px-4 pb-4">
+          {/* Hour labels column */}
           <div className="relative">
             {HOUR_LABELS.map((label, i) => (
               <span
                 key={label}
-                className="text-text-secondary absolute right-2 font-mono text-[0.7rem] font-semibold"
+                className="absolute right-2 font-mono text-[0.7rem] font-semibold text-text-secondary"
                 style={{ top: `${(i / TOTAL_HOURS) * 100}%`, transform: 'translateY(-50%)' }}
               >
                 {label}
@@ -151,27 +174,42 @@ export function WeekGrid({ days, events, selectedDate }: WeekGridProps) {
             return (
               <div
                 key={d.date}
-                className="border-border/30 relative rounded-[7px] bg-[repeating-linear-gradient(to_bottom,var(--border)_0_1px,transparent_1px_10%)]"
+                className="relative rounded-[7px]"
+                style={{
+                  backgroundColor: d.isToday ? 'rgba(37,114,77,0.04)' : undefined,
+                  backgroundImage: 'repeating-linear-gradient(to bottom, var(--border) 0 1px, transparent 1px 10%)',
+                }}
               >
-                {dayEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className={`absolute inset-x-1 overflow-hidden rounded-[5px] border px-2 py-1 ${eventStyle(event)}`}
-                    style={{
-                      top: eventTop(new Date(event.startAt)),
-                      height: eventHeight(new Date(event.startAt), new Date(event.endAt)),
-                      minHeight: '24px',
-                    }}
-                    title={`${event.title}\n${formatTime(new Date(event.startAt))} – ${formatTime(new Date(event.endAt))}`}
-                  >
-                    <p className="text-ink m-0 truncate text-[0.72rem] font-bold leading-tight">
-                      {event.title}
-                    </p>
-                    <p className="text-text-secondary m-0 truncate text-[0.66rem] leading-tight">
-                      {formatTime(new Date(event.startAt))}
-                    </p>
-                  </div>
-                ))}
+                {dayEvents.map((event) => {
+                  const startDate = new Date(event.startAt);
+                  const endDate = new Date(event.endAt);
+                  const isSelected = event.id === selectedEventId;
+
+                  return (
+                    <Link
+                      key={event.id}
+                      href={`/productivity/calendar?view=week&date=${d.date}&event=${event.id}`}
+                      className={eventBlockClasses(event, isSelected)}
+                      style={{
+                        top: eventTop(startDate),
+                        height: eventHeight(startDate, endDate),
+                        minHeight: '28px',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {/* Conflict dot */}
+                      {event.hasConflict && (
+                        <span className="absolute top-1.5 right-1.5 h-[7px] w-[7px] rounded-full bg-risk" />
+                      )}
+                      <p className="m-0 truncate text-[0.78rem] font-bold leading-tight text-ink">
+                        {event.title}
+                      </p>
+                      <p className="m-0 truncate font-mono text-[0.68rem] text-text-secondary">
+                        {formatTimeShort(startDate)} – {formatTimeShort(endDate)}
+                      </p>
+                    </Link>
+                  );
+                })}
               </div>
             );
           })}
