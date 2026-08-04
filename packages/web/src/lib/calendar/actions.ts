@@ -130,6 +130,254 @@ export async function getCalendarMetrics(params: {
 }
 
 // ---------------------------------------------------------------------------
+// listCalendarEventsWeek
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns events for a full work week (Mon-Fri) given a date range.
+ * Same query pattern as listCalendarEvents but specifically for weekly views.
+ */
+export async function listCalendarEventsWeek(
+  startOfWeek: string,
+  endOfWeek: string,
+): Promise<CalendarEventRow[]> {
+  const tenant = await requireTenant();
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const rows = await tx
+      .select({
+        id: calendarEvent.id,
+        title: calendarEvent.title,
+        location: calendarEvent.location,
+        startAt: calendarEvent.startAt,
+        endAt: calendarEvent.endAt,
+        isAllDay: calendarEvent.isAllDay,
+        organizer: calendarEvent.organizer,
+        attendeeCount: calendarEvent.attendeeCount,
+        responseStatus: calendarEvent.responseStatus,
+        calendarName: calendarEvent.calendarName,
+        calendarColor: calendarEvent.calendarColor,
+        prepSuggestion: calendarEvent.prepSuggestion,
+        hasConflict: calendarEvent.hasConflict,
+        conflictWith: calendarEvent.conflictWith,
+        webLink: calendarEvent.webLink,
+      })
+      .from(calendarEvent)
+      .where(
+        and(
+          eq(calendarEvent.accountId, tenant.accountId),
+          gte(calendarEvent.startAt, new Date(startOfWeek)),
+          lte(calendarEvent.startAt, new Date(endOfWeek)),
+        ),
+      )
+      .orderBy(calendarEvent.startAt);
+
+    return rows;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// getWeekSummary
+// ---------------------------------------------------------------------------
+
+export interface DaySummary {
+  date: string; // YYYY-MM-DD
+  dayName: string; // 'Mon', 'Tue', etc.
+  eventCount: number;
+  meetingHours: number; // total hours of non-all-day events
+  focusHours: number; // 8h workday minus meetingHours
+  hasConflict: boolean;
+  tag: 'heavy' | 'balanced' | 'light'; // heavy = >5h meetings, light = <2h, balanced = between
+}
+
+export interface WeekSummary {
+  days: DaySummary[];
+  totalMeetingHours: number;
+  totalFocusHours: number;
+  unbookedHours: number; // 40h work week minus total meeting hours
+}
+
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+const WORKDAY_HOURS = 8;
+const WORK_WEEK_HOURS = 40;
+
+function getDayTag(meetingHours: number): 'heavy' | 'balanced' | 'light' {
+  if (meetingHours > 5) return 'heavy';
+  if (meetingHours < 2) return 'light';
+  return 'balanced';
+}
+
+/**
+ * Returns a per-day summary for the given work week including meeting hours,
+ * focus hours, conflict detection, and day tagging.
+ */
+export async function getWeekSummary(
+  startOfWeek: string,
+  endOfWeek: string,
+): Promise<WeekSummary> {
+  const events = await listCalendarEventsWeek(startOfWeek, endOfWeek);
+
+  // Group events by date (YYYY-MM-DD)
+  const eventsByDate = new Map<string, CalendarEventRow[]>();
+  for (const event of events) {
+    const dateKey = event.startAt.toISOString().slice(0, 10);
+    const existing = eventsByDate.get(dateKey) ?? [];
+    existing.push(event);
+    eventsByDate.set(dateKey, existing);
+  }
+
+  // Generate day summaries for each weekday in the range
+  const days: DaySummary[] = [];
+  const start = new Date(startOfWeek);
+  const end = new Date(endOfWeek);
+
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dayOfWeek = d.getDay();
+    // Skip weekends (0 = Sun, 6 = Sat)
+    if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+    const dateKey = d.toISOString().slice(0, 10);
+    const dayEvents = eventsByDate.get(dateKey) ?? [];
+
+    // Calculate meeting hours from non-all-day events
+    let meetingHours = 0;
+    let hasConflict = false;
+
+    for (const event of dayEvents) {
+      if (!event.isAllDay) {
+        const durationMs = event.endAt.getTime() - event.startAt.getTime();
+        meetingHours += durationMs / (1000 * 60 * 60);
+      }
+      if (event.hasConflict) {
+        hasConflict = true;
+      }
+    }
+
+    // Cap meeting hours at workday max
+    meetingHours = Math.min(meetingHours, WORKDAY_HOURS);
+    const focusHours = Math.max(0, WORKDAY_HOURS - meetingHours);
+
+    days.push({
+      date: dateKey,
+      dayName: DAY_NAMES[dayOfWeek] as string,
+      eventCount: dayEvents.length,
+      meetingHours: Math.round(meetingHours * 100) / 100,
+      focusHours: Math.round(focusHours * 100) / 100,
+      hasConflict,
+      tag: getDayTag(meetingHours),
+    });
+  }
+
+  const totalMeetingHours = days.reduce((sum, d) => sum + d.meetingHours, 0);
+  const totalFocusHours = days.reduce((sum, d) => sum + d.focusHours, 0);
+  const unbookedHours = Math.max(0, WORK_WEEK_HOURS - totalMeetingHours);
+
+  return {
+    days,
+    totalMeetingHours: Math.round(totalMeetingHours * 100) / 100,
+    totalFocusHours: Math.round(totalFocusHours * 100) / 100,
+    unbookedHours: Math.round(unbookedHours * 100) / 100,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// suggestFocusBlockSlots
+// ---------------------------------------------------------------------------
+
+export interface FocusSlot {
+  date: string;
+  startHour: number; // e.g. 9 for 9:00 AM
+  endHour: number; // e.g. 10.5 for 10:30 AM
+}
+
+const WORK_START_HOUR = 8;
+const WORK_END_HOUR = 18;
+const FOCUS_BLOCK_DURATION = 1.5; // 90 minutes in hours
+const MAX_SUGGESTIONS = 5;
+
+/**
+ * Finds available 90-minute slots in the week where no events exist
+ * (between 8am-6pm). Returns up to 5 suggestions.
+ */
+export async function suggestFocusBlockSlots(
+  startOfWeek: string,
+  endOfWeek: string,
+): Promise<FocusSlot[]> {
+  const events = await listCalendarEventsWeek(startOfWeek, endOfWeek);
+
+  // Group non-all-day events by date
+  const eventsByDate = new Map<string, { startHour: number; endHour: number }[]>();
+  for (const event of events) {
+    if (event.isAllDay) continue;
+    const dateKey = event.startAt.toISOString().slice(0, 10);
+    const startHour = event.startAt.getHours() + event.startAt.getMinutes() / 60;
+    const endHour = event.endAt.getHours() + event.endAt.getMinutes() / 60;
+    const existing = eventsByDate.get(dateKey) ?? [];
+    existing.push({ startHour, endHour });
+    eventsByDate.set(dateKey, existing);
+  }
+
+  const slots: FocusSlot[] = [];
+  const start = new Date(startOfWeek);
+  const end = new Date(endOfWeek);
+
+  for (let d = new Date(start); d <= end && slots.length < MAX_SUGGESTIONS; d.setDate(d.getDate() + 1)) {
+    const dayOfWeek = d.getDay();
+    // Skip weekends
+    if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+    const dateKey = d.toISOString().slice(0, 10);
+    const dayEvents = eventsByDate.get(dateKey) ?? [];
+
+    // Sort events by start time
+    const sorted = [...dayEvents].sort((a, b) => a.startHour - b.startHour);
+
+    // Find gaps between events in the work window
+    let cursor = WORK_START_HOUR;
+
+    for (const event of sorted) {
+      // Only consider events within work hours
+      const eventStart = Math.max(event.startHour, WORK_START_HOUR);
+      const eventEnd = Math.min(event.endHour, WORK_END_HOUR);
+
+      if (eventStart <= cursor) {
+        // Event overlaps or starts before cursor, advance cursor
+        cursor = Math.max(cursor, eventEnd);
+        continue;
+      }
+
+      // Gap exists between cursor and this event's start
+      const gapDuration = eventStart - cursor;
+      if (gapDuration >= FOCUS_BLOCK_DURATION) {
+        slots.push({
+          date: dateKey,
+          startHour: cursor,
+          endHour: cursor + FOCUS_BLOCK_DURATION,
+        });
+        if (slots.length >= MAX_SUGGESTIONS) break;
+      }
+
+      cursor = Math.max(cursor, eventEnd);
+    }
+
+    // Check remaining time after last event
+    if (slots.length < MAX_SUGGESTIONS && cursor < WORK_END_HOUR) {
+      const remainingGap = WORK_END_HOUR - cursor;
+      if (remainingGap >= FOCUS_BLOCK_DURATION) {
+        slots.push({
+          date: dateKey,
+          startHour: cursor,
+          endHour: cursor + FOCUS_BLOCK_DURATION,
+        });
+      }
+    }
+  }
+
+  return slots.slice(0, MAX_SUGGESTIONS);
+}
+
+// ---------------------------------------------------------------------------
 // detectConflicts
 // ---------------------------------------------------------------------------
 
