@@ -30,6 +30,18 @@ export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
       label: 'Productivity',
       items: [
         {
+          id: 'email',
+          label: 'Email',
+          href: '/productivity/email',
+          nested: true,
+        },
+        {
+          id: 'calendar',
+          label: 'Calendar',
+          href: '/productivity/calendar',
+          nested: true,
+        },
+        {
           id: 'tasks',
           label: 'Tasks',
           href: '/productivity/tasks',

@@ -524,6 +524,118 @@ export const aiUsageLog = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Email Messages — metadata only, never bodies/attachments
+// ---------------------------------------------------------------------------
+
+export const emailSignalEnum = pgEnum('email_signal', [
+  'action_required',
+  'follow_up',
+  'waiting',
+  'fyi',
+  'newsletter',
+  'none',
+]);
+
+export const emailMessage = pgTable(
+  'email_message',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    accountId: uuid('account_id').notNull(),
+    connectionId: uuid('connection_id').references(() => connection.id),
+    /** Provider's unique message ID. */
+    externalId: varchar('external_id', { length: 500 }).notNull(),
+    /** Email metadata — never bodies. */
+    fromAddress: varchar('from_address', { length: 320 }).notNull(),
+    fromName: varchar('from_name', { length: 255 }),
+    subject: varchar('subject', { length: 1000 }).notNull(),
+    receivedAt: timestamp('received_at', { withTimezone: true }).notNull(),
+    isRead: boolean('is_read').notNull().default(false),
+    hasAttachments: boolean('has_attachments').notNull().default(false),
+    /** AI-derived signals */
+    signal: emailSignalEnum('signal').notNull().default('none'),
+    signalConfidence: varchar('signal_confidence', { length: 10 }),
+    signalReason: text('signal_reason'),
+    /** Priority ranking (lower = more important). */
+    rankScore: varchar('rank_score', { length: 10 }),
+    /** Suggested task title if action_required. */
+    suggestedTaskTitle: varchar('suggested_task_title', { length: 500 }),
+    /** Deadline detected in metadata/subject. */
+    detectedDeadline: timestamp('detected_deadline', { withTimezone: true }),
+    /** Was this handled/dismissed by the user? */
+    handledAt: timestamp('handled_at', { withTimezone: true }),
+    handledBy: uuid('handled_by'),
+    /** Provider URL to open in the original mail client. */
+    webLink: text('web_link'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('email_message_account_idx').on(table.accountId),
+    index('email_message_connection_idx').on(table.connectionId),
+    index('email_message_received_at_idx').on(table.receivedAt),
+    index('email_message_signal_idx').on(table.signal),
+    uniqueIndex('email_message_external_id_idx').on(table.accountId, table.externalId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Calendar Events — synced from connected providers
+// ---------------------------------------------------------------------------
+
+export const calendarEvent = pgTable(
+  'calendar_event',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    accountId: uuid('account_id').notNull(),
+    connectionId: uuid('connection_id').references(() => connection.id),
+    /** Provider's unique event ID. */
+    externalId: varchar('external_id', { length: 500 }).notNull(),
+    title: varchar('title', { length: 500 }).notNull(),
+    /** Location or video link. */
+    location: text('location'),
+    startAt: timestamp('start_at', { withTimezone: true }).notNull(),
+    endAt: timestamp('end_at', { withTimezone: true }).notNull(),
+    isAllDay: boolean('is_all_day').notNull().default(false),
+    /** Organizer name/email. */
+    organizer: varchar('organizer', { length: 320 }),
+    /** Attendee count. */
+    attendeeCount: varchar('attendee_count', { length: 10 }),
+    /** User's RSVP status. */
+    responseStatus: varchar('response_status', { length: 20 }),
+    /** Calendar name/color for multi-calendar display. */
+    calendarName: varchar('calendar_name', { length: 255 }),
+    calendarColor: varchar('calendar_color', { length: 20 }),
+    /** AI-derived prep signals */
+    prepSuggestion: text('prep_suggestion'),
+    /** Conflict flag (set if overlapping with another event). */
+    hasConflict: boolean('has_conflict').notNull().default(false),
+    conflictWith: uuid('conflict_with'),
+    /** Provider URL. */
+    webLink: text('web_link'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('calendar_event_account_idx').on(table.accountId),
+    index('calendar_event_connection_idx').on(table.connectionId),
+    index('calendar_event_start_at_idx').on(table.startAt),
+    uniqueIndex('calendar_event_external_id_idx').on(table.accountId, table.externalId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Type exports for email/calendar tables
+// ---------------------------------------------------------------------------
+
+export type EmailMessageInsert = InferInsertModel<typeof emailMessage>;
+export type EmailMessageSelect = typeof emailMessage.$inferSelect;
+export type CalendarEventInsert = InferInsertModel<typeof calendarEvent>;
+export type CalendarEventSelect = typeof calendarEvent.$inferSelect;
+
+// ---------------------------------------------------------------------------
 // Type exports for new tables
 // ---------------------------------------------------------------------------
 
