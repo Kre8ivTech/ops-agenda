@@ -1,4 +1,4 @@
-export type NavCountKey = 'tasks';
+export type NavCountKey = 'email' | 'calendar' | 'tasks' | 'alerts';
 
 export type NavItem = {
   id: string;
@@ -14,32 +14,50 @@ export type NavGroup = {
   label: string;
   href?: string;
   items?: NavItem[];
+  /** Collapse indicator: '+' means expandable but not active yet */
+  collapsed?: boolean;
 };
 
 export type AppNavCounts = {
+  email?: number;
+  calendar?: number;
   tasks?: number;
+  alerts?: number;
 };
 
-/** Phase 1 tree: always-on chrome + Productivity → Tasks. Other modules absent. */
+/**
+ * Full portal navigation matching the design spec.
+ * Module groups use the collapsed '+' indicator for future phases.
+ */
 export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
   return [
     { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
     { id: 'ask', label: 'Ask', href: '/ask' },
     {
+      id: 'plan',
+      label: 'Plan',
+      collapsed: true,
+    },
+    {
       id: 'productivity',
       label: 'Productivity',
       items: [
+        { id: 'briefs', label: 'Briefs', href: '/productivity/briefs', nested: true },
         {
           id: 'email',
           label: 'Email',
           href: '/productivity/email',
+          countKey: 'email',
           nested: true,
+          countLabel: fmtCount(counts.email),
         },
         {
           id: 'calendar',
           label: 'Calendar',
           href: '/productivity/calendar',
+          countKey: 'calendar',
           nested: true,
+          countLabel: fmtCount(counts.calendar),
         },
         {
           id: 'tasks',
@@ -47,26 +65,58 @@ export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
           href: '/productivity/tasks',
           countKey: 'tasks',
           nested: true,
-          countLabel:
-            typeof counts.tasks === 'number' && counts.tasks > 0 ? String(counts.tasks) : undefined,
+          countLabel: fmtCount(counts.tasks),
         },
+        { id: 'capacity', label: 'Capacity', href: '/productivity/capacity', nested: true },
+        { id: 'time', label: 'Time', href: '/productivity/time', nested: true },
+        { id: 'contacts', label: 'Contacts', href: '/productivity/contacts', nested: true },
       ],
     },
-    { id: 'alerts', label: 'Alerts', href: '/alerts' },
-    { id: 'settings', label: 'Settings', href: '/settings' },
     {
-      id: 'connections',
-      label: 'Connections',
-      items: [
-        {
-          id: 'connections-manage',
-          label: 'Email & Calendar',
-          href: '/settings/connections',
-          nested: true,
-        },
-      ],
+      id: 'finances',
+      label: 'Finances',
+      collapsed: true,
+    },
+    {
+      id: 'business',
+      label: 'Business',
+      collapsed: true,
+    },
+    {
+      id: 'health',
+      label: 'Health',
+      collapsed: true,
+    },
+    {
+      id: 'life',
+      label: 'Life',
+      collapsed: true,
+    },
+    {
+      id: 'research',
+      label: 'Research',
+      collapsed: true,
+    },
+    {
+      id: 'social',
+      label: 'Social',
+      collapsed: true,
+    },
+    {
+      id: 'alerts',
+      label: 'Alerts',
+      href: '/alerts',
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      collapsed: true,
     },
   ];
+}
+
+function fmtCount(n?: number): string | undefined {
+  return typeof n === 'number' && n > 0 ? String(n) : undefined;
 }
 
 export function isNavActive(pathname: string, href: string): boolean {

@@ -56,6 +56,14 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
         <Lockup mark="paper" size={30} className="text-paper" />
       </div>
 
+      {/* Search */}
+      <div className="px-1">
+        <div className="flex items-center gap-2 rounded-[8px] bg-white/[0.06] px-3 py-2">
+          <span className="text-[0.78rem] text-white/50">Search or ask...</span>
+          <span className="ml-auto rounded-[4px] border border-white/20 px-1.5 py-0.5 font-mono text-[0.62rem] text-white/40">⌘K</span>
+        </div>
+      </div>
+
       <nav className="grid content-start gap-px">
         {nav.map((group) => (
           <div key={group.id} className="grid gap-px">
@@ -66,14 +74,24 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
                 active={isNavActive(pathname, group.href)}
                 onNavigate={onNavigate}
               />
+            ) : group.collapsed ? (
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2.5 rounded-[7px] px-2.5 py-[7px]">
+                <span className="text-white/72 truncate text-[0.86rem] font-extrabold">
+                  {group.label}
+                </span>
+                <span className="text-white/40 text-[0.82rem] font-bold">+</span>
+              </div>
             ) : (
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2.5 rounded-[7px] px-2.5 py-[7px]">
                 <span className="text-white/72 truncate text-[0.86rem] font-extrabold">
                   {group.label}
                 </span>
+                {group.items && group.items.length > 0 && (
+                  <span className="text-white/40 text-[0.82rem] font-bold">−</span>
+                )}
               </div>
             )}
-            {group.items?.map((item) => (
+            {!group.collapsed && group.items?.map((item) => (
               <NavLink
                 key={item.id}
                 href={item.href}
