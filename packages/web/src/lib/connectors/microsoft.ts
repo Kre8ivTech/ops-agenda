@@ -11,7 +11,7 @@ import { integrationCredential } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 
 const AUTHORITY = 'https://login.microsoftonline.com/common/oauth2/v2.0';
-const SCOPES = ['openid', 'profile', 'email', 'offline_access', 'Mail.Read', 'Calendars.Read'];
+const SCOPES = ['openid', 'profile', 'email', 'offline_access', 'Mail.Read', 'Mail.Read.Shared', 'Calendars.Read', 'Calendars.Read.Shared'];
 
 export interface MicrosoftOAuthConfig {
   clientId: string;

@@ -154,9 +154,16 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
       if (!token) { errors.push(`${conn.provider}: no access token`); continue; }
 
       if (conn.provider === 'microsoft') {
+        // Use /users/{email}/messages for shared mailbox support.
+        // For the user's own mailbox, /me/ works too, but /users/{email} is
+        // universal and works for both personal and shared/delegated mailboxes.
+        const mailboxPath = conn.externalAccountRef
+          ? `users/${encodeURIComponent(conn.externalAccountRef)}`
+          : 'me';
+
         // Fetch messages WITH conversationId for thread grouping
         const res = await fetch(
-          'https://graph.microsoft.com/v1.0/me/messages?$top=50&$orderby=receivedDateTime desc&$select=id,conversationId,subject,from,sender,receivedDateTime,isRead,hasAttachments,webLink',
+          `https://graph.microsoft.com/v1.0/${mailboxPath}/messages?$top=50&$orderby=receivedDateTime desc&$select=id,conversationId,subject,from,sender,receivedDateTime,isRead,hasAttachments,webLink`,
           { headers: { authorization: `Bearer ${token}` } },
         );
         if (!res.ok) throw new Error(`Graph ${res.status}: ${(await res.text()).slice(0, 80)}`);
@@ -398,8 +405,11 @@ export async function syncCalendar(): Promise<{ synced: number; errors: string[]
       if (!token) { errors.push(`${conn.provider}: no access token`); continue; }
 
       if (conn.provider === 'microsoft') {
+        const calPath = conn.externalAccountRef
+          ? `users/${encodeURIComponent(conn.externalAccountRef)}`
+          : 'me';
         const res = await fetch(
-          `https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=${start.toISOString()}&enddatetime=${end.toISOString()}&$top=100&$select=id,subject,start,end,location,isAllDay,organizer,attendees,webLink,responseStatus`,
+          `https://graph.microsoft.com/v1.0/${calPath}/calendarview?startdatetime=${start.toISOString()}&enddatetime=${end.toISOString()}&$top=100&$select=id,subject,start,end,location,isAllDay,organizer,attendees,webLink,responseStatus`,
           { headers: { authorization: `Bearer ${token}`, prefer: 'outlook.timezone="UTC"' } },
         );
         if (!res.ok) throw new Error(`Graph cal ${res.status}: ${(await res.text()).slice(0, 80)}`);
