@@ -6,6 +6,7 @@ import {
   listCalendarEventsWeek,
   getCalendarMetrics,
   getWeekSummary,
+  suggestFocusBlockSlots,
   type CalendarEventRow,
   type WeekSummary,
 } from '@/lib/calendar/actions';
@@ -13,6 +14,8 @@ import { Button, ButtonLink } from '@/components/ui/button';
 import { syncCalendar } from '@/lib/connectors/sync';
 import { WeekGrid } from '@/components/calendar/week-grid';
 import { WeekSidebar } from '@/components/calendar/week-sidebar';
+import { getDismissedSlots } from '@/lib/calendar/focus-actions';
+import type { FocusBlockSuggestion } from '@/lib/ai/focus-blocks';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -125,12 +128,38 @@ async function WeekView({
   let events: CalendarEventRow[] = [];
   let summary: WeekSummary = { days: [], totalMeetingHours: 0, totalFocusHours: 0, unbookedHours: 40 };
   let unavailable = false;
+  let suggestedHolds: FocusBlockSuggestion[] = [];
 
   try {
     [events, summary] = await Promise.all([
       listCalendarEventsWeek(startOfWeek, endOfWeek),
       getWeekSummary(startOfWeek, endOfWeek),
     ]);
+
+    // Fetch focus block suggestions from the algorithmic gap finder
+    // and convert to FocusBlockSuggestion format for the sidebar
+    const [slots, dismissed] = await Promise.all([
+      suggestFocusBlockSlots(startOfWeek, endOfWeek),
+      getDismissedSlots(startOfWeek, endOfWeek),
+    ]);
+
+    // Convert slots to sidebar format, filtering out dismissed ones
+    const dismissedSet = new Set(dismissed);
+    suggestedHolds = slots
+      .map((slot) => {
+        const startH = Math.floor(slot.startHour);
+        const startM = Math.round((slot.startHour - startH) * 60);
+        const endH = Math.floor(slot.endHour);
+        const endM = Math.round((slot.endHour - endH) * 60);
+        return {
+          date: slot.date,
+          startTime: `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}`,
+          endTime: `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`,
+          reason: 'Available focus block — protect this time for deep work',
+          priority: 'medium' as const,
+        };
+      })
+      .filter((s) => !dismissedSet.has(`dismissed:${s.date}:${s.startTime}-${s.endTime}`));
   } catch {
     unavailable = true;
   }
@@ -182,7 +211,7 @@ async function WeekView({
           <WeekSidebar
             summary={summary}
             selectedEvent={selectedEventId ? events.find((e) => e.id === selectedEventId) ?? null : null}
-            suggestedHolds={[]}
+            suggestedHolds={suggestedHolds}
             needsTime={[]}
           />
         </div>

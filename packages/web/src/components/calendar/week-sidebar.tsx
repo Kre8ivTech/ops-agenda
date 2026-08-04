@@ -1,6 +1,7 @@
 import type { CalendarEventRow, WeekSummary } from '@/lib/calendar/actions';
 import type { FocusBlockSuggestion } from '@/lib/ai/focus-blocks';
 import { Button } from '@/components/ui/button';
+import { applyFocusBlock, dismissFocusBlock } from '@/lib/calendar/focus-actions';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -124,8 +125,18 @@ export function WeekSidebar({ summary, selectedEvent, suggestedHolds, needsTime 
                   </p>
                 )}
                 <div className="mt-2 flex gap-2">
-                  <Button variant="primary" size="small">Apply</Button>
-                  <Button variant="ghost" size="small">Dismiss</Button>
+                  <form action={async () => {
+                    'use server';
+                    await applyFocusBlock({ date: hold.date, startTime: hold.startTime, endTime: hold.endTime, title: 'Focus time' });
+                  }}>
+                    <Button type="submit" variant="primary" size="small">Apply</Button>
+                  </form>
+                  <form action={async () => {
+                    'use server';
+                    await dismissFocusBlock({ date: hold.date, startTime: hold.startTime, endTime: hold.endTime });
+                  }}>
+                    <Button type="submit" variant="ghost" size="small">Dismiss</Button>
+                  </form>
                 </div>
               </div>
             ))
