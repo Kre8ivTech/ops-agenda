@@ -60,3 +60,8 @@ playwright/.cache/
 # Drizzle migrations are checked in — some machine-level `*.sql` ignore
 # rules would otherwise silently drop them (and the `test:rls` gate with them).
 !packages/web/drizzle/*.sql
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules

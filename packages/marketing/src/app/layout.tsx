@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Poppins } from 'next/font/google';
+
+import { SiteFooter } from '@/components/site-footer';
+import { SiteHeader } from '@/components/site-header';
+
 import './globals.css';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -11,9 +15,12 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Ops Agenda — One loop, closed every morning.',
+  title: {
+    default: "Ops Agenda — It watches the things you'd only notice too late.",
+    template: '%s — Ops Agenda',
+  },
   description:
-    'Ops Agenda turns your email and calendar into a single ranked morning brief. AI proposes the priorities; you approve every action. Read-mostly access — nothing is sent, filed, or paid without you.',
+    'Ops Agenda reads the systems you already use, ranks your entire day by what is genuinely at risk, and hands you one agenda at 6:00 each morning. Read-only by design: it can see and flag, never move or file.',
   metadataBase: new URL('https://opsagenda.com'),
   icons: {
     icon: '/brand/favicon.svg',
@@ -26,7 +33,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} min-h-dvh antialiased`}
     >
-      <body className="text-ink flex min-h-dvh flex-col font-sans">{children}</body>
+      <body className="text-ink flex min-h-dvh flex-col font-sans">
+        <SiteHeader />
+        <main className="flex-1">{children}</main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

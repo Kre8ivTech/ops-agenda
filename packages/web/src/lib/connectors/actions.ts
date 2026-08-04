@@ -198,3 +198,64 @@ export async function testConnection(input: { connectionId: string }): Promise<{
   revalidatePath('/settings/connections');
   return { ok: false, error: 'Token expired — reconnect required' };
 }
+
+// ---------------------------------------------------------------------------
+// Shared Mailbox — connect a discovered shared mailbox as a new connection
+// ---------------------------------------------------------------------------
+
+const addSharedMailboxSchema = z.object({
+  provider: z.string().min(1),
+  email: z.string().email(),
+  displayName: z.string().min(1),
+  /** The parent connection ID whose tokens we'll use. */
+  parentConnectionId: z.string().uuid(),
+});
+
+export async function addSharedMailbox(input: z.input<typeof addSharedMailboxSchema>) {
+  const tenant = await requireTenant();
+  const data = addSharedMailboxSchema.parse(input);
+  const db = getDb();
+
+  // Copy tokens from the parent connection (shared mailboxes use the same OAuth token)
+  const [parent] = await withTenant(db, tenant, async (tx) =>
+    tx.select().from(connection).where(eq(connection.id, data.parentConnectionId)),
+  );
+
+  if (!parent) throw new Error('Parent connection not found');
+
+  // Create a new connection for the shared mailbox
+  await withTenant(db, tenant, async (tx) => {
+    // Mail connection
+    await tx.insert(connection).values({
+      accountId: tenant.accountId,
+      createdBy: tenant.userId,
+      provider: data.provider,
+      kind: 'mail',
+      externalAccountRef: data.email,
+      scopes: parent.scopes,
+      status: 'healthy',
+      accessTokenEnc: parent.accessTokenEnc,
+      refreshTokenEnc: parent.refreshTokenEnc,
+      tokenIv: parent.tokenIv,
+      tokenAuthTag: parent.tokenAuthTag,
+      tokenExpiresAt: parent.tokenExpiresAt,
+    });
+    // Calendar connection for the shared mailbox
+    await tx.insert(connection).values({
+      accountId: tenant.accountId,
+      createdBy: tenant.userId,
+      provider: data.provider,
+      kind: 'calendar',
+      externalAccountRef: data.email,
+      scopes: parent.scopes,
+      status: 'healthy',
+      accessTokenEnc: parent.accessTokenEnc,
+      refreshTokenEnc: parent.refreshTokenEnc,
+      tokenIv: parent.tokenIv,
+      tokenAuthTag: parent.tokenAuthTag,
+      tokenExpiresAt: parent.tokenExpiresAt,
+    });
+  });
+
+  revalidatePath('/settings/connections');
+}

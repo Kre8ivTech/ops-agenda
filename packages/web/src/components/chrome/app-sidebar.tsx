@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import { Lockup } from '@/components/chrome/lockup';
 import { SignOutButton } from '@/components/sign-out-button';
+import { SyncStatusBar } from '@/components/chrome/sync-status-bar';
 import { isNavActive, userInitials, type NavGroup } from '@/lib/modules/nav';
 
 export type AppSidebarProps = {
@@ -93,7 +94,7 @@ function SidebarBody({ nav, user, onNavigate }: AppSidebarProps & { onNavigate?:
             Sync
           </span>
           <span className="text-[0.8rem] leading-[1.35] text-white/70">
-            Connectors stubbed — mail and calendar sync in Phase 2.
+            <SyncStatusBar />
           </span>
         </div>
 

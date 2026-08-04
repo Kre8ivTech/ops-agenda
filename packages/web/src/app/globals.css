@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+/* Tailwind skips node_modules, so the design system's sources must be named
+   explicitly or its components render unstyled. */
+@source '../../../ui/src';
+
 :root {
   --ink: #16201b;
   --signal: #25724d;

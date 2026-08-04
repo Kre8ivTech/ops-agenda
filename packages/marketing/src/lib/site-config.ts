@@ -21,7 +21,13 @@ const CTA_LABEL: Record<LaunchState, string> = {
 
 export const CTA_LABEL_TEXT = CTA_LABEL[LAUNCH_STATE];
 
-export const HERO_EYEBROW = LAUNCH_STATE === 'Live' ? 'Available now' : 'Pre-launch · early access';
+const HERO_EYEBROW_TEXT: Record<LaunchState, string> = {
+  Waitlist: 'Pre-launch · early access',
+  'Private beta': 'Pre-launch · early access',
+  Live: 'Available now',
+};
+
+export const HERO_EYEBROW = HERO_EYEBROW_TEXT[LAUNCH_STATE];
 
 /**
  * Waitlist intake endpoint, injected at build time. The backing Lambda is not

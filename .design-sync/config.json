@@ -1,0 +1,10 @@
+{
+  "pkg": "@ops-agenda/ui",
+  "globalName": "OpsAgendaUI",
+  "projectId": "79568961-d04e-49a2-be32-6c56fe1aa3be",
+  "shape": "package",
+  "buildCmd": "pnpm --filter @ops-agenda/ui build",
+  "srcDir": "src",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": "dist/styles.css"
+}

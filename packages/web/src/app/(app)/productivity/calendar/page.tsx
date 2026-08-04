@@ -6,6 +6,7 @@ import {
 } from '@/lib/calendar/actions';
 import { MetricCards, type MetricCardData } from '@/components/record-table/metric-cards';
 import { Button, ButtonLink } from '@/components/ui/button';
+import { syncCalendar } from '@/lib/connectors/sync';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -106,12 +107,19 @@ export default async function CalendarPage({
   return (
     <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
       {/* Header */}
-      <div>
-        <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>
-        <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">Calendar</h1>
-        <p className="text-text-secondary m-0 mt-2 max-w-[62ch] text-[0.88rem] leading-[1.5]">
-          All calendars reflected. Prep suggestions powered by AI.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>
+          <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">Calendar</h1>
+          <p className="text-text-secondary m-0 mt-2 max-w-[62ch] text-[0.88rem] leading-[1.5]">
+            All calendars reflected. Prep suggestions powered by AI.
+          </p>
+        </div>
+        <form action={async () => { 'use server'; await syncCalendar(); }}>
+          <Button type="submit" variant="secondary" size="medium">
+            ↻ Sync now
+          </Button>
+        </form>
       </div>
 
       {/* Date navigation */}

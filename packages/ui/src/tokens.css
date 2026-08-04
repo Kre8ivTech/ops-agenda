@@ -1,0 +1,25 @@
+/**
+ * Ops Agenda design tokens — the single source of truth for both the app
+ * (`packages/web`) and the marketing site (`packages/marketing`).
+ *
+ * Every component in this package styles itself from these tokens. Consuming
+ * apps import this file and then map the tokens into Tailwind's theme via
+ * `@theme inline` (see `styles.css` for the canonical mapping).
+ */
+
+:root {
+  --ink: #16201b;
+  --signal: #25724d;
+  --paper: #f7f7f2;
+  --white: #ffffff;
+  --border: #dbe2db;
+  --wash: #eef2ec;
+  --wash-green: #dcece2;
+  --text-secondary: #5c6861;
+  --signal-on-ink: #8fd3ae;
+  --risk: #a33b32;
+  --risk-wash: #f2dfdd;
+  --info: #315d8f;
+  --info-wash: #dfe9f5;
+  --shadow-panel: 0 22px 60px rgba(35, 45, 40, 0.12);
+}

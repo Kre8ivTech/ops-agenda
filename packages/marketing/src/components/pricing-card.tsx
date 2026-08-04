@@ -1,52 +1,54 @@
-import { ButtonLink } from '@/components/button';
-import { SIGNUP_URL } from '@/lib/app-links';
+import Link from 'next/link';
 
-export function PricingCard({
-  name,
-  price,
-  entities,
-  modules,
-  featured = false,
-}: {
-  name: string;
-  price: string;
-  entities: string;
-  modules: string;
-  featured?: boolean;
-}) {
+import type { Plan } from '@/lib/marketing-content';
+import { CTA_LABEL_TEXT, SHOW_PRICING_AMOUNTS } from '@/lib/site-config';
+import { PILL_TONE } from '@/lib/tone';
+
+export function PricingCard({ plan }: { plan: Plan }) {
   return (
     <article
-      className={`grid gap-4 rounded-[8px] border p-6 ${
-        featured ? 'border-ink bg-ink text-white' : 'border-border bg-white'
+      className={`grid content-start gap-[18px] rounded-[14px] border bg-white px-[clamp(24px,3.2vw,30px)] py-[clamp(26px,3.4vw,32px)] ${
+        plan.featured ? 'border-ink' : 'border-border'
       }`}
     >
-      <div>
-        <p
-          className={`m-0 mb-1 font-mono text-[0.72rem] font-extrabold uppercase tracking-[0.02em] ${
-            featured ? 'text-signal-on-ink' : 'text-signal'
+      <div className="grid gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="text-[1.2rem] font-extrabold tracking-[-0.02em]">{plan.name}</span>
+          <span
+            className={`rounded-full px-2 py-1 font-mono text-[0.68rem] font-extrabold leading-none ${PILL_TONE[plan.tagTone]}`}
+          >
+            {plan.tag}
+          </span>
+        </div>
+        <span
+          className={`text-[1.7rem] font-extrabold tracking-[-0.025em] ${
+            SHOW_PRICING_AMOUNTS ? 'text-ink' : 'text-text-secondary'
           }`}
         >
-          {name}
-        </p>
-        <p className="m-0 flex items-baseline gap-1">
-          <span className="text-[2rem] font-extrabold tracking-[-0.02em]">{price}</span>
-          <span className={featured ? 'text-white/70' : 'text-text-secondary'}>/month</span>
-        </p>
+          {SHOW_PRICING_AMOUNTS ? plan.price : 'Pricing at launch'}
+        </span>
+        <p className="text-text-secondary m-0 text-[0.89rem] leading-[1.45]">{plan.who}</p>
       </div>
-      <ul
-        className={`m-0 grid gap-2 p-0 text-[0.88rem] ${featured ? 'text-white/85' : 'text-ink'}`}
+
+      <div className="border-border grid gap-[9px] border-t pt-4">
+        {plan.lines.map((line) => (
+          <div key={line} className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-2.5">
+            <span className="bg-signal mt-[7px] h-[5px] w-[5px] rounded-full" />
+            <span className="text-text-secondary text-[0.89rem] leading-[1.45]">{line}</span>
+          </div>
+        ))}
+      </div>
+
+      <Link
+        href="/waitlist"
+        className={`inline-flex h-11 items-center justify-center rounded-[8px] border text-[0.88rem] font-extrabold transition-colors ${
+          plan.featured
+            ? 'bg-ink border-ink hover:bg-signal hover:border-signal text-[var(--paper)]'
+            : 'border-border text-ink hover:border-ink bg-white'
+        }`}
       >
-        <li className="list-none">{entities}</li>
-        <li className="list-none">{modules}</li>
-      </ul>
-      <ButtonLink
-        href={SIGNUP_URL}
-        variant={featured ? 'secondary' : 'primary'}
-        size="medium"
-        className={featured ? '!text-ink hover:!bg-wash !bg-white' : ''}
-      >
-        Start with {name}
-      </ButtonLink>
+        {CTA_LABEL_TEXT}
+      </Link>
     </article>
   );
 }

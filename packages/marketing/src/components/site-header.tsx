@@ -30,7 +30,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
-                className={`rounded-[7px] px-[11px] py-[7px] text-[0.86rem] whitespace-nowrap transition-colors ${
+                className={`whitespace-nowrap rounded-[7px] px-[11px] py-[7px] text-[0.86rem] transition-colors ${
                   active
                     ? 'text-ink bg-wash font-extrabold'
                     : 'text-text-secondary hover:text-ink font-semibold'
@@ -42,7 +42,7 @@ export function SiteHeader() {
           })}
           <Link
             href="/waitlist"
-            className="bg-ink hover:bg-signal ml-2.5 inline-flex h-[38px] items-center rounded-[8px] px-4 text-[0.86rem] font-extrabold whitespace-nowrap text-[var(--paper)] transition-colors"
+            className="bg-ink hover:bg-signal ml-2.5 inline-flex h-[38px] items-center whitespace-nowrap rounded-[8px] px-4 text-[0.86rem] font-extrabold text-[var(--paper)] transition-colors"
           >
             {CTA_LABEL_TEXT}
           </Link>
@@ -69,7 +69,7 @@ export function SiteHeader() {
       {menuOpen && (
         <div
           id="site-menu"
-          className="border-border relative z-[19] grid gap-[3px] border-b bg-white px-[clamp(20px,4vw,44px)] pt-[14px] pb-5 lg:hidden"
+          className="border-border relative z-[19] grid gap-[3px] border-b bg-white px-[clamp(20px,4vw,44px)] pb-5 pt-[14px] lg:hidden"
         >
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);

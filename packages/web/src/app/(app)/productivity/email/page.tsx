@@ -1,263 +1,418 @@
 import Link from 'next/link';
+import { desc, eq, and, isNull, isNotNull, sql } from 'drizzle-orm';
 
 import { Button } from '@/components/ui/button';
-import { FilterChips, type FilterChipData } from '@/components/record-table/filter-chips';
-import { MetricCards, type MetricCardData } from '@/components/record-table/metric-cards';
-import { Pagination } from '@/components/record-table/pagination';
-import {
-  listEmails,
-  markEmailHandled,
-  reopenEmail,
-  getEmailMetrics,
-  type EmailFilter,
-  type EmailRow,
-} from '@/lib/email/actions';
+import { getSession } from '@/lib/auth';
+import { createDb, withTenant } from '@/lib/db';
+import { emailThread, emailExtraction, emailDraft } from '@/lib/db/schema';
+import { env } from '@/lib/env';
+import { syncEmails } from '@/lib/connectors/sync';
+import { extractCommitments } from '@/lib/ai/email-extract';
+import { generateReplyDraft } from '@/lib/ai/email-reply';
 
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                    */
-/* -------------------------------------------------------------------------- */
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-const SIGNAL_BADGE_CLASSES: Record<string, string> = {
-  action_required: 'bg-risk-wash text-ink',
-  follow_up: 'bg-[#fff3cd] text-[#856404]',
-  waiting: 'bg-wash-green text-signal',
-  fyi: 'bg-wash text-text-secondary',
-  newsletter: 'bg-wash text-text-secondary',
-  none: 'bg-wash text-text-secondary',
+type Thread = typeof emailThread.$inferSelect;
+type Extraction = typeof emailExtraction.$inferSelect;
+type Draft = typeof emailDraft.$inferSelect;
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const PRIORITY_BADGE: Record<string, string> = {
+  p1: 'bg-red-100 text-red-800 border-red-200',
+  p2: 'bg-amber-50 text-amber-800 border-amber-200',
+  p3: 'bg-white text-ink border-border',
+  fysa: 'bg-wash text-text-secondary border-border',
 };
 
-function signalLabel(signal: string): string {
-  return signal.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+function priorityLabel(p: string | null): string {
+  if (p === 'p1') return 'P1';
+  if (p === 'p2') return 'P2';
+  if (p === 'p3') return 'P3';
+  return 'FYSA';
 }
 
-function formatReceived(date: Date): string {
-  const d = new Date(date);
+function senderInitials(name: string | null, email: string): string {
+  if (name && name.length >= 2) {
+    const parts = name.trim().split(/[\s._-]+/);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  }
+  return email.slice(0, 2).toUpperCase();
+}
+
+function timeAgo(date: Date): string {
   const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffH = diffMs / (1000 * 60 * 60);
-  if (diffH < 1) return `${Math.max(1, Math.round(diffMs / 60000))}m ago`;
-  if (diffH < 24) return `${Math.round(diffH)}h ago`;
+  const diff = now.getTime() - date.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function deadlineLabel(d: Date | null): string {
+  if (!d) return 'None';
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
+  if (diffDays === 0) return `Today, ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+  if (diffDays === 1) return 'Tomorrow';
+  if (diffDays < 0) return `${Math.abs(diffDays)}d overdue`;
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-type EmailSearchParams = { filter?: string; page?: string };
-
-function buildHref(current: EmailSearchParams, overrides: Partial<EmailSearchParams>): string {
-  const params = new URLSearchParams();
-  const merged = { ...current, ...overrides };
-  if (merged.filter && merged.filter !== 'all') params.set('filter', merged.filter);
-  if (merged.page && merged.page !== '1') params.set('page', merged.page);
-  const query = params.toString();
-  return query ? `/productivity/email?${query}` : '/productivity/email';
-}
-
-function parseFilter(raw?: string): EmailFilter {
-  if (raw === 'action_required' || raw === 'follow_up' || raw === 'handled') return raw;
-  return 'all';
-}
-
-function parsePage(raw?: string): number {
-  const n = parseInt(raw ?? '1', 10);
-  return Number.isFinite(n) && n > 0 ? n : 1;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                       */
-/* -------------------------------------------------------------------------- */
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 
 export default async function EmailPage({
   searchParams,
 }: {
-  searchParams: Promise<EmailSearchParams>;
+  searchParams: Promise<{ thread?: string; filter?: string }>;
 }) {
   const params = await searchParams;
-  const filter = parseFilter(params.filter);
-  const page = parsePage(params.page);
+  const session = await getSession();
 
-  const [result, metrics] = await Promise.all([
-    listEmails({ filter, page }),
-    getEmailMetrics(),
-  ]);
+  if (!session?.accountId || !session?.userId) {
+    return (
+      <div className="border-border bg-risk-wash rounded-[8px] border p-4">
+        <p className="text-ink font-bold">Complete onboarding to access Email.</p>
+      </div>
+    );
+  }
 
-  /* Metric cards */
-  const metricCards: MetricCardData[] = [
-    { label: 'Total Messages', value: String(metrics.total) },
-    { label: 'Unread', value: String(metrics.unread) },
-    {
-      label: 'Action Required',
-      value: String(metrics.actionRequired),
-      tone: metrics.actionRequired > 0 ? 'risk' : 'default',
-    },
-    { label: 'Follow Up', value: String(metrics.followUp), tone: 'signal' },
-  ];
+  const tenant = { accountId: session.accountId, userId: session.userId };
+  const db = createDb(env.DATABASE_URL);
 
-  /* Filter chips */
-  const chips: FilterChipData[] = [
-    {
-      key: 'all',
-      label: 'All',
-      count: result.counts.all,
-      href: buildHref(params, { filter: 'all', page: '1' }),
-      active: filter === 'all',
-    },
-    {
-      key: 'action_required',
-      label: 'Action Required',
-      count: result.counts.actionRequired,
-      href: buildHref(params, { filter: 'action_required', page: '1' }),
-      active: filter === 'action_required',
-    },
-    {
-      key: 'follow_up',
-      label: 'Follow Up',
-      count: result.counts.followUp,
-      href: buildHref(params, { filter: 'follow_up', page: '1' }),
-      active: filter === 'follow_up',
-    },
-    {
-      key: 'handled',
-      label: 'Handled',
-      count: result.counts.handled,
-      href: buildHref(params, { filter: 'handled', page: '1' }),
-      active: filter === 'handled',
-    },
-  ];
+  // Load threads
+  let threads: Thread[] = [];
+  try {
+    threads = await withTenant(db, tenant, async (tx) =>
+      tx.select().from(emailThread)
+        .where(and(isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)))
+        .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
+    );
+  } catch { /* DB unavailable */ }
+
+  // Filter
+  const filter = params.filter ?? 'all';
+  const filteredThreads = filter === 'all'
+    ? threads
+    : threads.filter((t) => t.priority === filter);
+
+  // Counts
+  const counts = {
+    all: threads.length,
+    p1: threads.filter((t) => t.priority === 'p1').length,
+    p2: threads.filter((t) => t.priority === 'p2').length,
+    dueOuts: threads.filter((t) => t.signalTag?.startsWith('Due-out')).length,
+    fysa: threads.filter((t) => t.priority === 'fysa').length,
+  };
+
+  // Commitments count
+  let commitmentCount = 0;
+  try {
+    const [result] = await withTenant(db, tenant, async (tx) =>
+      tx.select({ count: sql<number>`count(*)::int` }).from(emailExtraction)
+        .where(and(eq(emailExtraction.accountId, tenant.accountId), eq(emailExtraction.status, 'pending'))),
+    );
+    commitmentCount = result?.count ?? 0;
+  } catch { /* */ }
+
+  // Selected thread detail
+  const selectedId = params.thread ?? filteredThreads[0]?.id;
+  let selectedThread: Thread | null = null;
+  let extractions: Extraction[] = [];
+  let draft: Draft | null = null;
+
+  if (selectedId) {
+    try {
+      const [t] = await withTenant(db, tenant, async (tx) =>
+        tx.select().from(emailThread).where(eq(emailThread.id, selectedId)),
+      );
+      selectedThread = t ?? null;
+
+      if (selectedThread) {
+        extractions = await withTenant(db, tenant, async (tx) =>
+          tx.select().from(emailExtraction).where(eq(emailExtraction.threadId, selectedId)),
+        );
+        const [d] = await withTenant(db, tenant, async (tx) =>
+          tx.select().from(emailDraft)
+            .where(and(eq(emailDraft.threadId, selectedId), eq(emailDraft.status, 'pending_review')))
+            .orderBy(desc(emailDraft.createdAt))
+            .limit(1),
+        );
+        draft = d ?? null;
+      }
+    } catch { /* */ }
+  }
+
+  // Server actions
+  async function handleSync() {
+    'use server';
+    await syncEmails();
+  }
+
+  async function handleExtract(formData: FormData) {
+    'use server';
+    const threadId = formData.get('threadId') as string;
+    const sess = await getSession();
+    if (!sess?.accountId || !sess?.userId) return;
+    await extractCommitments({ accountId: sess.accountId, userId: sess.userId }, threadId);
+  }
+
+  async function handleGenerateDraft(formData: FormData) {
+    'use server';
+    const threadId = formData.get('threadId') as string;
+    const sess = await getSession();
+    if (!sess?.accountId || !sess?.userId) return;
+    await generateReplyDraft({ accountId: sess.accountId, userId: sess.userId }, threadId);
+  }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
-      {/* Header */}
-      <div>
-        <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>
-        <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">Email</h1>
-        <p className="text-text-secondary m-0 mt-2 max-w-[62ch] text-[0.88rem] leading-[1.5]">
-          AI-ranked messages across all connected accounts. Open in your provider — we never store
-          bodies.
-        </p>
-      </div>
-
-      {/* Metric cards */}
-      <MetricCards items={metricCards} />
+    <div className="flex h-[calc(100dvh-120px)] flex-col gap-0">
+      {/* Top bar */}
+      <header className="flex flex-wrap items-center justify-between gap-3 pb-4">
+        <div>
+          <p className="text-signal mb-1 text-[0.76rem] font-extrabold uppercase">Productivity</p>
+          <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">
+            Email — {commitmentCount} commitment{commitmentCount !== 1 ? 's' : ''} found
+          </h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <form action={handleSync}>
+            <Button type="submit" variant="secondary" size="medium">Re-scan</Button>
+          </form>
+        </div>
+      </header>
 
       {/* Filter chips */}
-      <FilterChips chips={chips} />
+      <div className="mb-4 flex flex-wrap gap-2">
+        {[
+          { key: 'all', label: 'All', count: counts.all },
+          { key: 'p1', label: 'P1', count: counts.p1 },
+          { key: 'p2', label: 'P2', count: counts.p2 },
+          { key: 'due_outs', label: 'Due-outs', count: counts.dueOuts },
+          { key: 'fysa', label: 'FYSA', count: counts.fysa },
+        ].map((chip) => (
+          <Link
+            key={chip.key}
+            href={`/productivity/email?filter=${chip.key}${selectedId ? `&thread=${selectedId}` : ''}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.82rem] font-bold transition-colors ${
+              filter === chip.key
+                ? 'border-ink bg-ink text-white'
+                : 'border-border bg-white text-ink hover:border-ink'
+            }`}
+          >
+            {chip.label}
+            <span className={`text-[0.72rem] ${filter === chip.key ? 'text-white/70' : 'text-text-secondary'}`}>
+              {chip.count}
+            </span>
+          </Link>
+        ))}
+      </div>
 
-      {/* Table */}
-      {result.rows.length > 0 ? (
-        <>
-          {/* Column headers */}
-          <div className="border-border hidden rounded-t-[8px] border border-b-0 bg-[var(--wash)] px-4 py-2.5 lg:grid lg:grid-cols-[80px_minmax(0,1fr)_minmax(0,1.5fr)_100px_120px_auto] lg:gap-3">
-            <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
-              Priority
-            </span>
-            <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
-              From
-            </span>
-            <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
-              Subject
-            </span>
-            <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
-              Received
-            </span>
-            <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
-              Signal
-            </span>
-            <span className="text-text-secondary text-right font-mono text-[0.72rem] font-extrabold uppercase">
-              Actions
-            </span>
+      {/* Split pane */}
+      <div className="border-border flex min-h-0 flex-1 overflow-hidden rounded-[8px] border bg-white">
+        {/* Left panel — thread list */}
+        <div className="border-border w-full max-w-[480px] shrink-0 overflow-y-auto border-r">
+          <div className="border-border border-b px-4 py-2">
+            <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase tracking-wider">
+              Ranked by Ops Agenda
+            </p>
+            <p className="text-text-secondary m-0 text-[0.72rem]">{filteredThreads.length} shown</p>
           </div>
 
-          {/* Rows */}
-          <ul className="divide-border border-border grid divide-y rounded-[8px] border bg-white lg:rounded-t-none">
-            {result.rows.map((email) => (
-              <EmailRowItem key={email.id} email={email} />
-            ))}
-          </ul>
+          {filteredThreads.length === 0 ? (
+            <div className="px-4 py-8 text-center">
+              <p className="text-text-secondary text-[0.88rem]">No emails synced yet.</p>
+              <p className="text-text-secondary mt-1 text-[0.82rem]">
+                Connect an account in{' '}
+                <Link href="/settings/connections" className="text-signal font-bold">Settings → Connections</Link>
+                {' '}then click Re-scan.
+              </p>
+            </div>
+          ) : null}
 
-          {/* Pagination */}
-          <Pagination
-            page={page}
-            pageSize={25}
-            total={result.total}
-            buildHref={(nextPage) => buildHref(params, { page: String(nextPage) })}
-          />
-        </>
-      ) : (
-        /* Empty state */
-        <div className="border-border text-text-secondary rounded-[8px] border bg-white px-4 py-8 text-center text-[0.88rem]">
-          No emails synced yet. Connect an email account in Settings → Connections.
+          {filteredThreads.map((t) => (
+            <Link
+              key={t.id}
+              href={`/productivity/email?filter=${filter}&thread=${t.id}`}
+              className={`flex gap-3 border-b border-border/50 px-4 py-3 transition-colors ${
+                selectedId === t.id ? 'bg-wash' : 'hover:bg-wash/50'
+              }`}
+            >
+              {/* Avatar */}
+              <div className="bg-wash text-text-secondary flex size-9 shrink-0 items-center justify-center rounded-full text-[0.72rem] font-extrabold">
+                {senderInitials(null, t.participants?.split(',')[0] ?? '')}
+              </div>
+              {/* Content */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-ink truncate text-[0.85rem] font-bold">
+                    {t.participants?.split(',')[0]?.split('@')[0] ?? 'Unknown'}
+                  </span>
+                  <span className="text-text-secondary shrink-0 text-[0.72rem]">
+                    {timeAgo(t.lastMessageAt)}
+                  </span>
+                </div>
+                <p className="text-ink m-0 truncate text-[0.82rem] font-semibold">{t.subject}</p>
+                {/* Signal tag */}
+                <div className="mt-1 flex items-center gap-2">
+                  <span className={`rounded-full border px-2 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_BADGE[t.priority ?? 'fysa']}`}>
+                    {priorityLabel(t.priority)}
+                  </span>
+                  {t.signalTag ? (
+                    <span className="text-[0.72rem] font-bold text-red-700">{t.signalTag}</span>
+                  ) : null}
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
-      )}
-    </div>
-  );
-}
 
-/* -------------------------------------------------------------------------- */
-/*  Row Component                                                              */
-/* -------------------------------------------------------------------------- */
+        {/* Right panel — detail */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+          {selectedThread ? (
+            <div className="flex flex-col gap-5 p-6">
+              {/* Thread header */}
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className={`rounded-full border px-2.5 py-1 text-[0.72rem] font-extrabold ${PRIORITY_BADGE[selectedThread.priority ?? 'fysa']}`}>
+                      {priorityLabel(selectedThread.priority)}
+                    </span>
+                    {selectedThread.signalTag ? (
+                      <span className="text-[0.78rem] font-bold text-red-700">{selectedThread.signalTag}</span>
+                    ) : null}
+                  </div>
+                  <h2 className="text-ink m-0 text-[1.25rem] font-extrabold leading-tight">
+                    {selectedThread.subject}
+                  </h2>
+                  <p className="text-text-secondary m-0 mt-1.5 text-[0.82rem]">
+                    {selectedThread.participants?.split(',')[0] ?? 'Unknown'} · {selectedThread.messageCount} messages · last reply {timeAgo(selectedThread.lastMessageAt)}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {selectedThread.webLink ? (
+                    <a href={selectedThread.webLink} target="_blank" rel="noopener" className="border-border inline-flex h-9 items-center rounded-[8px] border bg-white px-4 text-[0.82rem] font-bold text-ink hover:border-ink">
+                      Open in Outlook
+                    </a>
+                  ) : null}
+                </div>
+              </div>
 
-function EmailRowItem({ email }: { email: EmailRow }) {
-  const badgeClasses = SIGNAL_BADGE_CLASSES[email.signal] ?? SIGNAL_BADGE_CLASSES.none;
-  const rankDisplay = email.rankScore ? `#${email.rankScore}` : '—';
+              {/* Extraction card */}
+              {extractions.length > 0 ? (
+                <div className="border-border rounded-[8px] border bg-[#f8faf8]">
+                  <div className="flex items-center justify-between border-b border-border/50 px-4 py-2.5">
+                    <span className="text-[0.76rem] font-extrabold uppercase text-signal">
+                      Extracted from this thread
+                    </span>
+                    <span className="text-text-secondary text-[0.72rem] font-mono">
+                      {extractions[0]?.confidence}% confidence
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-px bg-border/30">
+                    {extractions.slice(0, 1).map((ext) => (
+                      <>
+                        <div key={`${ext.id}-dueout`} className="bg-white px-4 py-3">
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Due-out</p>
+                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold">{ext.title}</p>
+                        </div>
+                        <div key={`${ext.id}-deadline`} className="bg-white px-4 py-3">
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Deadline</p>
+                          <p className={`m-0 mt-0.5 text-[0.88rem] font-bold ${ext.deadline && ext.deadline <= new Date() ? 'text-red-700' : 'text-ink'}`}>
+                            {deadlineLabel(ext.deadline)}
+                          </p>
+                        </div>
+                        <div key={`${ext.id}-owner`} className="bg-white px-4 py-3">
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Owner</p>
+                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold capitalize">{ext.owner ?? '—'}</p>
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                  {extractions[0]?.reasoning ? (
+                    <p className="text-text-secondary m-0 border-t border-border/50 px-4 py-2.5 text-[0.8rem] leading-[1.4]">
+                      {extractions[0].reasoning}
+                    </p>
+                  ) : null}
+                  <div className="flex gap-2 border-t border-border/50 px-4 py-3">
+                    <Button variant="primary" size="small">Add to due-outs</Button>
+                    <Button variant="secondary" size="small">Edit extraction</Button>
+                    <Button variant="ghost" size="small">Not a commitment</Button>
+                  </div>
+                </div>
+              ) : (
+                <form action={handleExtract}>
+                  <input type="hidden" name="threadId" value={selectedThread.id} />
+                  <Button type="submit" variant="quiet" size="medium">
+                    Scan for commitments
+                  </Button>
+                </form>
+              )}
 
-  return (
-    <li className="grid items-center gap-2 px-4 py-3 lg:grid-cols-[80px_minmax(0,1fr)_minmax(0,1.5fr)_100px_120px_auto] lg:gap-3">
-      {/* Priority / Rank */}
-      <span className="text-ink font-mono text-[0.82rem] font-bold">{rankDisplay}</span>
+              {/* Thread metadata notice */}
+              <div className="border-border rounded-[8px] border px-4 py-3">
+                <p className="text-text-secondary m-0 text-[0.8rem]">
+                  {parseInt(selectedThread.messageCount) - 1} earlier messages hidden · metadata only, bodies are not stored
+                </p>
+              </div>
 
-      {/* From */}
-      <span className="text-ink truncate text-[0.88rem] font-medium">
-        {email.fromName || email.fromAddress}
-      </span>
-
-      {/* Subject */}
-      <span className="text-text-secondary truncate text-[0.85rem]">{email.subject}</span>
-
-      {/* Received */}
-      <span className="text-text-secondary text-[0.8rem]">{formatReceived(email.receivedAt)}</span>
-
-      {/* Signal badge */}
-      <span
-        className={`inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-[0.72rem] font-extrabold uppercase ${badgeClasses}`}
-      >
-        {signalLabel(email.signal)}
-      </span>
-
-      {/* Actions */}
-      <div className="flex items-center justify-end gap-2">
-        {email.handledAt ? (
-          <form
-            action={async () => {
-              'use server';
-              await reopenEmail({ emailId: email.id });
-            }}
-          >
-            <Button type="submit" size="small" variant="ghost">
-              Reopen
-            </Button>
-          </form>
-        ) : (
-          <form
-            action={async () => {
-              'use server';
-              await markEmailHandled({ emailId: email.id });
-            }}
-          >
-            <Button type="submit" size="small" variant="ghost">
-              Mark handled
-            </Button>
-          </form>
-        )}
-        {email.webLink && (
-          <a
-            href={email.webLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-ink hover:text-signal inline-flex items-center text-[0.82rem] font-extrabold transition-colors"
-          >
-            Open ↗
-          </a>
-        )}
+              {/* Suggested reply */}
+              {draft ? (
+                <div className="border-border rounded-[8px] border">
+                  <div className="flex items-center justify-between border-b border-border/50 px-4 py-2.5">
+                    <span className="text-[0.76rem] font-extrabold uppercase text-signal">
+                      Suggested Reply
+                    </span>
+                    <span className="text-text-secondary text-[0.72rem]">
+                      Nothing sends without your approval
+                    </span>
+                  </div>
+                  <div className="px-4 py-3">
+                    <p className="text-ink m-0 text-[0.88rem] leading-[1.5]">{draft.content}</p>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-border/50 px-4 py-3">
+                    <div className="flex gap-2">
+                      <Button variant="primary" size="small">Review and send</Button>
+                      <Button variant="secondary" size="small">Edit draft</Button>
+                      <form action={handleGenerateDraft} className="inline">
+                        <input type="hidden" name="threadId" value={selectedThread.id} />
+                        <Button type="submit" variant="ghost" size="small">Regenerate</Button>
+                      </form>
+                    </div>
+                    <span className="text-text-secondary text-[0.72rem]">
+                      Drafted from thread metadata
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <form action={handleGenerateDraft}>
+                  <input type="hidden" name="threadId" value={selectedThread.id} />
+                  <Button type="submit" variant="quiet" size="medium">
+                    Generate reply draft
+                  </Button>
+                </form>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-text-secondary text-[0.9rem]">Select a thread to view details</p>
+            </div>
+          )}
+        </div>
       </div>
-    </li>
+    </div>
   );
 }

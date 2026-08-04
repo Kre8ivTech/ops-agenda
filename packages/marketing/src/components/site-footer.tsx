@@ -17,7 +17,7 @@ export function SiteFooter() {
 
         {FOOTER_COLUMNS.map((column) => (
           <div key={column.title} className="grid min-w-0 content-start gap-2.5">
-            <p className="text-text-secondary font-mono m-0 text-[0.72rem] font-bold tracking-[0.08em] uppercase">
+            <p className="text-text-secondary m-0 font-mono text-[0.72rem] font-bold uppercase tracking-[0.08em]">
               {column.title}
             </p>
             {column.links.map((link) => (
@@ -38,7 +38,9 @@ export function SiteFooter() {
           <span className="text-text-secondary font-mono text-[0.8rem] font-semibold">
             © 2026 Ops Agenda · Pre-launch
           </span>
-          <span className="text-text-secondary text-[0.83rem]">No trackers on this site either.</span>
+          <span className="text-text-secondary text-[0.83rem]">
+            No trackers on this site either.
+          </span>
         </div>
       </div>
     </footer>

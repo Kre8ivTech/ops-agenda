@@ -580,6 +580,129 @@ export const emailMessage = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Email Threads — groups messages by conversation
+// ---------------------------------------------------------------------------
+
+export const emailThread = pgTable(
+  'email_thread',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    accountId: uuid('account_id').notNull(),
+    connectionId: uuid('connection_id').references(() => connection.id),
+    /** Provider conversation/thread ID. */
+    externalThreadId: varchar('external_thread_id', { length: 500 }).notNull(),
+    subject: varchar('subject', { length: 1000 }).notNull(),
+    /** Most recent participant emails (comma-separated). */
+    participants: text('participants'),
+    messageCount: varchar('message_count', { length: 10 }).notNull().default('1'),
+    lastMessageAt: timestamp('last_message_at', { withTimezone: true }).notNull(),
+    /** Days since user last replied. */
+    daysSinceReply: varchar('days_since_reply', { length: 10 }),
+    /** AI-assigned priority. */
+    priority: varchar('priority', { length: 10 }),
+    /** Signal tag: due_out, blocking, waiting_on_you, at_risk, none. */
+    signalTag: varchar('signal_tag', { length: 50 }),
+    signalDetail: text('signal_detail'),
+    /** Rank score (lower = higher priority). */
+    rankScore: varchar('rank_score', { length: 10 }),
+    /** Whether user has handled/dismissed this thread. */
+    handledAt: timestamp('handled_at', { withTimezone: true }),
+    handledBy: uuid('handled_by'),
+    /** Snooze until. */
+    snoozedUntil: timestamp('snoozed_until', { withTimezone: true }),
+    webLink: text('web_link'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('email_thread_account_idx').on(table.accountId),
+    index('email_thread_priority_idx').on(table.priority),
+    uniqueIndex('email_thread_external_id_idx').on(table.accountId, table.externalThreadId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Email Extractions — AI-derived commitments from threads
+// ---------------------------------------------------------------------------
+
+export const emailExtraction = pgTable(
+  'email_extraction',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    accountId: uuid('account_id').notNull(),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => emailThread.id),
+    /** What was extracted: due_out, commitment, question, decision_needed. */
+    kind: varchar('kind', { length: 50 }).notNull(),
+    /** The extracted commitment/action. */
+    title: varchar('title', { length: 500 }).notNull(),
+    /** Detected deadline. */
+    deadline: timestamp('deadline', { withTimezone: true }),
+    /** Who owns it: 'you', 'them', or a name. */
+    owner: varchar('owner', { length: 255 }),
+    /** AI confidence 0-100. */
+    confidence: varchar('confidence', { length: 10 }).notNull(),
+    /** AI reasoning for the extraction. */
+    reasoning: text('reasoning'),
+    /** Status: pending, accepted, dismissed. */
+    status: varchar('status', { length: 20 }).notNull().default('pending'),
+    /** If accepted, the task that was created from this. */
+    linkedTaskId: uuid('linked_task_id'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('email_extraction_account_idx').on(table.accountId),
+    index('email_extraction_thread_idx').on(table.threadId),
+    index('email_extraction_status_idx').on(table.status),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Email Drafts — AI-suggested replies (never auto-sent)
+// ---------------------------------------------------------------------------
+
+export const emailDraft = pgTable(
+  'email_draft',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    accountId: uuid('account_id').notNull(),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => emailThread.id),
+    /** The generated reply text. */
+    content: text('content').notNull(),
+    /** Status: pending_review, approved, discarded, sent_externally. */
+    status: varchar('status', { length: 30 }).notNull().default('pending_review'),
+    /** What data was used to generate this. */
+    sourceContext: text('source_context'),
+    /** AI model + version used. */
+    modelId: varchar('model_id', { length: 255 }),
+    /** Generation attempt number (for regenerate). */
+    attempt: varchar('attempt', { length: 5 }).notNull().default('1'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('email_draft_account_idx').on(table.accountId),
+    index('email_draft_thread_idx').on(table.threadId),
+  ],
+);
+
+export type EmailThreadInsert = InferInsertModel<typeof emailThread>;
+export type EmailThreadSelect = typeof emailThread.$inferSelect;
+export type EmailExtractionInsert = InferInsertModel<typeof emailExtraction>;
+export type EmailExtractionSelect = typeof emailExtraction.$inferSelect;
+export type EmailDraftInsert = InferInsertModel<typeof emailDraft>;
+export type EmailDraftSelect = typeof emailDraft.$inferSelect;
+
+// ---------------------------------------------------------------------------
 // Calendar Events — synced from connected providers
 // ---------------------------------------------------------------------------
 

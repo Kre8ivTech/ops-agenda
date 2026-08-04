@@ -1,0 +1,51 @@
+/**
+ * The design system's complete stylesheet: tokens, their Tailwind theme
+ * mapping, and the base element styles every Ops Agenda surface shares.
+ *
+ * Consuming apps import this instead of redeclaring tokens locally, and the
+ * design-system sync ships it as the stylesheet that every rendered design
+ * loads. Everything a component needs must be reachable from this file's
+ * `@import` closure.
+ */
+
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Scan this package's own components so `pnpm build` can emit a fully compiled
+   `dist/styles.css`. The design-system sync ships that compiled file — without
+   it every preview would render with unstyled, class-less markup. */
+@source '.';
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-signal: var(--signal);
+  --color-paper: var(--paper);
+  --color-white: var(--white);
+  --color-border: var(--border);
+  --color-wash: var(--wash);
+  --color-wash-green: var(--wash-green);
+  --color-text-secondary: var(--text-secondary);
+  --color-signal-on-ink: var(--signal-on-ink);
+  --color-risk: var(--risk);
+  --color-risk-wash: var(--risk-wash);
+  --color-info: var(--info);
+  --color-info-wash: var(--info-wash);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-lockup: var(--font-poppins), var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --shadow-panel: 0 22px 60px rgba(35, 45, 40, 0.12);
+  --radius-dense: 7px;
+  --radius-default: 8px;
+  --radius-panel: 12px;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  text-wrap: pretty;
+}

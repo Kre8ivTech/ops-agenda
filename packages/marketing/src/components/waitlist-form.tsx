@@ -108,7 +108,7 @@ export function WaitlistForm({
   return (
     <form onSubmit={handleSubmit} className="grid gap-3">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="w-full max-w-[320px] min-w-[220px]">{input}</div>
+        <div className="w-full min-w-[220px] max-w-[320px]">{input}</div>
         {submit}
       </div>
       {error}

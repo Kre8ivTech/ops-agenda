@@ -1,272 +1,212 @@
+import Link from 'next/link';
+
+import { BottomCta } from '@/components/bottom-cta';
 import { BriefPreview } from '@/components/brief-preview';
-import { ButtonLink } from '@/components/button';
-import { FaqItem } from '@/components/faq-item';
-import { FeatureCard } from '@/components/feature-card';
-import { Lockup } from '@/components/lockup';
-import { PricingCard } from '@/components/pricing-card';
-import { SIGNIN_URL, SIGNUP_URL } from '@/lib/app-links';
+import { InkGrid, InkGridCell } from '@/components/panel';
+import { WaitlistForm } from '@/components/waitlist-form';
+import { BRIEF_NOTES, CROSS_FLOWS, MODULES, PROMISES, TRUST_STRIP } from '@/lib/marketing-content';
+import { HERO_EYEBROW } from '@/lib/site-config';
 
-const FEATURES = [
-  {
-    eyebrow: 'Daily Ops Brief',
-    title: 'One page, every morning',
-    description:
-      'A single ranked view of what needs you today, built from your open work, not a generic to-do list.',
-  },
-  {
-    eyebrow: 'Priority Inbox',
-    title: 'Email sorted by consequence',
-    description:
-      'Messages ranked P1 through FYSA by what happens if you ignore them — not by sender or subject line.',
-  },
-  {
-    eyebrow: 'Due-Out Detection',
-    title: 'What you owe someone else',
-    description:
-      'Commitments you made in email or meetings, tracked until they are handled, then dropped from the brief.',
-  },
-  {
-    eyebrow: 'Calendar Intelligence',
-    title: 'Meetings with the context attached',
-    description: 'Conflicts, prep gaps, and back-to-back load surfaced before the day starts.',
-  },
-  {
-    eyebrow: 'Draft Reply',
-    title: 'A starting point, not a sent message',
-    description: 'Ask drafts a reply from the thread. It waits in your outbox until you send it.',
-  },
-  {
-    eyebrow: 'Weekly Outlook',
-    title: 'Capacity before commitments',
-    description: 'A horizon view of the week so new work gets weighed against what is already there.',
-  },
-];
-
-const FAQS = [
-  {
-    question: 'Does Ops Agenda send anything on my behalf?',
-    answer:
-      'No. Drafts, filings, and payments all wait for your approval. The product proposes; you decide what happens.',
-  },
-  {
-    question: 'What does it actually read?',
-    answer:
-      'Mail and calendar metadata through the minimum Microsoft Graph scopes — Mail.Read and Calendars.Read. Message bodies are not stored; only the metadata and summaries needed to rank and brief.',
-  },
-  {
-    question: 'Can it move money or store credentials?',
-    answer:
-      'No. Finance connections are read-only for visibility and flagging. Ops Agenda never initiates a transfer and never stores account credentials.',
-  },
-  {
-    question: 'What happens if I turn a module off?',
-    answer:
-      'It disappears from navigation immediately. Its data is retained for 30 days in case you turn it back on, then permanently deleted.',
-  },
-  {
-    question: 'Can I use it for more than one business?',
-    answer:
-      'Yes — entities separate personal and business data under one account. Personal includes one entity; Professional and Operator support more.',
-  },
-];
-
-export default function MarketingHome() {
+export default function HomePage() {
   return (
     <>
-      <header className="border-border bg-paper/90 sticky top-0 z-10 border-b backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Lockup />
-          <nav className="hidden items-center gap-6 md:flex">
-            <a href="#product" className="text-ink text-[0.88rem] font-bold hover:text-signal">
-              Product
-            </a>
-            <a href="#pricing" className="text-ink text-[0.88rem] font-bold hover:text-signal">
-              Pricing
-            </a>
-            <a href="#faq" className="text-ink text-[0.88rem] font-bold hover:text-signal">
-              FAQ
-            </a>
-          </nav>
-          <div className="flex items-center gap-2.5">
-            <ButtonLink href={SIGNIN_URL} variant="quiet" size="medium">
-              Sign in
-            </ButtonLink>
-            <ButtonLink href={SIGNUP_URL} size="medium">
-              Get started
-            </ButtonLink>
+      <section className="mx-auto max-w-[1400px] px-[clamp(20px,4vw,44px)] pt-24 pb-[72px]">
+        <p className="text-signal font-mono m-0 mb-5 text-[0.74rem] leading-none font-bold tracking-[0.12em] uppercase">
+          {HERO_EYEBROW}
+        </p>
+        <h1 className="m-0 mb-[22px] max-w-[19ch] text-[clamp(2.4rem,7.4vw,4.1rem)] leading-none tracking-[-0.035em] text-balance">
+          It watches the things you&rsquo;d only notice too late.
+        </h1>
+        <p className="text-text-secondary m-0 mb-[34px] max-w-[58ch] text-[clamp(1.02rem,2.3vw,1.22rem)] leading-[1.5]">
+          Ops Agenda reads the systems you already use, ranks your entire day by what is genuinely
+          at risk, and hands you one agenda at 6:00 each morning. Read-only by design: it can see
+          and flag, never move or file.
+        </p>
+
+        <div className="mb-[22px]">
+          <WaitlistForm successBody="We'll write when there is something real to show you — not before, and not weekly." />
+        </div>
+        <p className="text-text-secondary m-0 mb-14 text-[0.84rem]">
+          No launch-day spam. One email when early access opens.
+        </p>
+
+        <div className="border-border bg-border grid grid-cols-1 gap-px overflow-hidden rounded-[12px] border sm:grid-cols-2 xl:grid-cols-4">
+          {TRUST_STRIP.map((item) => (
+            <div key={item.label} className="bg-white px-[22px] py-5">
+              <p className="text-signal font-mono m-0 mb-[5px] text-[0.72rem] leading-none font-bold tracking-[0.08em] uppercase">
+                {item.label}
+              </p>
+              <p className="text-text-secondary m-0 text-[0.87rem] leading-[1.45]">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1400px] px-[clamp(20px,4vw,44px)] pb-24">
+        <div className="border-border rounded-[14px] border bg-white px-[clamp(24px,4.4vw,52px)] py-[clamp(34px,5vw,56px)]">
+          <p className="text-signal font-mono m-0 mb-[18px] text-[0.74rem] leading-none font-bold tracking-[0.1em] uppercase">
+            Why things slip
+          </p>
+          <h2 className="m-0 mb-5 max-w-[34ch] text-[clamp(1.65rem,4vw,2.1rem)] leading-[1.1] tracking-[-0.025em] text-balance">
+            Nothing that goes wrong is a productivity problem.
+          </h2>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[26px]">
+            <p className="text-text-secondary m-0 text-base leading-[1.55]">
+              The annual report was due in eleven days and nobody was looking at that particular
+              calendar. The vendor replied twice and the thread had no owner. The certification
+              lapses in August and the renewal takes six weeks.
+            </p>
+            <p className="text-text-secondary m-0 text-base leading-[1.55]">
+              Each one is small. Each one is expensive. And none of them were on a to-do list,
+              because you would have had to already know about them to put them there.
+            </p>
+            <p className="text-ink m-0 text-base leading-[1.55] font-semibold">
+              That is the actual job: noticing. Not another place to type what you already remember.
+            </p>
           </div>
         </div>
-      </header>
+      </section>
 
-      <main>
-        <section className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] md:items-center md:py-24">
-          <div>
-            <p className="text-signal m-0 mb-3 font-mono text-[0.76rem] font-extrabold uppercase tracking-[0.02em]">
-              AI ops platform
-            </p>
-            <h1 className="text-ink m-0 mb-5 text-pretty text-[2.4rem] font-extrabold leading-[1.06] tracking-[-0.02em] md:text-[3.1rem]">
-              One loop, closed every morning.
-            </h1>
-            <p className="text-text-secondary m-0 mb-7 max-w-[52ch] text-[1.05rem] leading-[1.55]">
-              Ops Agenda reads your email and calendar and ranks what actually needs you today
-              into a single brief. Every action it proposes waits for your approval — nothing is
-              sent, filed, or paid without you.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <ButtonLink href={SIGNUP_URL}>Get started</ButtonLink>
-              <ButtonLink href="#how-it-works" variant="secondary">
-                See how it works
-              </ButtonLink>
+      <section className="mx-auto max-w-[1400px] px-[clamp(20px,4vw,44px)] pb-24">
+        <div className="border-border mb-[30px] flex items-baseline gap-4 border-b pb-[18px]">
+          <span className="text-signal font-mono text-[0.74rem] leading-none font-bold tracking-[0.1em]">
+            06:00
+          </span>
+          <h2 className="m-0 text-[clamp(1.5rem,3.6vw,1.9rem)] tracking-[-0.025em]">
+            What lands every morning
+          </h2>
+        </div>
+
+        <div className="flex flex-wrap items-start gap-[30px]">
+          <BriefPreview />
+
+          <div className="grid min-w-0 flex-[1_1_320px] gap-[14px]">
+            {BRIEF_NOTES.map((note) => (
+              <div
+                key={note.label}
+                className="border-border rounded-[12px] border bg-white px-6 py-[22px]"
+              >
+                <p className="text-signal font-mono m-0 mb-1.5 text-[0.72rem] leading-none font-bold tracking-[0.08em] uppercase">
+                  {note.label}
+                </p>
+                <p className="text-text-secondary m-0 text-[0.92rem] leading-[1.5]">{note.body}</p>
+              </div>
+            ))}
+            <div className="border-border bg-wash rounded-[12px] border px-6 py-[22px]">
+              <p className="text-ink m-0 text-[0.95rem] leading-[1.5] font-semibold">
+                It proposes. You approve. Nothing in Ops Agenda takes an action on your behalf.
+              </p>
             </div>
           </div>
-          <div className="flex justify-center md:justify-end">
-            <BriefPreview />
-          </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="border-border border-y bg-white">
-          <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 sm:grid-cols-3">
-            <p className="text-ink m-0 text-[0.95rem] font-bold leading-[1.4]">
-              AI proposes. You approve.
-            </p>
-            <p className="text-ink m-0 text-[0.95rem] font-bold leading-[1.4]">
-              Read-mostly access to mail and calendar.
-            </p>
-            <p className="text-ink m-0 text-[0.95rem] font-bold leading-[1.4]">
-              No autonomous sending, filing, or paying.
-            </p>
-          </div>
-        </section>
+      <section className="bg-ink mb-24 px-[clamp(20px,4vw,44px)] py-[76px]">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-signal-on-ink font-mono m-0 mb-[18px] text-[0.74rem] leading-none font-bold tracking-[0.12em] uppercase">
+            The difference
+          </p>
+          <h2 className="m-0 mb-5 max-w-[30ch] text-[clamp(1.75rem,4.4vw,2.3rem)] leading-[1.08] tracking-[-0.028em] text-[var(--paper)] text-balance">
+            Your life and your companies are the same day.
+          </h2>
+          <p className="m-0 mb-10 max-w-[60ch] text-[1.06rem] leading-[1.55] text-[rgba(247,247,242,0.72)]">
+            Most tools handle one column of your life and pretend the others don&rsquo;t exist. The
+            value is in the connections — and the connections are where things fall through.
+          </p>
+          <InkGrid>
+            {CROSS_FLOWS.map((flow) => (
+              <InkGridCell key={flow.from} label={flow.from} body={flow.body} />
+            ))}
+          </InkGrid>
+        </div>
+      </section>
 
-        <section id="product" className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-          <div className="mb-10 max-w-[62ch]">
-            <p className="text-signal m-0 mb-2 font-mono text-[0.76rem] font-extrabold uppercase tracking-[0.02em]">
-              What it does
-            </p>
-            <h2 className="text-ink m-0 mb-3 text-[1.9rem] font-extrabold tracking-[-0.02em]">
-              Six ways it keeps the day honest
+      <section className="mx-auto max-w-[1400px] px-[clamp(20px,4vw,44px)] pb-24">
+        <div className="border-border mb-[30px] flex flex-wrap items-baseline justify-between gap-5 border-b pb-[18px]">
+          <div className="flex items-baseline gap-4">
+            <span className="text-signal font-mono text-[0.74rem] leading-none font-bold tracking-[0.1em]">
+              Eight modules
+            </span>
+            <h2 className="m-0 text-[clamp(1.5rem,3.6vw,1.9rem)] tracking-[-0.025em]">
+              Turn on only what you need
             </h2>
-            <p className="text-text-secondary m-0 text-[1rem] leading-[1.6]">
-              Each one is a narrow, specific job — not a chatbot that tries to do everything.
+          </div>
+          <Link href="/modules" className="text-signal text-[0.88rem] font-bold">
+            All modules →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(258px,1fr))] gap-4">
+          {MODULES.map((module) => (
+            <Link
+              key={module.key}
+              href={`/modules/${module.key}`}
+              className="border-border hover:border-ink grid content-start gap-[9px] rounded-[12px] border bg-white px-6 py-[22px] transition-colors"
+            >
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="text-[1.05rem] font-extrabold tracking-[-0.015em]">
+                  {module.name}
+                </span>
+                <span className="text-text-secondary font-mono text-[0.72rem] leading-none font-bold">
+                  {module.screens.length} screens
+                </span>
+              </div>
+              <p className="text-text-secondary m-0 text-[0.88rem] leading-[1.45]">{module.lede}</p>
+            </Link>
+          ))}
+        </div>
+
+        <p className="text-text-secondary m-0 mt-[22px] max-w-[64ch] text-[0.9rem] leading-[1.5]">
+          Anything switched off is hidden completely — no empty sections, no greyed-out menu items,
+          no data kept past thirty days.
+        </p>
+      </section>
+
+      <section className="mx-auto max-w-[1400px] px-[clamp(20px,4vw,44px)] pb-24">
+        <div className="border-border overflow-hidden rounded-[14px] border bg-white">
+          <div className="border-border border-b px-[clamp(24px,4vw,48px)] pt-[clamp(32px,4.4vw,44px)] pb-[clamp(26px,3.4vw,34px)]">
+            <p className="text-signal font-mono m-0 mb-4 text-[0.74rem] leading-none font-bold tracking-[0.1em] uppercase">
+              Four promises
+            </p>
+            <h2 className="m-0 mb-[14px] max-w-[32ch] text-[clamp(1.65rem,4vw,2.1rem)] leading-[1.1] tracking-[-0.025em] text-balance">
+              The constraints are the product.
+            </h2>
+            <p className="text-text-secondary m-0 max-w-[62ch] text-base leading-[1.55]">
+              A tool that can see your entire financial and medical life should be able to do less,
+              not more. Each of these is a limit we designed in, and each one is written into the
+              interface where it applies.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature) => (
-              <FeatureCard key={feature.eyebrow} {...feature} />
+
+          <div className="border-border bg-border flex flex-wrap gap-px overflow-hidden border-t">
+            {PROMISES.map((promise) => (
+              <div
+                key={promise.title}
+                className="grid min-w-0 grow basis-[290px] content-start gap-2 bg-white px-[clamp(22px,3vw,28px)] py-6"
+              >
+                <p className="m-0 text-base font-extrabold tracking-[-0.01em]">{promise.title}</p>
+                <p className="text-text-secondary m-0 text-[0.89rem] leading-[1.5]">
+                  {promise.body}
+                </p>
+              </div>
             ))}
           </div>
-        </section>
 
-        <section id="how-it-works" className="border-border border-y bg-white">
-          <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-            <p className="text-signal m-0 mb-2 font-mono text-[0.76rem] font-extrabold uppercase tracking-[0.02em]">
-              How it works
+          <div className="border-border bg-wash flex flex-wrap items-center justify-between gap-5 border-t px-[clamp(24px,4vw,48px)] py-[22px]">
+            <p className="text-ink m-0 text-[0.93rem] font-semibold">
+              Encryption, audit, compliance posture and what we will never build.
             </p>
-            <h2 className="text-ink m-0 mb-10 text-[1.9rem] font-extrabold tracking-[-0.02em]">
-              Three steps, repeated every morning
-            </h2>
-            <div className="grid gap-8 sm:grid-cols-3">
-              {[
-                {
-                  step: '01',
-                  title: 'Connect, read-only',
-                  body: 'Mail and calendar connect with Mail.Read and Calendars.Read only. No send access, no credential storage.',
-                },
-                {
-                  step: '02',
-                  title: 'AI ranks and drafts',
-                  body: 'Everything open gets a priority — P1 through FYSA — with the reason stated in one sentence.',
-                },
-                {
-                  step: '03',
-                  title: 'You approve',
-                  body: 'One brief, every morning. Mark it handled or act on it — nothing moves without you.',
-                },
-              ].map((item) => (
-                <div key={item.step}>
-                  <p className="text-border m-0 mb-2 font-mono text-[2rem] font-extrabold leading-none">
-                    {item.step}
-                  </p>
-                  <h3 className="text-ink m-0 mb-2 text-[1.1rem] font-extrabold">{item.title}</h3>
-                  <p className="text-text-secondary m-0 max-w-[36ch] text-[0.9rem] leading-[1.55]">
-                    {item.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="pricing" className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-          <div className="mb-10 max-w-[62ch]">
-            <p className="text-signal m-0 mb-2 font-mono text-[0.76rem] font-extrabold uppercase tracking-[0.02em]">
-              Pricing
-            </p>
-            <h2 className="text-ink m-0 mb-3 text-[1.9rem] font-extrabold tracking-[-0.02em]">
-              One price per plan. No usage surprises.
-            </h2>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            <PricingCard
-              name="Personal"
-              price="$19"
-              entities="1 entity"
-              modules="Plan + Productivity"
-            />
-            <PricingCard
-              name="Professional"
-              price="$39"
-              entities="Up to 3 entities"
-              modules="+ Finances, Research"
-              featured
-            />
-            <PricingCard
-              name="Operator"
-              price="$79"
-              entities="Unlimited entities"
-              modules="All 8 modules"
-            />
-          </div>
-        </section>
-
-        <section id="faq" className="border-border border-y bg-white">
-          <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-            <p className="text-signal m-0 mb-2 font-mono text-[0.76rem] font-extrabold uppercase tracking-[0.02em]">
-              Questions
-            </p>
-            <h2 className="text-ink m-0 mb-10 text-[1.9rem] font-extrabold tracking-[-0.02em]">
-              Before you connect an account
-            </h2>
-            <div className="grid max-w-3xl gap-3">
-              {FAQS.map((faq) => (
-                <FaqItem key={faq.question} {...faq} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-6 py-16 text-center md:py-24">
-          <h2 className="text-ink m-0 mb-5 text-pretty text-[1.9rem] font-extrabold tracking-[-0.02em] md:text-[2.3rem]">
-            Read the brief before the day reads you.
-          </h2>
-          <ButtonLink href={SIGNUP_URL}>Get started</ButtonLink>
-        </section>
-      </main>
-
-      <footer className="border-border border-t bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-          <Lockup mark="ink" />
-          <div className="text-text-secondary flex flex-wrap items-center gap-x-6 gap-y-2 text-[0.85rem]">
-            <a href={SIGNIN_URL} className="hover:text-ink">
-              Sign in
-            </a>
-            <a href="mailto:info@kre8ivtech.com" className="hover:text-ink">
-              info@kre8ivtech.com
-            </a>
-            <span>© {new Date().getFullYear()} Kre8ivTech. All rights reserved.</span>
+            <Link
+              href="/security"
+              className="text-signal text-[0.9rem] font-extrabold whitespace-nowrap"
+            >
+              Read security &amp; privacy →
+            </Link>
           </div>
         </div>
-      </footer>
+      </section>
+
+      <BottomCta />
     </>
   );
 }
