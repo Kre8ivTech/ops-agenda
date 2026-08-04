@@ -772,3 +772,98 @@ export type AiAgentInsert = InferInsertModel<typeof aiAgent>;
 export type AiAgentSelect = typeof aiAgent.$inferSelect;
 export type AiUsageLogInsert = InferInsertModel<typeof aiUsageLog>;
 export type AiUsageLogSelect = typeof aiUsageLog.$inferSelect;
+
+// ===========================================================================
+// Productivity — Time Tracking
+// ===========================================================================
+
+export const timeEntryStateEnum = pgEnum('time_entry_state', [
+  'unbilled',
+  'invoiced',
+  'non_billable',
+  'written_off',
+]);
+
+export const timeEntry = pgTable(
+  'time_entry',
+  {
+    ...tenantBase,
+    /** Client name or project label. */
+    client: varchar('client', { length: 255 }).notNull(),
+    /** Which entity this time is billed under. */
+    entityId: uuid('entity_id').references(() => entity.id),
+    entityName: varchar('entity_name', { length: 255 }),
+    /** Duration in decimal hours (e.g., 1.5 = 90 min). */
+    hours: varchar('hours', { length: 10 }).notNull(),
+    /** Billable dollar amount (hours × rate). */
+    billableAmount: varchar('billable_amount', { length: 20 }),
+    /** Hourly rate used for this entry. */
+    rate: varchar('rate', { length: 20 }),
+    /** Billing state. */
+    state: timeEntryStateEnum('state').notNull().default('unbilled'),
+    /** Description of work performed. */
+    description: text('description'),
+    /** Date the work was performed. */
+    workedOn: timestamp('worked_on', { withTimezone: true }).notNull(),
+    /** Optional: linked task. */
+    taskId: uuid('task_id').references(() => task.id),
+  },
+  (table) => [
+    index('time_entry_account_idx').on(table.accountId),
+    index('time_entry_client_idx').on(table.client),
+    index('time_entry_worked_on_idx').on(table.workedOn),
+    index('time_entry_state_idx').on(table.state),
+  ],
+);
+
+export type TimeEntryInsert = InferInsertModel<typeof timeEntry>;
+export type TimeEntrySelect = typeof timeEntry.$inferSelect;
+
+// ===========================================================================
+// Productivity — Contacts (CRM-light)
+// ===========================================================================
+
+export const contactStateEnum = pgEnum('contact_state', [
+  'current',
+  'awaiting_you',
+  'gone_quiet',
+  'archived',
+]);
+
+export const contact = pgTable(
+  'contact',
+  {
+    ...tenantBase,
+    /** Person's full name. */
+    name: varchar('name', { length: 255 }).notNull(),
+    /** Organisation / company. */
+    organisation: varchar('organisation', { length: 255 }),
+    /** Primary email address. */
+    email: varchar('email', { length: 320 }),
+    /** Phone number. */
+    phone: varchar('phone', { length: 50 }),
+    /** Relationship state. */
+    state: contactStateEnum('state').notNull().default('current'),
+    /** Date of last interaction (email or meeting). */
+    lastTouchAt: timestamp('last_touch_at', { withTimezone: true }),
+    /** Number of open email threads with this person. */
+    openThreads: varchar('open_threads', { length: 10 }).default('0'),
+    /** Topic/context of the open thread(s). */
+    openThreadContext: varchar('open_thread_context', { length: 255 }),
+    /** Whether this is a key relationship (starred). */
+    isKeyRelationship: boolean('is_key_relationship').notNull().default(false),
+    /** Source: which connection this contact was discovered from. */
+    sourceConnectionId: uuid('source_connection_id').references(() => connection.id),
+    /** Notes. */
+    notes: text('notes'),
+  },
+  (table) => [
+    index('contact_account_idx').on(table.accountId),
+    index('contact_state_idx').on(table.state),
+    index('contact_last_touch_idx').on(table.lastTouchAt),
+    index('contact_email_idx').on(table.email),
+  ],
+);
+
+export type ContactInsert = InferInsertModel<typeof contact>;
+export type ContactSelect = typeof contact.$inferSelect;
