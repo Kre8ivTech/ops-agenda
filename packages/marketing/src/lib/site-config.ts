@@ -64,6 +64,13 @@ export const FOOTER_COLUMNS = [
     ],
   },
   {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy policy', href: '/legal/privacy' },
+      { label: 'Terms of service', href: '/legal/terms' },
+    ],
+  },
+  {
     title: 'Get started',
     links: [
       { label: CTA_LABEL_TEXT, href: '/waitlist' },

@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 
 import { BottomCta } from '@/components/bottom-cta';
 import { PHASES } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 import { ACCENT_TONE, PILL_TONE } from '@/lib/tone';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Build status',
   description:
     'No customers yet, no testimonials, nothing shipped to production. The honest state of each build phase, updated as it changes.',
-};
+  path: '/changelog',
+});
 
 export default function ChangelogPage() {
   return (

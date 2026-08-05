@@ -34,6 +34,23 @@ export class MarketingStack extends cdk.Stack {
       autoDeleteObjects: true,
     });
 
+    // Traffic analytics without a client-side script: CloudFront standard
+    // access logs land here (page views, referrers, top pages, geo) and are
+    // queried ad hoc (e.g. Athena over this bucket) rather than shipping any
+    // analytics SDK to the browser.
+    const accessLogBucket = new s3.Bucket(this, 'AccessLogBucket', {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      // CloudFront's standard logging delivers via an ACL grant to a fixed
+      // AWS log-delivery account, which needs ACLs enabled on the bucket —
+      // matches what CDK itself uses for an auto-created logging bucket.
+      objectOwnership: s3.ObjectOwnership.OBJECT_WRITER,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      lifecycleRules: [{ expiration: cdk.Duration.days(90) }],
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+
     const domainNames = props.certificateArn
       ? [props.domainName, `www.${props.domainName}`]
       : undefined;
@@ -57,6 +74,9 @@ export class MarketingStack extends cdk.Stack {
       certificate: props.certificateArn
         ? acm.Certificate.fromCertificateArn(this, 'Certificate', props.certificateArn)
         : undefined,
+      enableLogging: true,
+      logBucket: accessLogBucket,
+      logFilePrefix: 'cloudfront-access-logs/',
     });
 
     new s3deploy.BucketDeployment(this, 'Deployment', {
@@ -74,6 +94,14 @@ export class MarketingStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'SiteBucketName', {
       value: siteBucket.bucketName,
       description: 'S3 bucket serving the marketing site',
+    });
+
+    new cdk.CfnOutput(this, 'AccessLogBucketName', {
+      value: accessLogBucket.bucketName,
+      description:
+        'CloudFront access logs (page views, referrers, top pages) — query ad hoc, e.g. with Athena: ' +
+        'CREATE EXTERNAL TABLE over s3://<this bucket>/cloudfront-access-logs/ using the standard ' +
+        'CloudFront log SerDe (org.apache.hadoop.hive.serde2.RegexSerDe), then query by date/uri/referrer.',
     });
   }
 }

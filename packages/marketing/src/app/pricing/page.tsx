@@ -5,21 +5,40 @@ import { PageHeader } from '@/components/page-header';
 import { Panel, PanelHeading } from '@/components/panel';
 import { PricingCard } from '@/components/pricing-card';
 import { PLANS, PRICING_FAQ } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 import { SHOW_PRICING_AMOUNTS } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Pricing',
   description:
     'Three plans, billed monthly, cancel any time. Your plan sets how many modules and entities you can use — nothing is metered by usage.',
-};
+  path: '/pricing',
+});
 
 const PRICING_LEDE = SHOW_PRICING_AMOUNTS
   ? 'Billed monthly, cancel any time. Your plan sets how many modules and entities you can use — nothing is metered by usage.'
   : 'Final pricing lands with early access. Three tiers, billed monthly, cancel any time — your plan sets how many modules and entities you can use, and nothing is metered by usage.';
 
+const FAQ_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: PRICING_FAQ.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+
 export default function PricingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
+      />
       <PageHeader
         eyebrow="Pricing"
         title="Three plans. Your plan decides which modules you can turn on."

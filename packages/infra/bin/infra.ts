@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import 'source-map-support/register';
 import { OpsAgendaStack } from '../lib/infra-stack.js';
 import { MarketingStack } from '../lib/marketing-stack.js';
+import { WaitlistStack } from '../lib/waitlist-stack.js';
 
 const app = new cdk.App();
 
@@ -43,3 +44,18 @@ if (process.env.MARKETING_DOMAIN_NAME) {
     },
   });
 }
+
+// Waitlist signup backend — independent lifecycle, always deployed (no
+// domain dependency; the marketing site consumes its Function URL directly).
+const marketingDomain = process.env.MARKETING_DOMAIN_NAME;
+new WaitlistStack(app, 'OpsAgendaWaitlist', {
+  env: { account, region },
+  allowedOrigins: [
+    ...(marketingDomain ? [`https://${marketingDomain}`, `https://www.${marketingDomain}`] : []),
+    'http://localhost:3000',
+  ],
+  tags: {
+    Project: 'OpsAgenda',
+    Environment: 'marketing',
+  },
+});

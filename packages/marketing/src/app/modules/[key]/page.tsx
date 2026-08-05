@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { BottomCta } from '@/components/bottom-cta';
 import { PageHeader } from '@/components/page-header';
 import { MODULES } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 
 interface ModulePageProps {
   params: Promise<{ key: string }>;
@@ -18,9 +19,19 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
   const { key } = await params;
   const found = MODULES.find((entry) => entry.key === key);
 
-  if (!found) return {};
+  if (!found) {
+    return pageMetadata({
+      title: 'Module not found',
+      description: 'This module does not exist.',
+      path: `/modules/${key}`,
+    });
+  }
 
-  return { title: found.name, description: found.lede };
+  return pageMetadata({
+    title: found.name,
+    description: found.lede,
+    path: `/modules/${key}`,
+  });
 }
 
 export default async function ModuleDetailPage({ params }: ModulePageProps) {

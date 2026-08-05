@@ -3,12 +3,14 @@ import type { Metadata } from 'next';
 import { Panel, PanelHeading } from '@/components/panel';
 import { WaitlistForm } from '@/components/waitlist-form';
 import { WAITLIST_FACTS } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Early access',
   description:
     'Early access opens module by module, starting with Productivity and the 6:00 brief. One email when it is your turn — no newsletter, no countdown.',
-};
+  path: '/waitlist',
+});
 
 export default function WaitlistPage() {
   return (

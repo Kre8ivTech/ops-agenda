@@ -4,13 +4,15 @@ import { BottomCta } from '@/components/bottom-cta';
 import { PageHeader } from '@/components/page-header';
 import { InkGrid, InkGridCell, Panel, PanelHeading } from '@/components/panel';
 import { COMPLIANCE_CHIPS, NEVER_LIST, PROMISES, SECURITY_ROWS } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 import { DOT_TONE } from '@/lib/tone';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Security & privacy',
   description:
     'Encryption, tenant isolation, audit logging and the list of things Ops Agenda will never build. Designed on the assumption that we are part of the threat model.',
-};
+  path: '/security',
+});
 
 export default function SecurityPage() {
   return (

@@ -1,0 +1,16 @@
+{
+  "name": "Ops Agenda",
+  "short_name": "Ops Agenda",
+  "description": "Ops Agenda reads the systems you already use, ranks your entire day by what is genuinely at risk, and hands you one agenda at 6:00 each morning.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f2",
+  "theme_color": "#16201b",
+  "icons": [
+    {
+      "src": "/brand/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

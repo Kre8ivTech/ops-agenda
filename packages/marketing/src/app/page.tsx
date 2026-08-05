@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { BottomCta } from '@/components/bottom-cta';
@@ -5,7 +6,18 @@ import { BriefPreview } from '@/components/brief-preview';
 import { InkGrid, InkGridCell } from '@/components/panel';
 import { WaitlistForm } from '@/components/waitlist-form';
 import { BRIEF_NOTES, CROSS_FLOWS, MODULES, PROMISES, TRUST_STRIP } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 import { HERO_EYEBROW } from '@/lib/site-config';
+
+export const metadata: Metadata = pageMetadata({
+  // No `title` here — the layout's `title.default` already is this exact
+  // string, and setting it again would run it through `title.template` and
+  // duplicate the " — Ops Agenda" suffix.
+  ogTitle: "Ops Agenda — It watches the things you'd only notice too late.",
+  description:
+    'Ops Agenda reads the systems you already use, ranks your entire day by what is genuinely at risk, and hands you one agenda at 6:00 each morning. Read-only by design: it can see and flag, never move or file.',
+  path: '/',
+});
 
 export default function HomePage() {
   return (

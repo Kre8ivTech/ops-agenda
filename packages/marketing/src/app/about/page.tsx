@@ -3,12 +3,14 @@ import type { Metadata } from 'next';
 import { BottomCta } from '@/components/bottom-cta';
 import { InkGrid, InkGridCell, Panel, PanelHeading } from '@/components/panel';
 import { ABOUT_PARAGRAPHS, EF_CARDS, NOT_CARE, PRINCIPLES } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About',
   description:
     'The person this was built for has ADHD. Everything about how Ops Agenda works follows from that, including most of what it refuses to do.',
-};
+  path: '/about',
+});
 
 export default function AboutPage() {
   return (

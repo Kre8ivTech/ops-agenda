@@ -4,12 +4,14 @@ import { BottomCta } from '@/components/bottom-cta';
 import { PageHeader } from '@/components/page-header';
 import { InkGrid, InkGridCell } from '@/components/panel';
 import { AI_LIMITS, HOW_STEPS } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'How it works',
   description:
     'Ops Agenda reads the systems you already use, ranks your day by what is genuinely at risk, and waits for you to approve. Three things happen while you sleep.',
-};
+  path: '/how',
+});
 
 export default function HowPage() {
   return (

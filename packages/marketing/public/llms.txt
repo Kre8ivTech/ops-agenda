@@ -1,0 +1,25 @@
+# Ops Agenda
+
+> Ops Agenda reads the systems you already use, ranks your entire day by what is genuinely at risk, and hands you one agenda at 6:00 each morning. Read-only by design: it can see and flag, never move or file.
+
+Ops Agenda is a pre-launch, waitlist-stage product for people who need one ranked agenda across every part of their life and business rather than eight disconnected tools. It is built around executive-function friction (working memory, time blindness, task initiation) rather than general productivity, and it does not diagnose or treat anything.
+
+## Product
+
+- [How it works](https://opsagenda.com/how): reads existing mail, calendar, tasks, transactions and filings; ranks by deadline pressure, who is blocked, and what it costs if it slips; a person approves every action.
+- [Modules](https://opsagenda.com/modules): eight modules — Plan, Productivity, Finances, Business, Health, Life, Research, Social. Each module a user turns off disappears entirely, with data deleted within thirty days.
+- [Pricing](https://opsagenda.com/pricing): three tiers (Personal, Professional, Operator), billed monthly, no free tier. Final pricing lands with early access.
+- [Security & privacy](https://opsagenda.com/security): read-only connections, no stored credentials, per-record encryption for the most sensitive fields, append-only audit logging.
+- [Early access / waitlist](https://opsagenda.com/waitlist): sign up for staged early access.
+
+## Constraints (load-bearing, not marketing copy)
+
+- Read-only: it cannot move money, cannot file anything, and cannot send on the user's behalf.
+- No stored credentials — connections are provider-held, revocable tokens.
+- No health, habit or productivity scoring — no streaks, no wellness index, no grades.
+- No advertising, no selling or sharing of data, no third-party trackers.
+
+## Company
+
+- [About](https://opsagenda.com/about): why the product exists and who it was built for.
+- [Build status](https://opsagenda.com/changelog): honest, current phase-by-phase build status — nothing is in production yet.

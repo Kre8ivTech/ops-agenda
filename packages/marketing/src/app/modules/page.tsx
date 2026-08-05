@@ -4,13 +4,15 @@ import Link from 'next/link';
 import { BottomCta } from '@/components/bottom-cta';
 import { PageHeader } from '@/components/page-header';
 import { MODULES } from '@/lib/marketing-content';
+import { pageMetadata } from '@/lib/seo';
 import { PILL_TONE } from '@/lib/tone';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Modules',
   description:
     'Eight modules covering plan, productivity, finances, business, health, life, research and social. Turn on what you need — what you switch off is absent, not disabled.',
-};
+  path: '/modules',
+});
 
 export default function ModulesPage() {
   return (
