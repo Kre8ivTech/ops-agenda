@@ -1,8 +1,10 @@
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
+import { TextField } from '@/components/ui/text-field';
+import { SelectField } from '@/components/ui/select';
 import { getSession } from '@/lib/auth';
-import { listTimeEntries, getTimeMetrics, type TimeFilter, type TimeEntryRow } from '@/lib/time/actions';
+import { listTimeEntries, getTimeMetrics, logTimeEntry, type TimeFilter, type TimeEntryRow } from '@/lib/time/actions';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -112,9 +114,41 @@ export default async function TimePage({
               defaultValue={search ?? ''}
               className="border-border text-ink placeholder:text-text-secondary h-9 rounded-[8px] border bg-white px-3 text-[0.85rem] focus:outline-none focus:ring-2 focus:ring-signal/30"
             />
-            <Button variant="primary" size="medium">Log time</Button>
+            <Button variant="primary" size="medium" type="button" id="log-time-toggle">Log time</Button>
           </div>
         </div>
+
+        {/* Log time form (inline) */}
+        <form
+          action={async (formData: FormData) => {
+            'use server';
+            await logTimeEntry({
+              client: formData.get('client') as string,
+              entityName: (formData.get('entityName') as string) || undefined,
+              hours: Number(formData.get('hours')),
+              rate: formData.get('rate') ? Number(formData.get('rate')) : undefined,
+              state: (formData.get('state') as string) || undefined,
+              description: (formData.get('description') as string) || undefined,
+              workedOn: formData.get('workedOn') as string,
+            });
+          }}
+          className="grid grid-cols-2 gap-3 rounded-[8px] border border-border bg-white p-4 sm:grid-cols-4"
+        >
+          <TextField label="Client" name="client" required placeholder="Client name" />
+          <TextField label="Entity" name="entityName" placeholder="Entity (optional)" />
+          <TextField label="Hours" name="hours" type="number" required placeholder="1.5" />
+          <TextField label="Rate ($/hr)" name="rate" type="number" placeholder="200" />
+          <TextField label="Date" name="workedOn" type="date" required defaultValue={new Date().toISOString().slice(0, 10)} />
+          <SelectField label="State" name="state" defaultValue="unbilled">
+            <option value="unbilled">Unbilled</option>
+            <option value="invoiced">Invoiced</option>
+            <option value="non_billable">Non-billable</option>
+          </SelectField>
+          <TextField label="Description" name="description" placeholder="What did you work on?" />
+          <div className="flex items-end">
+            <Button type="submit" variant="primary" size="medium">Save entry</Button>
+          </div>
+        </form>
 
         {unavailable ? (
           <div className="border-border bg-info-wash text-ink rounded-[8px] border px-3.5 py-3 text-[0.85rem]">

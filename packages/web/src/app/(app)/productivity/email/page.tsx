@@ -4,7 +4,7 @@ import { desc, eq, and, isNull, isNotNull, sql } from 'drizzle-orm';
 import { Button } from '@/components/ui/button';
 import { getSession } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
-import { emailThread, emailExtraction, emailDraft } from '@/lib/db/schema';
+import { emailThread, emailExtraction, emailDraft, emailMessage } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 import { syncEmails } from '@/lib/connectors/sync';
 import { extractCommitments } from '@/lib/ai/email-extract';
@@ -101,6 +101,19 @@ export default async function EmailPage({
         .where(and(isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)))
         .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
     );
+
+    // Auto-sync on first visit if threads are empty but connections exist
+    if (threads.length === 0) {
+      try {
+        await syncEmails();
+        // Re-fetch after sync
+        threads = await withTenant(db, tenant, async (tx) =>
+          tx.select().from(emailThread)
+            .where(and(isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)))
+            .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
+        );
+      } catch { /* sync failed silently */ }
+    }
   } catch { /* DB unavailable */ }
 
   // Filter
@@ -133,6 +146,7 @@ export default async function EmailPage({
   let selectedThread: Thread | null = null;
   let extractions: Extraction[] = [];
   let draft: Draft | null = null;
+  let threadMessages: { id: string; fromAddress: string; fromName: string | null; subject: string; receivedAt: Date; isRead: boolean }[] = [];
 
   if (selectedId) {
     try {
@@ -152,6 +166,29 @@ export default async function EmailPage({
             .limit(1),
         );
         draft = d ?? null;
+
+        // Load individual messages for this thread (matched by subject similarity or connection)
+        if (selectedThread.externalThreadId) {
+          threadMessages = await withTenant(db, tenant, async (tx) =>
+            tx.select({
+              id: emailMessage.id,
+              fromAddress: emailMessage.fromAddress,
+              fromName: emailMessage.fromName,
+              subject: emailMessage.subject,
+              receivedAt: emailMessage.receivedAt,
+              isRead: emailMessage.isRead,
+            }).from(emailMessage)
+              .where(eq(emailMessage.accountId, tenant.accountId))
+              .orderBy(desc(emailMessage.receivedAt))
+              .limit(20),
+          );
+          // Filter messages that match this thread's subject (conversation grouping)
+          const threadSubject = selectedThread.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase();
+          threadMessages = threadMessages.filter((m) =>
+            m.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase().includes(threadSubject.slice(0, 30)) ||
+            threadSubject.includes(m.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase().slice(0, 30))
+          );
+        }
       }
     } catch { /* */ }
   }
@@ -362,12 +399,39 @@ export default async function EmailPage({
                 </form>
               )}
 
-              {/* Thread metadata notice */}
-              <div className="border-border rounded-[8px] border px-4 py-3">
-                <p className="text-text-secondary m-0 text-[0.8rem]">
-                  {parseInt(selectedThread.messageCount) - 1} earlier messages hidden · metadata only, bodies are not stored
-                </p>
-              </div>
+              {/* Thread messages */}
+              {threadMessages.length > 0 ? (
+                <div className="flex flex-col gap-2">
+                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">Messages in this thread</p>
+                  {threadMessages.map((msg) => (
+                    <div key={msg.id} className="border-border rounded-[8px] border px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <span className="bg-wash text-text-secondary grid size-8 place-items-center rounded-full text-[0.68rem] font-extrabold">
+                            {senderInitials(msg.fromName, msg.fromAddress)}
+                          </span>
+                          <div>
+                            <p className="text-ink m-0 text-[0.85rem] font-bold">{msg.fromName || msg.fromAddress.split('@')[0]}</p>
+                            <p className="text-text-secondary m-0 text-[0.72rem]">{msg.fromAddress}</p>
+                          </div>
+                        </div>
+                        <span className="text-text-secondary shrink-0 font-mono text-[0.72rem]">
+                          {timeAgo(msg.receivedAt)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-text-secondary m-0 mt-1 text-[0.74rem]">
+                    Metadata only — message bodies are not stored.
+                  </p>
+                </div>
+              ) : (
+                <div className="border-border rounded-[8px] border px-4 py-3">
+                  <p className="text-text-secondary m-0 text-[0.8rem]">
+                    {parseInt(selectedThread.messageCount) - 1} earlier messages · metadata only, bodies are not stored
+                  </p>
+                </div>
+              )}
 
               {/* Suggested reply */}
               {draft ? (

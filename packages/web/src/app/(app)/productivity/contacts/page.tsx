@@ -1,8 +1,9 @@
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
+import { TextField } from '@/components/ui/text-field';
 import { getSession } from '@/lib/auth';
-import { listContacts, getContactMetrics } from '@/lib/contacts/actions';
+import { listContacts, getContactMetrics, addContact } from '@/lib/contacts/actions';
 import type { ContactFilter, ContactRow } from '@/lib/contacts/actions';
 
 // ---------------------------------------------------------------------------
@@ -126,6 +127,33 @@ export default async function ContactsPage({
             </Button>
           </div>
         </header>
+
+        {/* Add contact form (inline) */}
+        <form
+          action={async (formData: FormData) => {
+            'use server';
+            await addContact({
+              name: formData.get('name') as string,
+              organisation: (formData.get('organisation') as string) || undefined,
+              email: (formData.get('email') as string) || undefined,
+              phone: (formData.get('phone') as string) || undefined,
+              isKeyRelationship: formData.get('isKey') === 'on',
+            });
+          }}
+          className="mb-6 grid grid-cols-2 gap-3 rounded-[8px] border border-border bg-white p-4 sm:grid-cols-5"
+        >
+          <TextField label="Name" name="name" required placeholder="Full name" />
+          <TextField label="Organisation" name="organisation" placeholder="Company" />
+          <TextField label="Email" name="email" type="email" placeholder="email@..." />
+          <TextField label="Phone" name="phone" placeholder="+1..." />
+          <div className="flex items-end gap-2">
+            <label className="flex items-center gap-1.5 text-[0.78rem] text-text-secondary">
+              <input type="checkbox" name="isKey" className="rounded" />
+              Key
+            </label>
+            <Button type="submit" variant="primary" size="medium">Add</Button>
+          </div>
+        </form>
 
         {unavailable ? (
           <div className="border-border rounded-[8px] border bg-white p-6 text-center">
