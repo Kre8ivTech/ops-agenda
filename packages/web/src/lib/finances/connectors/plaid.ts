@@ -1,6 +1,11 @@
 // Plaid Link integration
-// Requires: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV (sandbox/production)
+// Primary: Loads credentials from Admin → Integrations (integration_credential table)
+// Fallback: PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV environment variables
 // Flow: createLinkToken -> user completes Link -> exchangePublicToken -> sync accounts/transactions
+
+import { eq, and } from 'drizzle-orm';
+import { createDb } from '@/lib/db';
+import { integrationCredential } from '@/lib/db/schema';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -33,39 +38,107 @@ export interface PlaidTransaction {
   pending: boolean;
 }
 
+interface PlaidConfig {
+  clientId: string;
+  secret: string;
+  environment: string;
+}
+
+// ---------------------------------------------------------------------------
+// Credential Loading — from integration_credential table (encrypted)
+// ---------------------------------------------------------------------------
+
+async function getDecryptionKey(): Promise<CryptoKey> {
+  const raw = process.env.SESSION_SECRET;
+  if (!raw || raw.length < 32) throw new Error('SESSION_SECRET not configured');
+  return crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(raw.slice(0, 32)),
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt'],
+  );
+}
+
+async function loadConfigFromDb(): Promise<PlaidConfig | null> {
+  const dbUrl = process.env.DATABASE_URL;
+  if (!dbUrl) return null;
+
+  try {
+    const db = createDb(dbUrl);
+    const [cred] = await db
+      .select()
+      .from(integrationCredential)
+      .where(and(eq(integrationCredential.provider, 'plaid'), eq(integrationCredential.enabled, true)));
+
+    if (!cred) return null;
+
+    // Decrypt the credential payload
+    const key = await getDecryptionKey();
+    const iv = Buffer.from(cred.iv, 'base64');
+    const ct = Buffer.from(cred.encryptedPayload, 'base64');
+    const tag = Buffer.from(cred.authTag, 'base64');
+    const combined = new Uint8Array(ct.length + tag.length);
+    combined.set(ct, 0);
+    combined.set(tag, ct.length);
+    const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, combined);
+    const parsed = JSON.parse(new TextDecoder().decode(decrypted));
+
+    return {
+      clientId: parsed.client_id ?? parsed.clientId ?? '',
+      secret: parsed.secret ?? parsed.client_secret ?? '',
+      environment: parsed.environment ?? 'sandbox',
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function getBaseUrl(): string {
-  const env = process.env.PLAID_ENV ?? 'sandbox';
-  if (env === 'production') {
-    return 'https://production.plaid.com';
+let cachedConfig: PlaidConfig | null = null;
+
+async function getConfig(): Promise<PlaidConfig> {
+  // Try DB first (Admin → Integrations)
+  if (!cachedConfig) {
+    cachedConfig = await loadConfigFromDb();
   }
+
+  if (cachedConfig && cachedConfig.clientId && cachedConfig.secret) {
+    return cachedConfig;
+  }
+
+  // Fallback to env vars
+  const clientId = process.env.PLAID_CLIENT_ID;
+  const secret = process.env.PLAID_SECRET;
+  const environment = process.env.PLAID_ENV ?? 'sandbox';
+
+  if (clientId && secret) {
+    cachedConfig = { clientId, secret, environment };
+    return cachedConfig;
+  }
+
+  throw new Error('Plaid not configured. Add credentials in Admin → Integrations or set PLAID_CLIENT_ID/PLAID_SECRET env vars.');
+}
+
+function getBaseUrl(environment: string): string {
+  if (environment === 'production') return 'https://production.plaid.com';
+  if (environment === 'development') return 'https://development.plaid.com';
   return 'https://sandbox.plaid.com';
 }
 
-function getCredentials(): { clientId: string; secret: string } {
-  const clientId = process.env.PLAID_CLIENT_ID;
-  const secret = process.env.PLAID_SECRET;
-  if (!clientId || !secret) {
-    throw new Error(
-      'Missing Plaid credentials: PLAID_CLIENT_ID and PLAID_SECRET must be set',
-    );
-  }
-  return { clientId, secret };
-}
-
 async function plaidRequest<T>(path: string, body: Record<string, unknown>): Promise<T> {
-  const { clientId, secret } = getCredentials();
-  const baseUrl = getBaseUrl();
+  const config = await getConfig();
+  const baseUrl = getBaseUrl(config.environment);
 
   const response = await fetch(`${baseUrl}${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'PLAID-CLIENT-ID': clientId,
-      'PLAID-SECRET': secret,
+      'PLAID-CLIENT-ID': config.clientId,
+      'PLAID-SECRET': config.secret,
     },
     body: JSON.stringify(body),
   });
