@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { SelectField } from '@/components/ui/select';
+import { PlaidLinkButton } from '@/components/finances/plaid-link-button';
 import {
-  createPlaidLinkToken,
-  completePlaidLink,
   connectMonarch,
   createManualAccount,
 } from '@/lib/finances/connect-actions';
@@ -13,18 +12,6 @@ import { listAccounts } from '@/lib/finances/actions';
 // ---------------------------------------------------------------------------
 // Server Actions (form handlers)
 // ---------------------------------------------------------------------------
-
-async function handlePlaidConnect() {
-  'use server';
-  const result = await createPlaidLinkToken();
-  if ('error' in result) {
-    // In a real flow the link token would be passed to the client-side Plaid Link SDK.
-    // For now we just surface errors server-side.
-    throw new Error(result.error);
-  }
-  // The linkToken would be used client-side with Plaid Link.
-  // This server action is a placeholder for triggering the flow.
-}
 
 async function handleMonarchConnect(formData: FormData) {
   'use server';
@@ -101,11 +88,9 @@ export default async function FinancesConnectPage() {
           <p className="text-text-secondary mb-4 text-[0.85rem] leading-relaxed">
             Connect bank accounts instantly via Plaid. Supports 12,000+ institutions.
           </p>
-          <form action={handlePlaidConnect}>
-            <Button type="submit">Connect with Plaid</Button>
-          </form>
-          <p className="text-text-secondary mt-3 text-[0.75rem] italic">
-            Plaid integration requires PLAID_CLIENT_ID and PLAID_SECRET environment variables.
+          <PlaidLinkButton />
+          <p className="text-text-secondary mt-3 text-[0.75rem]">
+            Read-only access. Ops Agenda can see and forecast, never move money.
           </p>
         </div>
 
