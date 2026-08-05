@@ -75,7 +75,16 @@ export function resolveAppNav(counts: AppNavCounts = {}): NavGroup[] {
     {
       id: 'finances',
       label: 'Finances',
-      collapsed: true,
+      items: [
+        { id: 'finances-overview', label: 'Overview', href: '/finances/overview', nested: true },
+        { id: 'finances-personal', label: 'Personal', href: '/finances/personal', nested: true },
+        { id: 'finances-business', label: 'Business', href: '/finances/business', nested: true },
+        { id: 'finances-subscriptions', label: 'Subscriptions', href: '/finances/subscriptions', nested: true, countLabel: '3' },
+        { id: 'finances-budgets', label: 'Budgets', href: '/finances/budgets', nested: true },
+        { id: 'finances-taxes', label: 'Taxes', href: '/finances/taxes', nested: true },
+        { id: 'finances-forecast', label: 'Forecast', href: '/finances/forecast', nested: true },
+        { id: 'finances-investments', label: 'Investments', href: '/finances/investments', nested: true },
+      ],
     },
     {
       id: 'business',

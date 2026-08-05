@@ -867,3 +867,86 @@ export const contact = pgTable(
 
 export type ContactInsert = InferInsertModel<typeof contact>;
 export type ContactSelect = typeof contact.$inferSelect;
+
+// ===========================================================================
+// Finances — Accounts & Transactions
+// ===========================================================================
+
+export const accountStateEnum = pgEnum('financial_account_state', [
+  'healthy',
+  'below_threshold',
+  'statement_balance',
+  'closed',
+]);
+
+export const transactionDirectionEnum = pgEnum('transaction_direction', ['in', 'out']);
+export const transactionStatusEnum = pgEnum('transaction_status', ['contracted', 'committed', 'projected', 'deferred']);
+
+export const financialAccount = pgTable(
+  'financial_account',
+  {
+    ...tenantBase,
+    /** Display name: "Operating — Vecturae", "Card — business" */
+    name: varchar('name', { length: 255 }).notNull(),
+    /** Institution + last 4 digits: "Northgate Savings →4021" */
+    institution: varchar('institution', { length: 255 }),
+    /** Which entity this account belongs to. */
+    entityId: uuid('entity_id').references(() => entity.id),
+    entityName: varchar('entity_name', { length: 255 }),
+    /** Current balance in cents (stored as string for precision). */
+    balance: varchar('balance', { length: 20 }).notNull().default('0'),
+    /** 30-day change in cents. */
+    change30d: varchar('change_30d', { length: 20 }),
+    /** Account health state. */
+    state: accountStateEnum('state').notNull().default('healthy'),
+    /** Low-balance threshold in cents. */
+    threshold: varchar('threshold', { length: 20 }),
+    /** Account type: checking, savings, credit_card, investment, tax */
+    kind: varchar('kind', { length: 50 }).notNull().default('checking'),
+    /** Currency code. */
+    currency: varchar('currency', { length: 5 }).notNull().default('USD'),
+  },
+  (table) => [
+    index('financial_account_account_idx').on(table.accountId),
+    index('financial_account_entity_idx').on(table.entityId),
+    index('financial_account_state_idx').on(table.state),
+  ],
+);
+
+export const financialTransaction = pgTable(
+  'financial_transaction',
+  {
+    ...tenantBase,
+    /** Which financial account this belongs to. */
+    financialAccountId: uuid('financial_account_id').references(() => financialAccount.id),
+    /** Description: "Harborline — invoice 0143", "Rent and utilities" */
+    description: varchar('description', { length: 500 }).notNull(),
+    /** Amount in cents (always positive — direction indicates in/out). */
+    amount: varchar('amount', { length: 20 }).notNull(),
+    /** Money coming in or going out. */
+    direction: transactionDirectionEnum('direction').notNull(),
+    /** Status: contracted (signed), committed (expected), projected (forecast), deferred (pushed back). */
+    status: transactionStatusEnum('status').notNull().default('committed'),
+    /** Due/expected date. */
+    dueOn: timestamp('due_on', { withTimezone: true }),
+    /** Recurrence label: "Weekly", "Monthly", "1–8 Aug", etc. */
+    recurrence: varchar('recurrence', { length: 100 }),
+    /** Which entity this relates to. */
+    entityName: varchar('entity_name', { length: 255 }),
+    /** Category for grouping: payroll, rent, subscription, invoice, tax, etc. */
+    category: varchar('category', { length: 100 }),
+    /** Whether this has been deferred by the user. */
+    isDeferred: boolean('is_deferred').notNull().default(false),
+  },
+  (table) => [
+    index('financial_transaction_account_idx').on(table.accountId),
+    index('financial_transaction_fin_account_idx').on(table.financialAccountId),
+    index('financial_transaction_direction_idx').on(table.direction),
+    index('financial_transaction_due_on_idx').on(table.dueOn),
+  ],
+);
+
+export type FinancialAccountInsert = InferInsertModel<typeof financialAccount>;
+export type FinancialAccountSelect = typeof financialAccount.$inferSelect;
+export type FinancialTransactionInsert = InferInsertModel<typeof financialTransaction>;
+export type FinancialTransactionSelect = typeof financialTransaction.$inferSelect;
