@@ -146,7 +146,7 @@ export default async function EmailPage({
   let selectedThread: Thread | null = null;
   let extractions: Extraction[] = [];
   let draft: Draft | null = null;
-  let threadMessages: { id: string; fromAddress: string; fromName: string | null; subject: string; receivedAt: Date; isRead: boolean }[] = [];
+  let threadMessages: { id: string; fromAddress: string; fromName: string | null; subject: string; bodyPreview: string | null; receivedAt: Date; isRead: boolean }[] = [];
 
   if (selectedId) {
     try {
@@ -175,6 +175,7 @@ export default async function EmailPage({
               fromAddress: emailMessage.fromAddress,
               fromName: emailMessage.fromName,
               subject: emailMessage.subject,
+              bodyPreview: emailMessage.bodyPreview,
               receivedAt: emailMessage.receivedAt,
               isRead: emailMessage.isRead,
             }).from(emailMessage)
@@ -303,6 +304,9 @@ export default async function EmailPage({
                   </span>
                 </div>
                 <p className="text-ink m-0 truncate text-[0.82rem] font-semibold">{t.subject}</p>
+                {t.bodyPreview ? (
+                  <p className="text-text-secondary m-0 truncate text-[0.78rem] font-normal leading-[1.3]">{t.bodyPreview}</p>
+                ) : null}
                 {/* Signal tag */}
                 <div className="mt-1 flex items-center gap-2">
                   <span className={`rounded-full border px-2 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_BADGE[t.priority ?? 'fysa']}`}>
@@ -404,7 +408,7 @@ export default async function EmailPage({
                 <div className="flex flex-col gap-2">
                   <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">Messages in this thread</p>
                   {threadMessages.map((msg) => (
-                    <div key={msg.id} className="border-border rounded-[8px] border px-4 py-3">
+                    <div key={msg.id} className="border-border rounded-[8px] border px-4 py-3 bg-white">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
                           <span className="bg-wash text-text-secondary grid size-8 place-items-center rounded-full text-[0.68rem] font-extrabold">
@@ -419,16 +423,49 @@ export default async function EmailPage({
                           {timeAgo(msg.receivedAt)}
                         </span>
                       </div>
+                      <div className="mt-3 border-t border-border/40 pt-3">
+                        <p className="text-ink m-0 text-[0.88rem] leading-[1.55] whitespace-pre-wrap">
+                          {msg.bodyPreview || selectedThread.bodyPreview || selectedThread.signalDetail || selectedThread.subject}
+                        </p>
+                      </div>
                     </div>
                   ))}
                   <p className="text-text-secondary m-0 mt-1 text-[0.74rem]">
-                    Metadata only — message bodies are not stored.
+                    Metadata snippet only — full message bodies are kept in your mail provider.
                   </p>
                 </div>
               ) : (
-                <div className="border-border rounded-[8px] border px-4 py-3">
-                  <p className="text-text-secondary m-0 text-[0.8rem]">
-                    {parseInt(selectedThread.messageCount) - 1} earlier messages · metadata only, bodies are not stored
+                <div className="flex flex-col gap-2">
+                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">Message preview</p>
+                  <div className="border-border rounded-[8px] border px-4 py-3 bg-white">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="bg-wash text-text-secondary grid size-8 place-items-center rounded-full text-[0.68rem] font-extrabold">
+                          {senderInitials(null, selectedThread.participants?.split(',')[0] ?? '')}
+                        </span>
+                        <div>
+                          <p className="text-ink m-0 text-[0.85rem] font-bold">
+                            {selectedThread.participants?.split(',')[0]?.split('@')[0] ?? 'Sender'}
+                          </p>
+                          <p className="text-text-secondary m-0 text-[0.72rem]">
+                            {selectedThread.participants?.split(',')[0] ?? ''}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-text-secondary shrink-0 font-mono text-[0.72rem]">
+                        {timeAgo(selectedThread.lastMessageAt)}
+                      </span>
+                    </div>
+                    <div className="mt-3 border-t border-border/40 pt-3">
+                      <p className="text-ink m-0 text-[0.88rem] leading-[1.55] whitespace-pre-wrap">
+                        {selectedThread.bodyPreview || selectedThread.signalDetail || selectedThread.subject}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-text-secondary m-0 mt-1 text-[0.74rem]">
+                    {parseInt(selectedThread.messageCount) > 1
+                      ? `${parseInt(selectedThread.messageCount) - 1} earlier message(s) in thread · metadata snippet only, full bodies are kept in your mail provider.`
+                      : 'Metadata snippet only — full message bodies are kept in your mail provider.'}
                   </p>
                 </div>
               )}

@@ -29,6 +29,7 @@ export interface EmailRow {
   fromAddress: string;
   fromName: string | null;
   subject: string;
+  bodyPreview: string | null;
   receivedAt: Date;
   isRead: boolean;
   hasAttachments: boolean;
@@ -111,6 +112,7 @@ export async function listEmails(options?: {
         fromAddress: emailMessage.fromAddress,
         fromName: emailMessage.fromName,
         subject: emailMessage.subject,
+        bodyPreview: emailMessage.bodyPreview,
         receivedAt: emailMessage.receivedAt,
         isRead: emailMessage.isRead,
         hasAttachments: emailMessage.hasAttachments,

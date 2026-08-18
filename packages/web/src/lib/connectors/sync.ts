@@ -134,6 +134,7 @@ interface GraphMessage {
   isRead: boolean;
   hasAttachments: boolean;
   webLink: string;
+  bodyPreview?: string;
   sender?: { emailAddress: { address: string; name: string } } | null;
 }
 
@@ -163,7 +164,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
 
         // Fetch messages WITH conversationId for thread grouping
         const res = await fetch(
-          `https://graph.microsoft.com/v1.0/${mailboxPath}/messages?$top=50&$orderby=receivedDateTime desc&$select=id,conversationId,subject,from,sender,receivedDateTime,isRead,hasAttachments,webLink`,
+          `https://graph.microsoft.com/v1.0/${mailboxPath}/messages?$top=50&$orderby=receivedDateTime desc&$select=id,conversationId,subject,from,sender,receivedDateTime,isRead,hasAttachments,webLink,bodyPreview`,
           { headers: { authorization: `Bearer ${token}` } },
         );
         if (!res.ok) throw new Error(`Graph ${res.status}: ${(await res.text()).slice(0, 80)}`);
@@ -179,13 +180,14 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               fromAddress: m.from?.emailAddress?.address ?? '',
               fromName: m.from?.emailAddress?.name ?? '',
               subject: m.subject ?? '(no subject)',
+              bodyPreview: m.bodyPreview ?? null,
               receivedAt: new Date(m.receivedDateTime),
               isRead: m.isRead,
               hasAttachments: m.hasAttachments,
               webLink: m.webLink ?? '',
             }).onConflictDoUpdate({
               target: [emailMessage.accountId, emailMessage.externalId],
-              set: { isRead: m.isRead },
+              set: { isRead: m.isRead, bodyPreview: m.bodyPreview ?? null },
             });
           }
         });
@@ -216,6 +218,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               connectionId: conn.id,
               externalThreadId,
               subject: newest.subject ?? '(no subject)',
+              bodyPreview: newest.bodyPreview ?? null,
               participants,
               messageCount: String(messages.length),
               lastMessageAt: new Date(newest.receivedDateTime),
@@ -224,6 +227,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               target: [emailThread.accountId, emailThread.externalThreadId],
               set: {
                 subject: newest.subject ?? '(no subject)',
+                bodyPreview: newest.bodyPreview ?? null,
                 participants,
                 messageCount: String(messages.length),
                 lastMessageAt: new Date(newest.receivedDateTime),
@@ -257,6 +261,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
           from: string;
           subject: string;
           date: string;
+          snippet?: string;
         }
         const gmailMessages: GmailMessage[] = [];
 
@@ -277,6 +282,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
             from: getHeader('From'),
             subject: getHeader('Subject'),
             date: getHeader('Date'),
+            snippet: msgData.snippet ?? '',
           });
         }
 
@@ -295,13 +301,14 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               fromAddress,
               fromName,
               subject: m.subject || '(no subject)',
+              bodyPreview: m.snippet || null,
               receivedAt: m.date ? new Date(m.date) : new Date(),
               isRead: true, // Gmail API does not return read status in metadata format
               hasAttachments: false,
               webLink: `https://mail.google.com/mail/u/0/#inbox/${m.id}`,
             }).onConflictDoUpdate({
               target: [emailMessage.accountId, emailMessage.externalId],
-              set: { isRead: true },
+              set: { isRead: true, bodyPreview: m.snippet || null },
             });
           }
         });
@@ -334,6 +341,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               connectionId: conn.id,
               externalThreadId,
               subject: newest.subject || '(no subject)',
+              bodyPreview: newest.snippet || null,
               participants,
               messageCount: String(messages.length),
               lastMessageAt: newest.date ? new Date(newest.date) : new Date(),
@@ -342,6 +350,7 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
               target: [emailThread.accountId, emailThread.externalThreadId],
               set: {
                 subject: newest.subject || '(no subject)',
+                bodyPreview: newest.snippet || null,
                 participants,
                 messageCount: String(messages.length),
                 lastMessageAt: newest.date ? new Date(newest.date) : new Date(),

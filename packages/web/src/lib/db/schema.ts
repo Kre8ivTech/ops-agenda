@@ -550,6 +550,8 @@ export const emailMessage = pgTable(
     fromAddress: varchar('from_address', { length: 320 }).notNull(),
     fromName: varchar('from_name', { length: 255 }),
     subject: varchar('subject', { length: 1000 }).notNull(),
+    /** Message preview/body snippet. */
+    bodyPreview: text('body_preview'),
     receivedAt: timestamp('received_at', { withTimezone: true }).notNull(),
     isRead: boolean('is_read').notNull().default(false),
     hasAttachments: boolean('has_attachments').notNull().default(false),
@@ -594,6 +596,8 @@ export const emailThread = pgTable(
     /** Provider conversation/thread ID. */
     externalThreadId: varchar('external_thread_id', { length: 500 }).notNull(),
     subject: varchar('subject', { length: 1000 }).notNull(),
+    /** Message preview/body snippet for the thread. */
+    bodyPreview: text('body_preview'),
     /** Most recent participant emails (comma-separated). */
     participants: text('participants'),
     messageCount: varchar('message_count', { length: 10 }).notNull().default('1'),
