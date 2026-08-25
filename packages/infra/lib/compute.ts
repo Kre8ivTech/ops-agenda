@@ -60,14 +60,13 @@ export class Compute extends Construct {
 
     const userData = ec2.UserData.forLinux();
     userData.addCommands(
-      'yum update -y',
-      'yum install -y amazon-cloudwatch-agent',
+      'dnf install -y amazon-cloudwatch-agent',
       'echo ECS_CLUSTER=' + cluster.clusterName + ' >> /etc/ecs/ecs.config',
     );
 
     const launchTemplate = new ec2.LaunchTemplate(this, 'LaunchTemplate', {
       instanceType: new ec2.InstanceType(props.instanceType),
-      machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
+      machineImage: ecs.EcsOptimizedImage.amazonLinux2023(),
       userData,
       securityGroup: props.ecsSecurityGroup,
       requireImdsv2: true,

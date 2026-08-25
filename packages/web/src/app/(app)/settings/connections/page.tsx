@@ -6,6 +6,8 @@ import { SelectField } from '@/components/ui/select';
 import { getSession } from '@/lib/auth';
 import { listConnections, deleteConnection, createImapConnection, testConnection, addSharedMailbox } from '@/lib/connectors/actions';
 import { PROVIDER_LIST } from '@/lib/connectors';
+import { assignConnectionEntity, createCompany } from '@/lib/entities/actions';
+import { listEntities } from '@/lib/entities/queries';
 
 const STATUS_STYLE: Record<string, string> = {
   healthy: 'bg-wash-green text-signal',
@@ -24,9 +26,10 @@ export default async function ConnectionsPage({
   const hasTenant = !!(session?.accountId && session?.userId);
 
   let connections: Awaited<ReturnType<typeof listConnections>> = [];
+  let entities: Awaited<ReturnType<typeof listEntities>> = [];
   if (hasTenant) {
     try {
-      connections = await listConnections();
+      [connections, entities] = await Promise.all([listConnections(), listEntities()]);
     } catch {
       // DB unavailable — show empty
     }
@@ -34,6 +37,7 @@ export default async function ConnectionsPage({
 
   const oauthProviders = PROVIDER_LIST.filter((p) => p.supportsOAuth);
   const mailConnections = connections.filter((c) => c.kind === 'mail');
+  const companies = entities.filter((item) => item.kind !== 'personal');
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-6">
@@ -64,6 +68,51 @@ export default async function ConnectionsPage({
         </div>
       ) : null}
 
+      {/* Companies and legal entities */}
+      <section className="border-border rounded-[8px] border bg-white p-5">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-ink m-0 text-[0.95rem] font-extrabold">Companies & entities</h2>
+            <p className="text-text-secondary m-0 mt-1 text-[0.82rem]">
+              Create a company here, then assign its email and calendar account below.
+            </p>
+          </div>
+          <span className="bg-wash text-text-secondary rounded-full px-2.5 py-1 text-[0.72rem] font-extrabold">
+            {companies.length} compan{companies.length === 1 ? 'y' : 'ies'}
+          </span>
+        </div>
+
+        {companies.length > 0 ? (
+          <div className="mb-4 flex flex-wrap gap-2" aria-label="Existing companies">
+            {companies.map((item) => (
+              <span key={item.id} className="border-border bg-wash rounded-full border px-3 py-1.5 text-[0.78rem] font-bold text-ink">
+                {item.name}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <form
+          action={async (formData: FormData) => {
+            'use server';
+            await createCompany({
+              name: formData.get('companyName') as string,
+              kind: formData.get('companyKind') as 'llc' | 'corp' | 'sole_prop' | 'nonprofit',
+            });
+          }}
+          className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px_auto] sm:items-end"
+        >
+          <TextField label="Company name" name="companyName" required placeholder="e.g. Acme Consulting" />
+          <SelectField label="Company type" name="companyKind" defaultValue="llc">
+            <option value="llc">LLC</option>
+            <option value="corp">Corporation</option>
+            <option value="sole_prop">Sole proprietor</option>
+            <option value="nonprofit">Nonprofit</option>
+          </SelectField>
+          <Button type="submit" size="medium" className="sm:mb-1.5">Add company</Button>
+        </form>
+      </section>
+
       {/* Active connections */}
       {connections.length > 0 ? (
         <section className="border-border rounded-[8px] border bg-white">
@@ -72,12 +121,14 @@ export default async function ConnectionsPage({
               Active connections ({connections.length})
             </h2>
           </div>
-          <table className="w-full border-collapse text-[0.82rem]">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[820px] border-collapse text-[0.82rem]">
             <thead>
               <tr className="bg-wash text-left">
                 <th className="px-5 py-2 font-extrabold text-ink">Account</th>
                 <th className="px-5 py-2 font-extrabold text-ink">Provider</th>
                 <th className="px-5 py-2 font-extrabold text-ink">Type</th>
+                <th className="px-5 py-2 font-extrabold text-ink">Entity / company</th>
                 <th className="px-5 py-2 font-extrabold text-ink">Status</th>
                 <th className="px-5 py-2 font-extrabold text-ink">Actions</th>
               </tr>
@@ -90,6 +141,32 @@ export default async function ConnectionsPage({
                   </td>
                   <td className="px-5 py-2.5 text-text-secondary capitalize">{conn.provider}</td>
                   <td className="px-5 py-2.5 text-text-secondary capitalize">{conn.kind}</td>
+                  <td className="px-5 py-2.5">
+                    <form
+                      action={async (formData: FormData) => {
+                        'use server';
+                        await assignConnectionEntity({
+                          connectionId: conn.id,
+                          entityId: formData.get('entityId') as string,
+                        });
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <select
+                        name="entityId"
+                        defaultValue={conn.entityId ?? ''}
+                        aria-label={`Entity for ${conn.externalAccountRef ?? conn.provider} ${conn.kind}`}
+                        className="border-border text-ink focus:border-signal h-9 min-w-36 rounded-[8px] border bg-white px-2.5 text-[0.78rem] font-bold outline-none focus:shadow-[0_0_0_3px_var(--wash-green)]"
+                        required
+                      >
+                        <option value="" disabled>Unassigned</option>
+                        {entities.map((item) => (
+                          <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                      <Button type="submit" variant="secondary" size="small">Save</Button>
+                    </form>
+                  </td>
                   <td className="px-5 py-2.5">
                     <span className={`rounded-full px-2.5 py-1 text-[0.72rem] font-extrabold ${STATUS_STYLE[conn.status] ?? 'bg-wash text-text-secondary'}`}>
                       {conn.status}
@@ -113,6 +190,7 @@ export default async function ConnectionsPage({
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       ) : null}
 

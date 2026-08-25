@@ -7,7 +7,7 @@
 
 import { eq, and, isNull } from 'drizzle-orm';
 import { createDb, withTenant } from '@/lib/db';
-import { connection, oauthState } from '@/lib/db/schema';
+import { connection, entity, oauthState } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 import { encryptTokens } from '@/lib/connectors';
 import { MicrosoftConnector } from '@/lib/connectors/microsoft';
@@ -86,10 +86,23 @@ export async function GET(request: Request) {
 
     // Create connection records (one per kind)
     await withTenant(db, tenant, async (tx) => {
+      const [personalEntity] = await tx
+        .select({ id: entity.id })
+        .from(entity)
+        .where(
+          and(
+            eq(entity.accountId, stateRecord.accountId),
+            eq(entity.kind, 'personal'),
+            isNull(entity.deletedAt),
+          ),
+        )
+        .limit(1);
+
       for (const kind of kinds) {
         await tx.insert(connection).values({
           accountId: stateRecord.accountId,
           createdBy: stateRecord.userId,
+          entityId: personalEntity?.id,
           provider: stateRecord.provider,
           kind: kind as 'mail' | 'calendar',
           externalAccountRef: tokens.email,

@@ -2,6 +2,7 @@
 
 import { and, eq, isNull } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 import { getSession } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
 import { connection, emailMessage, emailThread, calendarEvent } from '@/lib/db/schema';
@@ -13,7 +14,9 @@ import { rankEmailThreads } from '@/lib/ai/email-rank';
 import { generatePrepSuggestions } from '@/lib/ai/calendar-prep';
 import { detectConflicts } from '@/lib/calendar/actions';
 
-function getDb() { return createDb(env.DATABASE_URL); }
+function getDb() {
+  return createDb(env.DATABASE_URL);
+}
 
 async function requireTenant() {
   const session = await getSession();
@@ -24,7 +27,10 @@ async function requireTenant() {
 /**
  * Decrypt the stored token payload and return accessToken + refreshToken.
  */
-function parseTokenPayload(decrypted: string): { accessToken: string | null; refreshToken: string | null } {
+function parseTokenPayload(decrypted: string): {
+  accessToken: string | null;
+  refreshToken: string | null;
+} {
   try {
     const parsed = JSON.parse(decrypted);
     return {
@@ -57,7 +63,8 @@ async function getValidToken(
   if (!accessToken) return null;
 
   // Check if token is still valid (with 5 min buffer)
-  const isExpired = conn.tokenExpiresAt && conn.tokenExpiresAt.getTime() < Date.now() + 5 * 60 * 1000;
+  const isExpired =
+    conn.tokenExpiresAt && conn.tokenExpiresAt.getTime() < Date.now() + 5 * 60 * 1000;
 
   if (!isExpired) return accessToken;
 
@@ -78,14 +85,17 @@ async function getValidToken(
 
       // Update the connection with new tokens
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({
-          accessTokenEnc: encrypted,
-          refreshTokenEnc: encrypted,
-          tokenIv: iv,
-          tokenAuthTag: authTag,
-          tokenExpiresAt: newExpires,
-          updatedAt: new Date(),
-        }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({
+            accessTokenEnc: encrypted,
+            refreshTokenEnc: encrypted,
+            tokenIv: iv,
+            tokenAuthTag: authTag,
+            tokenExpiresAt: newExpires,
+            updatedAt: new Date(),
+          })
+          .where(eq(connection.id, conn.id));
       });
 
       return refreshed.accessToken;
@@ -102,14 +112,17 @@ async function getValidToken(
       const newExpires = new Date(Date.now() + refreshed.expiresIn * 1000);
 
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({
-          accessTokenEnc: encrypted,
-          refreshTokenEnc: encrypted,
-          tokenIv: iv,
-          tokenAuthTag: authTag,
-          tokenExpiresAt: newExpires,
-          updatedAt: new Date(),
-        }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({
+            accessTokenEnc: encrypted,
+            refreshTokenEnc: encrypted,
+            tokenIv: iv,
+            tokenAuthTag: authTag,
+            tokenExpiresAt: newExpires,
+            updatedAt: new Date(),
+          })
+          .where(eq(connection.id, conn.id));
       });
 
       return refreshed.accessToken;
@@ -138,21 +151,34 @@ interface GraphMessage {
   sender?: { emailAddress: { address: string; name: string } } | null;
 }
 
-export async function syncEmails(): Promise<{ synced: number; errors: string[] }> {
+const syncEmailOptionsSchema = z.object({ entityId: z.string().uuid().optional() }).optional();
+
+export async function syncEmails(options?: {
+  entityId?: string;
+}): Promise<{ synced: number; errors: string[] }> {
   const tenant = await requireTenant();
+  const parsedOptions = syncEmailOptionsSchema.parse(options);
   const db = getDb();
   const errors: string[] = [];
   let synced = 0;
   const upsertedThreadIds: string[] = [];
 
-  const conns = await withTenant(db, tenant, async (tx) =>
-    tx.select().from(connection).where(and(eq(connection.kind, 'mail'), isNull(connection.deletedAt))),
-  );
+  const conns = await withTenant(db, tenant, async (tx) => {
+    const conditions = [eq(connection.kind, 'mail'), isNull(connection.deletedAt)];
+    if (parsedOptions?.entityId) conditions.push(eq(connection.entityId, parsedOptions.entityId));
+    return tx
+      .select()
+      .from(connection)
+      .where(and(...conditions));
+  });
 
   for (const conn of conns) {
     try {
       const token = await getValidToken(conn, tenant, db);
-      if (!token) { errors.push(`${conn.provider}: no access token`); continue; }
+      if (!token) {
+        errors.push(`${conn.provider}: no access token`);
+        continue;
+      }
 
       if (conn.provider === 'microsoft') {
         // Use /users/{email}/messages for shared mailbox support.
@@ -173,22 +199,25 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
         // 1. Upsert individual messages into emailMessage
         await withTenant(db, tenant, async (tx) => {
           for (const m of msgs) {
-            await tx.insert(emailMessage).values({
-              accountId: tenant.accountId,
-              connectionId: conn.id,
-              externalId: m.id,
-              fromAddress: m.from?.emailAddress?.address ?? '',
-              fromName: m.from?.emailAddress?.name ?? '',
-              subject: m.subject ?? '(no subject)',
-              bodyPreview: m.bodyPreview ?? null,
-              receivedAt: new Date(m.receivedDateTime),
-              isRead: m.isRead,
-              hasAttachments: m.hasAttachments,
-              webLink: m.webLink ?? '',
-            }).onConflictDoUpdate({
-              target: [emailMessage.accountId, emailMessage.externalId],
-              set: { isRead: m.isRead, bodyPreview: m.bodyPreview ?? null },
-            });
+            await tx
+              .insert(emailMessage)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalId: m.id,
+                fromAddress: m.from?.emailAddress?.address ?? '',
+                fromName: m.from?.emailAddress?.name ?? '',
+                subject: m.subject ?? '(no subject)',
+                bodyPreview: m.bodyPreview ?? null,
+                receivedAt: new Date(m.receivedDateTime),
+                isRead: m.isRead,
+                hasAttachments: m.hasAttachments,
+                webLink: m.webLink ?? '',
+              })
+              .onConflictDoUpdate({
+                target: [emailMessage.accountId, emailMessage.externalId],
+                set: { isRead: m.isRead, bodyPreview: m.bodyPreview ?? null },
+              });
           }
         });
 
@@ -204,37 +233,42 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
         await withTenant(db, tenant, async (tx) => {
           for (const [externalThreadId, messages] of threadMap) {
             // Sort messages in thread by date (newest first)
-            messages.sort((a, b) =>
-              new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime(),
+            messages.sort(
+              (a, b) =>
+                new Date(b.receivedDateTime).getTime() - new Date(a.receivedDateTime).getTime(),
             );
 
             const newest = messages[0];
-            const participants = [...new Set(
-              messages.map((m) => m.from?.emailAddress?.address).filter(Boolean),
-            )].join(', ');
+            const participants = [
+              ...new Set(messages.map((m) => m.from?.emailAddress?.address).filter(Boolean)),
+            ].join(', ');
 
-            const [upserted] = await tx.insert(emailThread).values({
-              accountId: tenant.accountId,
-              connectionId: conn.id,
-              externalThreadId,
-              subject: newest.subject ?? '(no subject)',
-              bodyPreview: newest.bodyPreview ?? null,
-              participants,
-              messageCount: String(messages.length),
-              lastMessageAt: new Date(newest.receivedDateTime),
-              webLink: newest.webLink ?? null,
-            }).onConflictDoUpdate({
-              target: [emailThread.accountId, emailThread.externalThreadId],
-              set: {
+            const [upserted] = await tx
+              .insert(emailThread)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalThreadId,
                 subject: newest.subject ?? '(no subject)',
                 bodyPreview: newest.bodyPreview ?? null,
                 participants,
                 messageCount: String(messages.length),
                 lastMessageAt: new Date(newest.receivedDateTime),
                 webLink: newest.webLink ?? null,
-                updatedAt: new Date(),
-              },
-            }).returning({ id: emailThread.id });
+              })
+              .onConflictDoUpdate({
+                target: [emailThread.accountId, emailThread.externalThreadId],
+                set: {
+                  subject: newest.subject ?? '(no subject)',
+                  bodyPreview: newest.bodyPreview ?? null,
+                  participants,
+                  messageCount: String(messages.length),
+                  lastMessageAt: new Date(newest.receivedDateTime),
+                  webLink: newest.webLink ?? null,
+                  updatedAt: new Date(),
+                },
+              })
+              .returning({ id: emailThread.id });
 
             if (upserted) {
               upsertedThreadIds.push(upserted.id);
@@ -251,8 +285,10 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
           'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=50&q=newer_than:7d',
           { headers: { authorization: `Bearer ${token}` } },
         );
-        if (!listRes.ok) throw new Error(`Gmail list ${listRes.status}: ${(await listRes.text()).slice(0, 80)}`);
-        const messageIds: { id: string; threadId: string }[] = (await listRes.json()).messages ?? [];
+        if (!listRes.ok)
+          throw new Error(`Gmail list ${listRes.status}: ${(await listRes.text()).slice(0, 80)}`);
+        const messageIds: { id: string; threadId: string }[] =
+          (await listRes.json()).messages ?? [];
 
         // 2. Fetch metadata for each message
         interface GmailMessage {
@@ -274,7 +310,8 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
           const msgData = await msgRes.json();
 
           const headers: { name: string; value: string }[] = msgData.payload?.headers ?? [];
-          const getHeader = (name: string) => headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? '';
+          const getHeader = (name: string) =>
+            headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? '';
 
           gmailMessages.push({
             id: msgData.id,
@@ -294,22 +331,25 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
             const fromName = fromMatch ? fromMatch[1].trim().replace(/^"|"$/g, '') : m.from;
             const fromAddress = fromMatch ? fromMatch[2] : m.from;
 
-            await tx.insert(emailMessage).values({
-              accountId: tenant.accountId,
-              connectionId: conn.id,
-              externalId: m.id,
-              fromAddress,
-              fromName,
-              subject: m.subject || '(no subject)',
-              bodyPreview: m.snippet || null,
-              receivedAt: m.date ? new Date(m.date) : new Date(),
-              isRead: true, // Gmail API does not return read status in metadata format
-              hasAttachments: false,
-              webLink: `https://mail.google.com/mail/u/0/#inbox/${m.id}`,
-            }).onConflictDoUpdate({
-              target: [emailMessage.accountId, emailMessage.externalId],
-              set: { isRead: true, bodyPreview: m.snippet || null },
-            });
+            await tx
+              .insert(emailMessage)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalId: m.id,
+                fromAddress,
+                fromName,
+                subject: m.subject || '(no subject)',
+                bodyPreview: m.snippet || null,
+                receivedAt: m.date ? new Date(m.date) : new Date(),
+                isRead: true, // Gmail API does not return read status in metadata format
+                hasAttachments: false,
+                webLink: `https://mail.google.com/mail/u/0/#inbox/${m.id}`,
+              })
+              .onConflictDoUpdate({
+                target: [emailMessage.accountId, emailMessage.externalId],
+                set: { isRead: true, bodyPreview: m.snippet || null },
+              });
           }
         });
 
@@ -324,40 +364,46 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
         await withTenant(db, tenant, async (tx) => {
           for (const [externalThreadId, messages] of threadMap) {
             // Sort messages in thread by date (newest first)
-            messages.sort((a, b) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime(),
-            );
+            messages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
             const newest = messages[0];
-            const participants = [...new Set(
-              messages.map((m) => {
-                const match = m.from.match(/<(.+?)>/);
-                return match ? match[1] : m.from;
-              }).filter(Boolean),
-            )].join(', ');
+            const participants = [
+              ...new Set(
+                messages
+                  .map((m) => {
+                    const match = m.from.match(/<(.+?)>/);
+                    return match ? match[1] : m.from;
+                  })
+                  .filter(Boolean),
+              ),
+            ].join(', ');
 
-            const [upserted] = await tx.insert(emailThread).values({
-              accountId: tenant.accountId,
-              connectionId: conn.id,
-              externalThreadId,
-              subject: newest.subject || '(no subject)',
-              bodyPreview: newest.snippet || null,
-              participants,
-              messageCount: String(messages.length),
-              lastMessageAt: newest.date ? new Date(newest.date) : new Date(),
-              webLink: `https://mail.google.com/mail/u/0/#inbox/${externalThreadId}`,
-            }).onConflictDoUpdate({
-              target: [emailThread.accountId, emailThread.externalThreadId],
-              set: {
+            const [upserted] = await tx
+              .insert(emailThread)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalThreadId,
                 subject: newest.subject || '(no subject)',
                 bodyPreview: newest.snippet || null,
                 participants,
                 messageCount: String(messages.length),
                 lastMessageAt: newest.date ? new Date(newest.date) : new Date(),
                 webLink: `https://mail.google.com/mail/u/0/#inbox/${externalThreadId}`,
-                updatedAt: new Date(),
-              },
-            }).returning({ id: emailThread.id });
+              })
+              .onConflictDoUpdate({
+                target: [emailThread.accountId, emailThread.externalThreadId],
+                set: {
+                  subject: newest.subject || '(no subject)',
+                  bodyPreview: newest.snippet || null,
+                  participants,
+                  messageCount: String(messages.length),
+                  lastMessageAt: newest.date ? new Date(newest.date) : new Date(),
+                  webLink: `https://mail.google.com/mail/u/0/#inbox/${externalThreadId}`,
+                  updatedAt: new Date(),
+                },
+              })
+              .returning({ id: emailThread.id });
 
             if (upserted) {
               upsertedThreadIds.push(upserted.id);
@@ -369,13 +415,19 @@ export async function syncEmails(): Promise<{ synced: number; errors: string[] }
       }
 
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({ lastSyncAt: new Date(), status: 'healthy', lastErrorCode: null }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({ lastSyncAt: new Date(), status: 'healthy', lastErrorCode: null })
+          .where(eq(connection.id, conn.id));
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown';
       errors.push(`${conn.provider}: ${msg}`);
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({ status: 'degraded', lastErrorCode: msg.slice(0, 100) }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({ status: 'degraded', lastErrorCode: msg.slice(0, 100) })
+          .where(eq(connection.id, conn.id));
       });
     }
   }
@@ -401,17 +453,25 @@ export async function syncCalendar(): Promise<{ synced: number; errors: string[]
   const upsertedEventIds: string[] = [];
 
   const now = new Date();
-  const start = new Date(now); start.setDate(start.getDate() - 1);
-  const end = new Date(now); end.setDate(end.getDate() + 6);
+  const start = new Date(now);
+  start.setDate(start.getDate() - 1);
+  const end = new Date(now);
+  end.setDate(end.getDate() + 6);
 
   const conns = await withTenant(db, tenant, async (tx) =>
-    tx.select().from(connection).where(and(eq(connection.kind, 'calendar'), isNull(connection.deletedAt))),
+    tx
+      .select()
+      .from(connection)
+      .where(and(eq(connection.kind, 'calendar'), isNull(connection.deletedAt))),
   );
 
   for (const conn of conns) {
     try {
       const token = await getValidToken(conn, tenant, db);
-      if (!token) { errors.push(`${conn.provider}: no access token`); continue; }
+      if (!token) {
+        errors.push(`${conn.provider}: no access token`);
+        continue;
+      }
 
       if (conn.provider === 'microsoft') {
         const calPath = conn.externalAccountRef
@@ -426,21 +486,33 @@ export async function syncCalendar(): Promise<{ synced: number; errors: string[]
 
         await withTenant(db, tenant, async (tx) => {
           for (const e of events) {
-            const [upserted] = await tx.insert(calendarEvent).values({
-              accountId: tenant.accountId, connectionId: conn.id,
-              externalId: e.id, title: e.subject ?? '(no title)',
-              location: e.location?.displayName || null,
-              startAt: new Date(e.start.dateTime + 'Z'),
-              endAt: new Date(e.end.dateTime + 'Z'),
-              isAllDay: e.isAllDay,
-              organizer: e.organizer?.emailAddress?.name ?? e.organizer?.emailAddress?.address ?? null,
-              attendeeCount: String(e.attendees?.length ?? 0),
-              responseStatus: e.responseStatus?.response ?? 'none',
-              webLink: e.webLink ?? null,
-            }).onConflictDoUpdate({
-              target: [calendarEvent.accountId, calendarEvent.externalId],
-              set: { title: e.subject ?? '(no title)', startAt: new Date(e.start.dateTime + 'Z'), endAt: new Date(e.end.dateTime + 'Z'), updatedAt: new Date() },
-            }).returning({ id: calendarEvent.id });
+            const [upserted] = await tx
+              .insert(calendarEvent)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalId: e.id,
+                title: e.subject ?? '(no title)',
+                location: e.location?.displayName || null,
+                startAt: new Date(e.start.dateTime + 'Z'),
+                endAt: new Date(e.end.dateTime + 'Z'),
+                isAllDay: e.isAllDay,
+                organizer:
+                  e.organizer?.emailAddress?.name ?? e.organizer?.emailAddress?.address ?? null,
+                attendeeCount: String(e.attendees?.length ?? 0),
+                responseStatus: e.responseStatus?.response ?? 'none',
+                webLink: e.webLink ?? null,
+              })
+              .onConflictDoUpdate({
+                target: [calendarEvent.accountId, calendarEvent.externalId],
+                set: {
+                  title: e.subject ?? '(no title)',
+                  startAt: new Date(e.start.dateTime + 'Z'),
+                  endAt: new Date(e.end.dateTime + 'Z'),
+                  updatedAt: new Date(),
+                },
+              })
+              .returning({ id: calendarEvent.id });
             if (upserted) upsertedEventIds.push(upserted.id);
           }
         });
@@ -452,7 +524,8 @@ export async function syncCalendar(): Promise<{ synced: number; errors: string[]
           `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&maxResults=100&singleEvents=true&orderBy=startTime`,
           { headers: { authorization: `Bearer ${token}` } },
         );
-        if (!res.ok) throw new Error(`Google Calendar ${res.status}: ${(await res.text()).slice(0, 80)}`);
+        if (!res.ok)
+          throw new Error(`Google Calendar ${res.status}: ${(await res.text()).slice(0, 80)}`);
         const events: Array<{
           id: string;
           summary?: string;
@@ -470,41 +543,56 @@ export async function syncCalendar(): Promise<{ synced: number; errors: string[]
             const startAt = new Date(e.start.dateTime ?? e.start.date ?? new Date().toISOString());
             const endAt = new Date(e.end.dateTime ?? e.end.date ?? new Date().toISOString());
 
-            await tx.insert(calendarEvent).values({
-              accountId: tenant.accountId,
-              connectionId: conn.id,
-              externalId: e.id,
-              title: e.summary ?? '(no title)',
-              location: e.location || null,
-              startAt,
-              endAt,
-              isAllDay,
-              organizer: e.organizer?.displayName ?? e.organizer?.email ?? null,
-              attendeeCount: String(e.attendees?.length ?? 0),
-              responseStatus: e.attendees?.find((a: { responseStatus?: string }) => a.responseStatus)?.responseStatus ?? 'none',
-              webLink: e.htmlLink ?? null,
-            }).onConflictDoUpdate({
-              target: [calendarEvent.accountId, calendarEvent.externalId],
-              set: {
+            await tx
+              .insert(calendarEvent)
+              .values({
+                accountId: tenant.accountId,
+                connectionId: conn.id,
+                externalId: e.id,
                 title: e.summary ?? '(no title)',
+                location: e.location || null,
                 startAt,
                 endAt,
-                updatedAt: new Date(),
-              },
-            }).returning({ id: calendarEvent.id }).then(([r]) => { if (r) upsertedEventIds.push(r.id); });
+                isAllDay,
+                organizer: e.organizer?.displayName ?? e.organizer?.email ?? null,
+                attendeeCount: String(e.attendees?.length ?? 0),
+                responseStatus:
+                  e.attendees?.find((a: { responseStatus?: string }) => a.responseStatus)
+                    ?.responseStatus ?? 'none',
+                webLink: e.htmlLink ?? null,
+              })
+              .onConflictDoUpdate({
+                target: [calendarEvent.accountId, calendarEvent.externalId],
+                set: {
+                  title: e.summary ?? '(no title)',
+                  startAt,
+                  endAt,
+                  updatedAt: new Date(),
+                },
+              })
+              .returning({ id: calendarEvent.id })
+              .then(([r]) => {
+                if (r) upsertedEventIds.push(r.id);
+              });
           }
         });
         synced += events.length;
       }
 
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({ lastSyncAt: new Date(), status: 'healthy', lastErrorCode: null }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({ lastSyncAt: new Date(), status: 'healthy', lastErrorCode: null })
+          .where(eq(connection.id, conn.id));
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown';
       errors.push(`${conn.provider}: ${msg}`);
       await withTenant(db, tenant, async (tx) => {
-        await tx.update(connection).set({ status: 'degraded', lastErrorCode: msg.slice(0, 100) }).where(eq(connection.id, conn.id));
+        await tx
+          .update(connection)
+          .set({ status: 'degraded', lastErrorCode: msg.slice(0, 100) })
+          .where(eq(connection.id, conn.id));
       });
     }
   }

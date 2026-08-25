@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import { desc, eq, and, isNull, isNotNull, sql } from 'drizzle-orm';
+import { desc, eq, and, inArray, isNull, sql } from 'drizzle-orm';
 
 import { Button } from '@/components/ui/button';
 import { getSession } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
-import { emailThread, emailExtraction, emailDraft, emailMessage } from '@/lib/db/schema';
+import { connection, emailThread, emailExtraction, emailDraft, emailMessage } from '@/lib/db/schema';
+import { getEntitySelection, getSelectedEntityId } from '@/lib/entities/queries';
 import { env } from '@/lib/env';
 import { syncEmails } from '@/lib/connectors/sync';
 import { extractCommitments } from '@/lib/ai/email-extract';
@@ -92,24 +93,59 @@ export default async function EmailPage({
 
   const tenant = { accountId: session.accountId, userId: session.userId };
   const db = createDb(env.DATABASE_URL);
+  const { entities, selectedEntityId } = await getEntitySelection();
+  const activeEntityId = selectedEntityId === 'all' ? null : selectedEntityId;
+  const activeEntityName = activeEntityId
+    ? entities.find((item) => item.id === activeEntityId)?.name ?? 'Selected entity'
+    : 'All entities';
+  const scopedConnectionIds = activeEntityId
+    ? await withTenant(db, tenant, async (tx) =>
+        tx
+          .select({ id: connection.id })
+          .from(connection)
+          .where(
+            and(
+              eq(connection.accountId, tenant.accountId),
+              eq(connection.kind, 'mail'),
+              eq(connection.entityId, activeEntityId),
+              isNull(connection.deletedAt),
+            ),
+          ),
+      ).then((rows) => rows.map((row) => row.id))
+    : null;
+
+  const threadScope = () => {
+    const conditions = [
+      isNull(emailThread.handledAt),
+      eq(emailThread.accountId, tenant.accountId),
+    ];
+    if (scopedConnectionIds) {
+      conditions.push(
+        scopedConnectionIds.length > 0
+          ? inArray(emailThread.connectionId, scopedConnectionIds)
+          : sql`false`,
+      );
+    }
+    return and(...conditions);
+  };
 
   // Load threads
   let threads: Thread[] = [];
   try {
     threads = await withTenant(db, tenant, async (tx) =>
       tx.select().from(emailThread)
-        .where(and(isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)))
+        .where(threadScope())
         .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
     );
 
     // Auto-sync on first visit if threads are empty but connections exist
     if (threads.length === 0) {
       try {
-        await syncEmails();
+        await syncEmails(activeEntityId ? { entityId: activeEntityId } : undefined);
         // Re-fetch after sync
         threads = await withTenant(db, tenant, async (tx) =>
           tx.select().from(emailThread)
-            .where(and(isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)))
+            .where(threadScope())
             .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
         );
       } catch { /* sync failed silently */ }
@@ -134,15 +170,30 @@ export default async function EmailPage({
   // Commitments count
   let commitmentCount = 0;
   try {
+    const commitmentConditions = [
+      eq(emailExtraction.accountId, tenant.accountId),
+      eq(emailExtraction.status, 'pending'),
+    ];
+    if (activeEntityId) {
+      const visibleThreadIds = threads.map((thread) => thread.id);
+      commitmentConditions.push(
+        visibleThreadIds.length > 0
+          ? inArray(emailExtraction.threadId, visibleThreadIds)
+          : sql`false`,
+      );
+    }
     const [result] = await withTenant(db, tenant, async (tx) =>
       tx.select({ count: sql<number>`count(*)::int` }).from(emailExtraction)
-        .where(and(eq(emailExtraction.accountId, tenant.accountId), eq(emailExtraction.status, 'pending'))),
+        .where(and(...commitmentConditions)),
     );
     commitmentCount = result?.count ?? 0;
   } catch { /* */ }
 
   // Selected thread detail
-  const selectedId = params.thread ?? filteredThreads[0]?.id;
+  const requestedThread = params.thread
+    ? filteredThreads.find((thread) => thread.id === params.thread)
+    : undefined;
+  const selectedId = requestedThread?.id ?? filteredThreads[0]?.id;
   let selectedThread: Thread | null = null;
   let extractions: Extraction[] = [];
   let draft: Draft | null = null;
@@ -197,7 +248,8 @@ export default async function EmailPage({
   // Server actions
   async function handleSync() {
     'use server';
-    await syncEmails();
+    const entityId = await getSelectedEntityId();
+    await syncEmails(entityId ? { entityId } : undefined);
   }
 
   async function handleExtract(formData: FormData) {
@@ -225,6 +277,7 @@ export default async function EmailPage({
           <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">
             Email — {commitmentCount} commitment{commitmentCount !== 1 ? 's' : ''} found
           </h1>
+          <p className="text-text-secondary m-0 mt-1 text-[0.78rem]">Showing {activeEntityName}</p>
         </div>
         <div className="flex items-center gap-3">
           <form action={handleSync}>
@@ -272,7 +325,7 @@ export default async function EmailPage({
 
           {filteredThreads.length === 0 ? (
             <div className="px-4 py-8 text-center">
-              <p className="text-text-secondary text-[0.88rem]">No emails synced yet.</p>
+              <p className="text-text-secondary text-[0.88rem]">No emails for {activeEntityName} yet.</p>
               <p className="text-text-secondary mt-1 text-[0.82rem]">
                 Connect an account in{' '}
                 <Link href="/settings/connections" className="text-signal font-bold">Settings → Connections</Link>

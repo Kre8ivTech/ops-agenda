@@ -185,6 +185,7 @@ export const connection = pgTable(
   'connection',
   {
     ...tenantBase,
+    entityId: uuid('entity_id').references(() => entity.id),
     provider: varchar('provider', { length: 100 }).notNull(),
     kind: connectionKindEnum('kind').notNull(),
     externalAccountRef: varchar('external_account_ref', { length: 255 }),
@@ -208,7 +209,10 @@ export const connection = pgTable(
     imapPort: varchar('imap_port', { length: 10 }),
     imapSecurity: varchar('imap_security', { length: 10 }),
   },
-  (table) => [index('connection_account_id_idx').on(table.accountId)],
+  (table) => [
+    index('connection_account_id_idx').on(table.accountId),
+    index('connection_entity_id_idx').on(table.entityId),
+  ],
 );
 
 /**

@@ -5,7 +5,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { getSession } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
-import { connection } from '@/lib/db/schema';
+import { connection, entity } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 import { encryptTokens } from '@/lib/connectors';
 import { ImapConnector, type ImapConfig } from '@/lib/connectors/imap';
@@ -28,6 +28,7 @@ async function requireTenant() {
 
 export interface ConnectionRow {
   id: string;
+  entityId: string | null;
   provider: string;
   kind: string;
   externalAccountRef: string | null;
@@ -45,6 +46,7 @@ export async function listConnections(): Promise<ConnectionRow[]> {
     return tx
       .select({
         id: connection.id,
+        entityId: connection.entityId,
         provider: connection.provider,
         kind: connection.kind,
         externalAccountRef: connection.externalAccountRef,
@@ -117,9 +119,22 @@ export async function createImapConnection(input: z.input<typeof imapSchema>) {
   );
 
   await withTenant(db, tenant, async (tx) => {
+    const [personalEntity] = await tx
+      .select({ id: entity.id })
+      .from(entity)
+      .where(
+        and(
+          eq(entity.accountId, tenant.accountId),
+          eq(entity.kind, 'personal'),
+          isNull(entity.deletedAt),
+        ),
+      )
+      .limit(1);
+
     await tx.insert(connection).values({
       accountId: tenant.accountId,
       createdBy: tenant.userId,
+      entityId: personalEntity?.id,
       provider: 'imap',
       kind: 'mail',
       externalAccountRef: data.email,
@@ -140,7 +155,9 @@ export async function createImapConnection(input: z.input<typeof imapSchema>) {
 // Test connection
 // ---------------------------------------------------------------------------
 
-export async function testConnection(input: { connectionId: string }): Promise<{ ok: boolean; error?: string }> {
+export async function testConnection(input: {
+  connectionId: string;
+}): Promise<{ ok: boolean; error?: string }> {
   const tenant = await requireTenant();
   const db = getDb();
 
@@ -225,10 +242,12 @@ export async function addSharedMailbox(input: z.input<typeof addSharedMailboxSch
 
   // Create a new connection for the shared mailbox
   await withTenant(db, tenant, async (tx) => {
+    const entityId = parent.entityId;
     // Mail connection
     await tx.insert(connection).values({
       accountId: tenant.accountId,
       createdBy: tenant.userId,
+      entityId,
       provider: data.provider,
       kind: 'mail',
       externalAccountRef: data.email,
@@ -244,6 +263,7 @@ export async function addSharedMailbox(input: z.input<typeof addSharedMailboxSch
     await tx.insert(connection).values({
       accountId: tenant.accountId,
       createdBy: tenant.userId,
+      entityId,
       provider: data.provider,
       kind: 'calendar',
       externalAccountRef: data.email,

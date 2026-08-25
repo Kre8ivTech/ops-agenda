@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { SelectField } from '@/components/ui/select';
@@ -16,6 +16,24 @@ export function CreateTaskForm() {
   const [pending, startTransition] = useTransition();
   const errors = state.fieldErrors ?? {};
   const formRef = useRef<HTMLFormElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (open && !dialog.open) {
+      dialog.showModal();
+      const titleInput = formRef.current?.elements.namedItem('title');
+      if (titleInput instanceof HTMLElement) titleInput.focus();
+    }
+    if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  function closeDialog() {
+    setOpen(false);
+    setState(initialState);
+  }
 
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
@@ -28,44 +46,71 @@ export function CreateTaskForm() {
     });
   }
 
-  if (!open) {
-    return (
+  return (
+    <>
       <Button type="button" variant="secondary" size="medium" onClick={() => setOpen(true)}>
         New task
       </Button>
-    );
-  }
 
-  return (
-    <form
-      ref={formRef}
-      action={handleSubmit}
-      className="border-border grid gap-3.5 rounded-[8px] border bg-white p-4"
-    >
-      {state.message ? (
-        <p className="bg-risk-wash text-risk m-0 rounded-[8px] px-3 py-2.5 text-[0.85rem]">
-          {state.message}
-        </p>
-      ) : null}
-      <TextField label="Title" name="title" required autoFocus error={errors.title?.[0]} />
-      <TextareaField label="Description" name="description" rows={3} />
-      <div className="grid grid-cols-2 gap-3">
-        <SelectField label="Priority" name="priority" defaultValue="p3">
-          <option value="p1">P1 — act now</option>
-          <option value="p2">P2 — act today</option>
-          <option value="p3">P3 — act this week</option>
-          <option value="fysa">FYSA</option>
-        </SelectField>
-        <TextField label="Due date" name="dueOn" type="date" />
-      </div>
-      <div className="flex gap-2">
-        <Button type="submit" size="medium" disabled={pending}>
-          {pending ? 'Adding…' : 'Add task'}
-        </Button>
-        <Button type="button" variant="ghost" size="medium" onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-      </div>
-    </form>
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="create-task-title"
+        className="border-border text-ink backdrop:bg-ink/45 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[560px] overflow-y-auto rounded-[14px] border bg-white p-0 shadow-[0_24px_80px_rgba(22,32,27,0.24)] backdrop:backdrop-blur-[2px]"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeDialog();
+        }}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) closeDialog();
+        }}
+      >
+        <div className="border-border flex items-start justify-between gap-4 border-b px-5 py-4">
+          <div>
+            <h2
+              id="create-task-title"
+              className="m-0 text-[1.15rem] font-extrabold tracking-[-0.02em]"
+            >
+              New task
+            </h2>
+            <p className="text-text-secondary m-0 mt-1 text-[0.84rem]">
+              Add the next action to your agenda.
+            </p>
+          </div>
+          <Button type="button" variant="ghost" size="small" onClick={closeDialog}>
+            Close
+          </Button>
+        </div>
+
+        <form ref={formRef} action={handleSubmit} className="grid gap-4 p-5">
+          {state.message ? (
+            <p
+              role="alert"
+              className="bg-risk-wash text-risk m-0 rounded-[8px] px-3 py-2.5 text-[0.85rem]"
+            >
+              {state.message}
+            </p>
+          ) : null}
+          <TextField label="Title" name="title" required autoFocus error={errors.title?.[0]} />
+          <TextareaField label="Description" name="description" rows={4} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField label="Priority" name="priority" defaultValue="p3">
+              <option value="p1">P1 — act now</option>
+              <option value="p2">P2 — act today</option>
+              <option value="p3">P3 — act this week</option>
+              <option value="fysa">FYSA</option>
+            </SelectField>
+            <TextField label="Due date" name="dueOn" type="date" />
+          </div>
+          <div className="border-border mt-1 flex justify-end gap-2 border-t pt-4">
+            <Button type="button" variant="ghost" size="medium" onClick={closeDialog}>
+              Cancel
+            </Button>
+            <Button type="submit" size="medium" disabled={pending}>
+              {pending ? 'Adding…' : 'Add task'}
+            </Button>
+          </div>
+        </form>
+      </dialog>
+    </>
   );
 }
