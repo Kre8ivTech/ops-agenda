@@ -8,6 +8,9 @@ import { requirePlatformAdmin } from '@/lib/auth/platform-admin';
 import { createDb, withPlatformAdmin, withTenant } from '@/lib/db';
 import { account, auditEvent, connection, moduleState, platformAdmin, user } from '@/lib/db/schema';
 import { env } from '@/lib/env';
+import { getAiUsageSummary } from '@/lib/admin/ai-actions';
+import { listIntegrationCredentials } from '@/lib/admin/integrations-actions';
+import { buildAdminOverview, type AdminOverviewData } from '@/lib/admin/overview';
 
 function getDb() {
   return createDb(env.DATABASE_URL);
@@ -117,6 +120,38 @@ export interface AdminAuditRow {
   at: Date;
   actorUserId: string | null;
   actorPlatformAdminId: string | null;
+}
+
+/** Aggregated platform state for the /admin overview dashboard. */
+export async function getAdminOverview(): Promise<AdminOverviewData> {
+  await requirePlatformAdmin();
+
+  const [accounts, users, connections, modules, integrations, auditEvents, ai, health] =
+    await Promise.all([
+      listAllAccounts(),
+      listAllUsers(),
+      listAllConnections(),
+      listAllModuleStates(),
+      listIntegrationCredentials(),
+      listRecentAuditEvents(10),
+      getAiUsageSummary(),
+      getSystemHealth(),
+    ]);
+
+  return buildAdminOverview({
+    accounts: accounts.map((row) => ({ id: row.id, name: row.name, status: row.status })),
+    users: users.map((row) => ({ status: row.status })),
+    connections,
+    modules: modules.map((row) => ({ module: row.module, enabled: row.enabled })),
+    integrations,
+    auditEvents,
+    ai: {
+      totalRequests: ai.totalRequests,
+      successRate: ai.successRate,
+      avgLatencyMs: ai.avgLatencyMs,
+    },
+    database: { ok: health.database.ok, latencyMs: health.database.latencyMs },
+  });
 }
 
 /** Most recent audit events across every account, for the /admin/audit screen. */

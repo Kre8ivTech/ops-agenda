@@ -62,7 +62,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <SignOutButton variant="ink" />
         </div>
       </header>
-      <main className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-8">
+      <main className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 px-6 py-8">
         {children}
       </main>
     </div>
