@@ -1,0 +1,204 @@
+name: Deploy production
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy to ECS
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    env:
+      APP_URL: ${{ vars.PRODUCTION_APP_URL }}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+      AWS_DEPLOY_ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+      AWS_ECR_REPOSITORY_URI: ${{ vars.AWS_ECR_REPOSITORY_URI }}
+      AWS_ECS_CLUSTER: ${{ vars.AWS_ECS_CLUSTER }}
+      AWS_ECS_SERVICE: ${{ vars.AWS_ECS_SERVICE }}
+      AWS_ECS_TASK_DEFINITION: ${{ vars.AWS_ECS_TASK_DEFINITION }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            APP_URL
+            AWS_ACCOUNT_ID
+            AWS_DEPLOY_ROLE_ARN
+            AWS_ECR_REPOSITORY_URI
+            AWS_ECS_CLUSTER
+            AWS_ECS_SERVICE
+            AWS_ECS_TASK_DEFINITION
+            AWS_REGION
+          )
+
+          for name in "${required[@]}"; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing GitHub Actions variable: ${name}"
+              exit 1
+            fi
+          done
+
+      - name: Check out the tested commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
+          persist-credentials: false
+
+      - name: Configure short-lived AWS credentials
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: ops-agenda-${{ github.run_id }}
+          role-duration-seconds: 3600
+          allowed-account-ids: ${{ env.AWS_ACCOUNT_ID }}
+          mask-aws-account-id: true
+
+      - name: Build and push the tested image
+        shell: bash
+        run: |
+          set -euo pipefail
+          registry="${AWS_ECR_REPOSITORY_URI%%/*}"
+          image="${AWS_ECR_REPOSITORY_URI}:${DEPLOY_SHA}"
+
+          aws ecr get-login-password --region "$AWS_REGION" \
+            | docker login --username AWS --password-stdin "$registry"
+          docker build \
+            --build-arg "NEXT_PUBLIC_APP_URL=${APP_URL}" \
+            --tag "$image" \
+            .
+          docker push "$image"
+
+      - name: Deploy image and verify production
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          image="${AWS_ECR_REPOSITORY_URI}:${DEPLOY_SHA}"
+          service_updated=false
+
+          previous_task_definition="$(
+            aws ecs describe-services \
+              --cluster "$AWS_ECS_CLUSTER" \
+              --services "$AWS_ECS_SERVICE" \
+              --query 'services[0].taskDefinition' \
+              --output text
+          )"
+
+          rollback() {
+            exit_code=$?
+            trap - ERR
+            if [[ "$service_updated" == true ]]; then
+              echo "::warning::Deployment failed; returning ECS to ${previous_task_definition}"
+              aws ecs update-service \
+                --cluster "$AWS_ECS_CLUSTER" \
+                --service "$AWS_ECS_SERVICE" \
+                --task-definition "$previous_task_definition" \
+                >/dev/null || true
+              aws ecs wait services-stable \
+                --cluster "$AWS_ECS_CLUSTER" \
+                --services "$AWS_ECS_SERVICE" || true
+            fi
+            exit "$exit_code"
+          }
+          trap rollback ERR
+
+          aws ecs describe-task-definition \
+            --task-definition "$AWS_ECS_TASK_DEFINITION" \
+            --query taskDefinition \
+            --output json \
+            > current-task-definition.json
+
+          container_count="$(
+            jq '[.containerDefinitions[] | select(.name == "nextjs")] | length' \
+              current-task-definition.json
+          )"
+          if [[ "$container_count" != 1 ]]; then
+            echo "::error::Expected exactly one nextjs container; found ${container_count}"
+            exit 1
+          fi
+
+          jq --arg image "$image" '
+            del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy,
+              .deregisteredAt
+            )
+            | .containerDefinitions |= map(
+                if .name == "nextjs" then .image = $image else . end
+              )
+          ' current-task-definition.json > deploy-task-definition.json
+
+          task_definition_arn="$(
+            aws ecs register-task-definition \
+              --cli-input-json file://deploy-task-definition.json \
+              --query 'taskDefinition.taskDefinitionArn' \
+              --output text
+          )"
+
+          aws ecs update-service \
+            --cluster "$AWS_ECS_CLUSTER" \
+            --service "$AWS_ECS_SERVICE" \
+            --task-definition "$task_definition_arn" \
+            >/dev/null
+          service_updated=true
+
+          aws ecs wait services-stable \
+            --cluster "$AWS_ECS_CLUSTER" \
+            --services "$AWS_ECS_SERVICE"
+
+          active_task_definition="$(
+            aws ecs describe-services \
+              --cluster "$AWS_ECS_CLUSTER" \
+              --services "$AWS_ECS_SERVICE" \
+              --query 'services[0].taskDefinition' \
+              --output text
+          )"
+          if [[ "$active_task_definition" != "$task_definition_arn" ]]; then
+            echo "::error::ECS stabilized on ${active_task_definition}, not ${task_definition_arn}"
+            exit 1
+          fi
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 12 \
+            --retry-all-errors \
+            --retry-delay 10 \
+            --max-time 30 \
+            "${APP_URL}/api/health"
+
+          trap - ERR
+          {
+            echo "### Production deployment"
+            echo "- Commit: \`${DEPLOY_SHA}\`"
+            echo "- Image: \`${image}\`"
+            echo "- Task definition: \`${task_definition_arn}\`"
+            echo "- Health check: ${APP_URL}/api/health"
+          } >> "$GITHUB_STEP_SUMMARY"

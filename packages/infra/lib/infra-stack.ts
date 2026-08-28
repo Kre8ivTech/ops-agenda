@@ -5,6 +5,7 @@ import { Auth } from './auth.js';
 import { Cdn } from './cdn.js';
 import { Compute } from './compute.js';
 import { Database } from './database.js';
+import { GitHubDeployment } from './github-deployment.js';
 import { Networking } from './networking.js';
 import { Queue } from './queue.js';
 import { Repository } from './repository.js';
@@ -67,6 +68,16 @@ export class OpsAgendaStack extends cdk.Stack {
       auditBucket: storage.auditBucket,
       syncQueue: queue.syncQueue,
       signupAccessCodes: props.signupAccessCodes,
+    });
+
+    const githubDeployment = new GitHubDeployment(this, 'GitHubDeployment', {
+      githubRepository: props.githubRepository,
+      githubBranch: props.githubDeployBranch,
+      oidcProviderArn: props.githubOidcProviderArn,
+      repository: repository.repository,
+      cluster: compute.cluster,
+      service: compute.service,
+      taskDefinition: compute.taskDefinition,
     });
 
     const cdn = new Cdn(this, 'Cdn', {
@@ -171,6 +182,26 @@ export class OpsAgendaStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'EcrRepositoryUri', {
       value: repository.repository.repositoryUri,
       description: 'ECR repository for the web app image',
+    });
+
+    new cdk.CfnOutput(this, 'EcsClusterName', {
+      value: compute.cluster.clusterName,
+      description: 'ECS cluster deployed by the production workflow',
+    });
+
+    new cdk.CfnOutput(this, 'EcsServiceName', {
+      value: compute.service.serviceName,
+      description: 'ECS service deployed by the production workflow',
+    });
+
+    new cdk.CfnOutput(this, 'EcsTaskDefinitionFamily', {
+      value: compute.taskDefinition.family,
+      description: 'ECS task definition family revised by the production workflow',
+    });
+
+    new cdk.CfnOutput(this, 'GitHubDeployRoleArn', {
+      value: githubDeployment.role.roleArn,
+      description: 'Branch-bound GitHub Actions OIDC deployment role',
     });
   }
 }

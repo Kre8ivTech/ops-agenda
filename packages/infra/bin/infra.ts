@@ -24,6 +24,9 @@ new OpsAgendaStack(app, `OpsAgenda-${envName}`, {
   certificateArn: process.env.APP_CERTIFICATE_ARN,
   imageTag: process.env.APP_IMAGE_TAG,
   signupAccessCodes: process.env.SIGNUP_ACCESS_CODES,
+  githubRepository: process.env.GITHUB_REPOSITORY ?? 'Kre8ivTech/ops-agenda',
+  githubDeployBranch: process.env.GITHUB_DEPLOY_BRANCH ?? 'main',
+  githubOidcProviderArn: process.env.GITHUB_OIDC_PROVIDER_ARN,
   tags: {
     Project: 'OpsAgenda',
     Environment: envName,

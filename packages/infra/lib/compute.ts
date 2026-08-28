@@ -45,6 +45,7 @@ export interface ComputeProps {
 export class Compute extends Construct {
   public readonly cluster: ecs.ICluster;
   public readonly service: ecs.Ec2Service;
+  public readonly taskDefinition: ecs.Ec2TaskDefinition;
   public readonly loadBalancer: elbv2.ApplicationLoadBalancer;
   public readonly listener: elbv2.ApplicationListener;
 
@@ -125,6 +126,7 @@ export class Compute extends Construct {
       networkMode: ecs.NetworkMode.BRIDGE,
       taskRole,
     });
+    this.taskDefinition = taskDefinition;
 
     const logGroup = new logs.LogGroup(this, 'AppLogGroup', {
       logGroupName: `/ecs/${cdk.Stack.of(this).stackName}`,
@@ -195,6 +197,7 @@ export class Compute extends Construct {
       minHealthyPercent: 0,
       maxHealthyPercent: 100,
       circuitBreaker: { rollback: true },
+      healthCheckGracePeriod: cdk.Duration.seconds(120),
       enableExecuteCommand: true,
       capacityProviderStrategies: [
         { capacityProvider: capacityProvider.capacityProviderName, weight: 1, base: 1 },

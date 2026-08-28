@@ -10,6 +10,12 @@ export interface OpsAgendaStackProps extends cdk.StackProps {
   readonly imageTag?: string;
   /** Comma-separated self-serve signup access codes (see SIGNUP_ACCESS_CODES). */
   readonly signupAccessCodes?: string;
+  /** GitHub owner/repository allowed to deploy the web service through OIDC. */
+  readonly githubRepository: string;
+  /** Git branch allowed to deploy the web service through OIDC. */
+  readonly githubDeployBranch: string;
+  /** Import an account-level GitHub OIDC provider instead of creating one. */
+  readonly githubOidcProviderArn?: string;
 }
 
 export const STACK_CONFIG = {
