@@ -17,7 +17,6 @@ import { env } from '@/lib/env';
 import {
   decryptCredentialSecret,
   encryptCredentialSecret,
-  type IntegrationProvider,
 } from '@/lib/integrations/credentials';
 
 function getDb() {
