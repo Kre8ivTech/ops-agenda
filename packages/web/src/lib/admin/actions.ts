@@ -281,14 +281,9 @@ const deleteAccountSchema = z.object({
 
 /** Permanently delete an account and all its data. This is irreversible. */
 export async function deleteAccount(input: z.input<typeof deleteAccountSchema>) {
-  const admin = await requirePlatformAdmin();
+  await requirePlatformAdmin();
   const { accountId } = deleteAccountSchema.parse(input);
   const db = getDb();
-
-  const [operator] = await db
-    .select()
-    .from(platformAdmin)
-    .where(eq(platformAdmin.cognitoSub, admin.cognitoSub));
 
   await withTenant(db, { accountId, userId: '' }, async (tx) => {
     const [existing] = await tx.select().from(account).where(eq(account.id, accountId));
