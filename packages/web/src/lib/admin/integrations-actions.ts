@@ -3,59 +3,39 @@
 import { revalidatePath } from 'next/cache';
 import { desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { buildAuditEvent } from '@/lib/audit';
+import {
+  mapTestFailure,
+  probeIntegrationCredential,
+  type IntegrationTestOutcome,
+} from '@/lib/admin/integration-probes';
+import { summarizeIntegrations, type IntegrationSummary } from '@/lib/admin/overview';
 import { requirePlatformAdmin } from '@/lib/auth/platform-admin';
-import { createDb } from '@/lib/db';
-import { integrationCredential } from '@/lib/db/schema';
+import { createDb, withPlatformAdmin } from '@/lib/db';
+import { auditEvent, integrationCredential } from '@/lib/db/schema';
 import { env } from '@/lib/env';
+import {
+  decryptCredentialSecret,
+  encryptCredentialSecret,
+  type IntegrationProvider,
+} from '@/lib/integrations/credentials';
 
 function getDb() {
   return createDb(env.DATABASE_URL);
 }
 
-// ---------------------------------------------------------------------------
-// Encryption helpers (AES-256-GCM via Web Crypto)
-// ---------------------------------------------------------------------------
-
-const ENCRYPTION_KEY_ENV = 'SESSION_SECRET'; // reuse the 48-char secret as key material
-
-async function getEncryptionKey(): Promise<CryptoKey> {
-  const raw = process.env[ENCRYPTION_KEY_ENV];
-  if (!raw || raw.length < 32) throw new Error('Encryption key not configured');
-  const keyMaterial = new TextEncoder().encode(raw.slice(0, 32));
-  return crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, [
-    'encrypt',
-    'decrypt',
-  ]);
-}
-
-async function encrypt(plaintext: string): Promise<{ ciphertext: string; iv: string; authTag: string }> {
-  const key = await getEncryptionKey();
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encoded = new TextEncoder().encode(plaintext);
-  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
-  const buf = new Uint8Array(encrypted);
-  // AES-GCM appends 16-byte auth tag to the ciphertext
-  const ciphertext = buf.slice(0, buf.length - 16);
-  const authTag = buf.slice(buf.length - 16);
-  return {
-    ciphertext: Buffer.from(ciphertext).toString('base64'),
-    iv: Buffer.from(iv).toString('base64'),
-    authTag: Buffer.from(authTag).toString('base64'),
-  };
-}
-
-async function decrypt(ciphertext: string, ivB64: string, authTagB64: string): Promise<string> {
-  const key = await getEncryptionKey();
-  const iv = Buffer.from(ivB64, 'base64');
-  const ct = Buffer.from(ciphertext, 'base64');
-  const tag = Buffer.from(authTagB64, 'base64');
-  // Reconstruct the format AES-GCM expects (ciphertext + authTag)
-  const combined = new Uint8Array(ct.length + tag.length);
-  combined.set(ct, 0);
-  combined.set(tag, ct.length);
-  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, combined);
-  return new TextDecoder().decode(decrypted);
-}
+const PROVIDER_ENUM = z.enum([
+  'stripe',
+  'aws_bedrock',
+  'office365',
+  'google_workspace',
+  'plaid',
+  'openai',
+  'anthropic',
+  'sendgrid',
+  'twilio',
+  'custom',
+]);
 
 // ---------------------------------------------------------------------------
 // Types
@@ -71,6 +51,100 @@ export interface IntegrationCredentialRow {
   lastTestResult: string | null;
   createdAt: Date;
   updatedAt: Date;
+  createdBy: string | null;
+}
+
+function publicCredentialView(row: {
+  id: string;
+  provider: string;
+  label: string;
+  enabled: boolean;
+  metadata: unknown;
+  lastTestedAt: Date | null;
+  lastTestResult: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string | null;
+}): IntegrationCredentialRow {
+  return {
+    id: row.id,
+    provider: row.provider,
+    label: row.label,
+    enabled: row.enabled,
+    metadata: scrubMetadataForUi(row.metadata),
+    lastTestedAt: row.lastTestedAt,
+    lastTestResult: row.lastTestResult,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    createdBy: row.createdBy,
+  };
+}
+
+/** Drop any accidental secret-shaped keys from metadata before UI render. */
+function scrubMetadataForUi(metadata: unknown): unknown {
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return metadata;
+  const blocked = new Set([
+    'secret',
+    'api_key',
+    'client_secret',
+    'auth_token',
+    'encrypted_payload',
+    'ciphertext',
+  ]);
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(metadata as Record<string, unknown>)) {
+    if (blocked.has(k.toLowerCase())) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
+function safeAuditSnapshot(row: {
+  provider: string;
+  label: string;
+  enabled: boolean;
+  metadata: unknown;
+  lastTestResult?: string | null;
+}): Record<string, unknown> {
+  return {
+    provider: row.provider,
+    label: row.label,
+    enabled: row.enabled,
+    metadata: scrubMetadataForUi(row.metadata),
+    lastTestResult: row.lastTestResult ?? null,
+    secretRotated: false,
+  };
+}
+
+async function writePlatformAudit(input: {
+  cognitoSub: string;
+  adminId: string;
+  adminEmail: string;
+  action: string;
+  targetId: string;
+  before?: Record<string, unknown>;
+  after?: Record<string, unknown>;
+}) {
+  const db = getDb();
+  await withPlatformAdmin(db, input.cognitoSub, async (tx) => {
+    await tx.insert(auditEvent).values(
+      buildAuditEvent(
+        {
+          accountId: null,
+          userId: '',
+          actorPlatformAdminId: input.adminId,
+        },
+        {
+          action: input.action,
+          targetType: 'integration_credential',
+          targetId: input.targetId,
+          before: input.before,
+          after: input.after,
+          justification: `Platform admin ${input.adminEmail}`,
+        },
+      ),
+    );
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -92,25 +166,21 @@ export async function listIntegrationCredentials(): Promise<IntegrationCredentia
       lastTestResult: integrationCredential.lastTestResult,
       createdAt: integrationCredential.createdAt,
       updatedAt: integrationCredential.updatedAt,
+      createdBy: integrationCredential.createdBy,
     })
     .from(integrationCredential)
     .orderBy(desc(integrationCredential.createdAt));
-  return rows;
+  return rows.map(publicCredentialView);
+}
+
+/** Compact summary for Overview / header widgets. */
+export async function getIntegrationsSummary(): Promise<IntegrationSummary> {
+  const rows = await listIntegrationCredentials();
+  return summarizeIntegrations(rows);
 }
 
 const createCredentialSchema = z.object({
-  provider: z.enum([
-    'stripe',
-    'aws_bedrock',
-    'office365',
-    'google_workspace',
-    'plaid',
-    'openai',
-    'anthropic',
-    'sendgrid',
-    'twilio',
-    'custom',
-  ]),
+  provider: PROVIDER_ENUM,
   label: z.string().min(1).max(255),
   /** The raw secret value(s) — JSON string that gets encrypted. */
   secret: z.string().min(1),
@@ -119,11 +189,11 @@ const createCredentialSchema = z.object({
 
 /** Create a new integration credential (encrypts the secret at rest). */
 export async function createIntegrationCredential(input: z.input<typeof createCredentialSchema>) {
-  await requirePlatformAdmin();
+  const admin = await requirePlatformAdmin();
   const { provider, label, secret, metadata } = createCredentialSchema.parse(input);
   const db = getDb();
 
-  const { ciphertext, iv, authTag } = await encrypt(secret);
+  const { ciphertext, iv, authTag } = await encryptCredentialSecret(secret);
 
   const [created] = await db
     .insert(integrationCredential)
@@ -134,17 +204,28 @@ export async function createIntegrationCredential(input: z.input<typeof createCr
       iv,
       authTag,
       metadata: metadata ?? null,
+      createdBy: admin.id,
     })
     .returning();
 
+  await writePlatformAudit({
+    cognitoSub: admin.cognitoSub,
+    adminId: admin.id,
+    adminEmail: admin.email,
+    action: 'integration.create',
+    targetId: created.id,
+    after: safeAuditSnapshot(created),
+  });
+
   revalidatePath('/admin/integrations');
+  revalidatePath('/admin');
   return { id: created.id, provider: created.provider, label: created.label };
 }
 
 const updateCredentialSchema = z.object({
   id: z.string().uuid(),
   label: z.string().min(1).max(255).optional(),
-  /** If provided, re-encrypts the secret. */
+  /** If provided, re-encrypts the secret (prefer rotateIntegrationCredential). */
   secret: z.string().min(1).optional(),
   enabled: z.boolean().optional(),
   metadata: z.record(z.unknown()).optional(),
@@ -152,28 +233,66 @@ const updateCredentialSchema = z.object({
 
 /** Update an integration credential (optionally rotates the secret). */
 export async function updateIntegrationCredential(input: z.input<typeof updateCredentialSchema>) {
-  await requirePlatformAdmin();
+  const admin = await requirePlatformAdmin();
   const { id, label, secret, enabled, metadata } = updateCredentialSchema.parse(input);
   const db = getDb();
+
+  const [existing] = await db
+    .select()
+    .from(integrationCredential)
+    .where(eq(integrationCredential.id, id));
+  if (!existing) throw new Error('Credential not found');
 
   const updates: Record<string, unknown> = { updatedAt: new Date() };
   if (label !== undefined) updates.label = label;
   if (enabled !== undefined) updates.enabled = enabled;
   if (metadata !== undefined) updates.metadata = metadata;
 
+  let action:
+    'integration.update' | 'integration.rotate' | 'integration.enable' | 'integration.disable' =
+    'integration.update';
   if (secret) {
-    const { ciphertext, iv, authTag } = await encrypt(secret);
+    const { ciphertext, iv, authTag } = await encryptCredentialSecret(secret);
     updates.encryptedPayload = ciphertext;
     updates.iv = iv;
     updates.authTag = authTag;
+    action = 'integration.rotate';
+  } else if (enabled !== undefined && label === undefined && metadata === undefined) {
+    action = enabled ? 'integration.enable' : 'integration.disable';
   }
 
-  await db
+  const [updated] = await db
     .update(integrationCredential)
     .set(updates)
-    .where(eq(integrationCredential.id, id));
+    .where(eq(integrationCredential.id, id))
+    .returning();
+
+  await writePlatformAudit({
+    cognitoSub: admin.cognitoSub,
+    adminId: admin.id,
+    adminEmail: admin.email,
+    action,
+    targetId: id,
+    before: safeAuditSnapshot(existing),
+    after: {
+      ...safeAuditSnapshot(updated),
+      secretRotated: Boolean(secret),
+    },
+  });
 
   revalidatePath('/admin/integrations');
+  revalidatePath('/admin');
+}
+
+const rotateCredentialSchema = z.object({
+  id: z.string().uuid(),
+  secret: z.string().min(1),
+});
+
+/** Dedicated secret rotation helper (audits as integration.rotate). */
+export async function rotateIntegrationCredential(input: z.input<typeof rotateCredentialSchema>) {
+  const { id, secret } = rotateCredentialSchema.parse(input);
+  await updateIntegrationCredential({ id, secret });
 }
 
 const deleteCredentialSchema = z.object({
@@ -182,16 +301,39 @@ const deleteCredentialSchema = z.object({
 
 /** Permanently delete an integration credential. */
 export async function deleteIntegrationCredential(input: z.input<typeof deleteCredentialSchema>) {
-  await requirePlatformAdmin();
+  const admin = await requirePlatformAdmin();
   const { id } = deleteCredentialSchema.parse(input);
   const db = getDb();
+
+  const [existing] = await db
+    .select()
+    .from(integrationCredential)
+    .where(eq(integrationCredential.id, id));
+  if (!existing) throw new Error('Credential not found');
+
   await db.delete(integrationCredential).where(eq(integrationCredential.id, id));
+
+  await writePlatformAudit({
+    cognitoSub: admin.cognitoSub,
+    adminId: admin.id,
+    adminEmail: admin.email,
+    action: 'integration.delete',
+    targetId: id,
+    before: safeAuditSnapshot(existing),
+  });
+
   revalidatePath('/admin/integrations');
+  revalidatePath('/admin');
 }
 
-/** Test/validate a credential (placeholder — real validation depends on the provider SDK). */
-export async function testIntegrationCredential(input: { id: string }) {
-  await requirePlatformAdmin();
+/**
+ * Live-test a credential: decrypt, then run a provider probe.
+ * Persists lastTestResult / lastTestedAt and returns a structured outcome.
+ */
+export async function testIntegrationCredential(input: {
+  id: string;
+}): Promise<IntegrationTestOutcome> {
+  const admin = await requirePlatformAdmin();
   const db = getDb();
 
   const [cred] = await db
@@ -201,19 +343,63 @@ export async function testIntegrationCredential(input: { id: string }) {
 
   if (!cred) throw new Error('Credential not found');
 
-  // Attempt to decrypt to verify integrity
+  let outcome: IntegrationTestOutcome;
   try {
-    await decrypt(cred.encryptedPayload, cred.iv, cred.authTag);
-    await db
-      .update(integrationCredential)
-      .set({ lastTestedAt: new Date(), lastTestResult: 'ok', updatedAt: new Date() })
-      .where(eq(integrationCredential.id, input.id));
-  } catch {
-    await db
-      .update(integrationCredential)
-      .set({ lastTestedAt: new Date(), lastTestResult: 'decrypt_failed', updatedAt: new Date() })
-      .where(eq(integrationCredential.id, input.id));
+    const plaintext = await decryptCredentialSecret(cred.encryptedPayload, cred.iv, cred.authTag);
+    let secret: Record<string, unknown>;
+    try {
+      const parsed = JSON.parse(plaintext) as unknown;
+      secret =
+        parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+          ? (parsed as Record<string, unknown>)
+          : { value: plaintext };
+    } catch {
+      secret = { value: plaintext };
+    }
+    outcome = await probeIntegrationCredential(cred.provider, secret);
+  } catch (err) {
+    outcome = mapTestFailure(err);
   }
 
+  const nextMetadata =
+    cred.metadata && typeof cred.metadata === 'object' && !Array.isArray(cred.metadata)
+      ? { ...(cred.metadata as Record<string, unknown>) }
+      : {};
+  if (outcome.detail) {
+    nextMetadata.lastTestDetail = outcome.detail;
+  } else {
+    delete nextMetadata.lastTestDetail;
+  }
+
+  await db
+    .update(integrationCredential)
+    .set({
+      lastTestedAt: outcome.checkedAt,
+      lastTestResult: outcome.result,
+      metadata: nextMetadata,
+      updatedAt: new Date(),
+    })
+    .where(eq(integrationCredential.id, input.id));
+
+  await writePlatformAudit({
+    cognitoSub: admin.cognitoSub,
+    adminId: admin.id,
+    adminEmail: admin.email,
+    action: 'integration.test',
+    targetId: input.id,
+    after: {
+      provider: cred.provider,
+      label: cred.label,
+      result: outcome.result,
+      ok: outcome.ok,
+      detail: outcome.detail ?? null,
+      checkedAt: outcome.checkedAt.toISOString(),
+    },
+  });
+
   revalidatePath('/admin/integrations');
+  revalidatePath('/admin');
+  return outcome;
 }
+
+export type { IntegrationProvider, IntegrationTestOutcome };

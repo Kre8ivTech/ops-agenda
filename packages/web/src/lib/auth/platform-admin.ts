@@ -5,6 +5,7 @@ import { platformAdmin } from '@/lib/db/schema';
 import { env } from '@/lib/env';
 
 export interface PlatformAdminIdentity {
+  id: string;
   cognitoSub: string;
   email: string;
   name: string | null;
@@ -36,7 +37,12 @@ export async function requirePlatformAdmin(): Promise<PlatformAdminIdentity> {
     throw new Error('Forbidden: platform admin access required');
   }
 
-  return { cognitoSub: admin.cognitoSub, email: admin.email, name: admin.name };
+  return {
+    id: admin.id,
+    cognitoSub: admin.cognitoSub,
+    email: admin.email,
+    name: admin.name,
+  };
 }
 
 /** Non-throwing variant for layout-level UI checks (e.g. hiding a nav link). */

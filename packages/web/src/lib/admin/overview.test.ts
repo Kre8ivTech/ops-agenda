@@ -122,6 +122,29 @@ describe('summarizeIntegrations', () => {
       untested: 1,
     });
   });
+
+  it('counts auth_failed and network_error as failed tests', () => {
+    const summary = summarizeIntegrations([
+      {
+        id: '1',
+        provider: 'anthropic',
+        label: 'Claude',
+        enabled: true,
+        lastTestResult: 'auth_failed',
+        lastTestedAt: new Date(now),
+      },
+      {
+        id: '2',
+        provider: 'openai',
+        label: 'GPT',
+        enabled: true,
+        lastTestResult: 'network_error',
+        lastTestedAt: new Date(now),
+      },
+    ]);
+    expect(summary.testFailed).toBe(2);
+    expect(summary.testOk).toBe(0);
+  });
 });
 
 describe('buildAttentionItems', () => {

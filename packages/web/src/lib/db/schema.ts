@@ -235,9 +235,7 @@ export const oauthState = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     consumedAt: timestamp('consumed_at', { withTimezone: true }),
   },
-  (table) => [
-    uniqueIndex('oauth_state_state_idx').on(table.state),
-  ],
+  (table) => [uniqueIndex('oauth_state_state_idx').on(table.state)],
 );
 
 export const auditEvent = pgTable(
@@ -246,7 +244,11 @@ export const auditEvent = pgTable(
     id: uuid('id')
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    accountId: uuid('account_id').notNull(),
+    /**
+     * Tenant scope for tenant-bound mutations. Null for platform-operator events
+     * (e.g. integration credential CRUD) that are not tied to a customer account.
+     */
+    accountId: uuid('account_id'),
     actorUserId: uuid('actor_user_id'),
     actorPlatformAdminId: uuid('actor_platform_admin_id').references(() => platformAdmin.id),
     action: varchar('action', { length: 100 }).notNull(),
@@ -366,9 +368,7 @@ export const integrationCredential = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     createdBy: uuid('created_by'),
   },
-  (table) => [
-    index('integration_credential_provider_idx').on(table.provider),
-  ],
+  (table) => [index('integration_credential_provider_idx').on(table.provider)],
 );
 
 // ---------------------------------------------------------------------------
@@ -455,11 +455,7 @@ export const aiModel = pgTable(
 // AI Agents — agents and sub-agents configuration
 // ---------------------------------------------------------------------------
 
-export const aiAgentTypeEnum = pgEnum('ai_agent_type', [
-  'agent',
-  'subagent',
-  'skill',
-]);
+export const aiAgentTypeEnum = pgEnum('ai_agent_type', ['agent', 'subagent', 'skill']);
 
 export const aiAgent = pgTable(
   'ai_agent',
@@ -888,7 +884,12 @@ export const accountStateEnum = pgEnum('financial_account_state', [
 ]);
 
 export const transactionDirectionEnum = pgEnum('transaction_direction', ['in', 'out']);
-export const transactionStatusEnum = pgEnum('transaction_status', ['contracted', 'committed', 'projected', 'deferred']);
+export const transactionStatusEnum = pgEnum('transaction_status', [
+  'contracted',
+  'committed',
+  'projected',
+  'deferred',
+]);
 
 export const financialAccount = pgTable(
   'financial_account',

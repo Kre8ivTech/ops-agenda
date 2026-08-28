@@ -5,10 +5,11 @@
  * provider (Anthropic direct or AWS Bedrock), and returns structured responses.
  */
 
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { createDb } from '@/lib/db';
-import { aiModel, aiPrompt, aiAgent, integrationCredential } from '@/lib/db/schema';
+import { aiModel, aiPrompt, aiAgent } from '@/lib/db/schema';
 import { env } from '@/lib/env';
+import { loadEnabledCredentialById, secretString } from '@/lib/integrations/credentials';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,29 +45,6 @@ export interface AiCompletionResponse {
   /** Internal model DB id for usage logging. */
   modelDbId: string | null;
   agentDbId: string | null;
-}
-
-// ---------------------------------------------------------------------------
-// Credential decryption
-// ---------------------------------------------------------------------------
-
-async function getEncryptionKey(): Promise<CryptoKey> {
-  const raw = env.SESSION_SECRET;
-  if (!raw || raw.length < 32) throw new Error('SESSION_SECRET not configured for AI decryption');
-  const keyMaterial = new TextEncoder().encode(raw.slice(0, 32));
-  return crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['decrypt']);
-}
-
-async function decryptCredential(encrypted: string, ivB64: string, authTagB64: string): Promise<string> {
-  const key = await getEncryptionKey();
-  const iv = Buffer.from(ivB64, 'base64');
-  const ct = Buffer.from(encrypted, 'base64');
-  const tag = Buffer.from(authTagB64, 'base64');
-  const combined = new Uint8Array(ct.length + tag.length);
-  combined.set(ct, 0);
-  combined.set(tag, ct.length);
-  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, combined);
-  return new TextDecoder().decode(decrypted);
 }
 
 // ---------------------------------------------------------------------------
@@ -111,15 +89,6 @@ async function loadModel(id: string) {
   const db = getDb2();
   const [model] = await db.select().from(aiModel).where(eq(aiModel.id, id));
   return model ?? null;
-}
-
-async function loadCredential(id: string) {
-  const db = getDb2();
-  const [cred] = await db
-    .select()
-    .from(integrationCredential)
-    .where(and(eq(integrationCredential.id, id), eq(integrationCredential.enabled, true)));
-  return cred ?? null;
 }
 
 // ---------------------------------------------------------------------------
@@ -326,15 +295,9 @@ export async function complete(request: AiCompletionRequest): Promise<AiCompleti
   // Resolve credentials and call provider
   let apiKey: string | null = null;
   if (modelConfig.credentialId) {
-    const cred = await loadCredential(modelConfig.credentialId);
+    const cred = await loadEnabledCredentialById(modelConfig.credentialId);
     if (cred) {
-      const decrypted = await decryptCredential(cred.encryptedPayload, cred.iv, cred.authTag);
-      try {
-        const parsed = JSON.parse(decrypted);
-        apiKey = parsed.api_key ?? parsed.apiKey ?? parsed.secret_key ?? parsed.key ?? decrypted;
-      } catch {
-        apiKey = decrypted;
-      }
+      apiKey = secretString(cred.secret, 'api_key', 'apiKey', 'secret_key', 'key', 'value') ?? null;
     }
   }
 
@@ -345,11 +308,15 @@ export async function complete(request: AiCompletionRequest): Promise<AiCompleti
 
   switch (provider) {
     case 'anthropic':
-      if (!apiKey) throw new Error('No Anthropic API key configured. Add credentials in Admin → Integrations.');
+      if (!apiKey)
+        throw new Error(
+          'No Anthropic API key configured. Add credentials in Admin → Integrations.',
+        );
       result = await callAnthropic(apiKey, modelIdStr, fullMessages, { temperature, maxTokens });
       break;
     case 'openai':
-      if (!apiKey) throw new Error('No OpenAI API key configured. Add credentials in Admin → Integrations.');
+      if (!apiKey)
+        throw new Error('No OpenAI API key configured. Add credentials in Admin → Integrations.');
       result = await callOpenAI(apiKey, modelIdStr, fullMessages, { temperature, maxTokens });
       break;
     case 'aws_bedrock':

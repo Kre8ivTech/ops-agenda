@@ -112,7 +112,7 @@ export async function listAllModuleStates(): Promise<AdminModuleRow[]> {
 
 export interface AdminAuditRow {
   id: string;
-  accountId: string;
+  accountId: string | null;
   accountName: string;
   action: string;
   targetType: string;
@@ -174,10 +174,13 @@ export async function listRecentAuditEvents(limit = 100): Promise<AdminAuditRow[
         actorPlatformAdminId: auditEvent.actorPlatformAdminId,
       })
       .from(auditEvent)
-      .innerJoin(account, eq(account.id, auditEvent.accountId))
+      .leftJoin(account, eq(account.id, auditEvent.accountId))
       .orderBy(desc(auditEvent.at))
       .limit(cappedLimit);
-    return rows;
+    return rows.map((row) => ({
+      ...row,
+      accountName: row.accountName ?? (row.accountId ? 'Unknown account' : 'Platform'),
+    }));
   });
 }
 

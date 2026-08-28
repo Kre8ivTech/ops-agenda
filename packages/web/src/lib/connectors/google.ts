@@ -5,9 +5,7 @@
  * Scopes: gmail.readonly, calendar.readonly
  */
 
-import { eq, and } from 'drizzle-orm';
-import { createDb } from '@/lib/db';
-import { integrationCredential } from '@/lib/db/schema';
+import { loadEnabledCredential, secretString } from '@/lib/integrations/credentials';
 import { env } from '@/lib/env';
 
 const AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth';
@@ -27,44 +25,25 @@ export interface GoogleOAuthConfig {
 }
 
 async function loadConfig(): Promise<GoogleOAuthConfig> {
-  const db = createDb(env.DATABASE_URL);
-  const [cred] = await db
-    .select()
-    .from(integrationCredential)
-    .where(and(eq(integrationCredential.provider, 'google_workspace'), eq(integrationCredential.enabled, true)));
-
+  const cred = await loadEnabledCredential('google_workspace');
   if (!cred) {
-    throw new Error('Google Workspace integration credentials not configured. Add them in Admin → Integrations.');
+    throw new Error(
+      'Google Workspace integration credentials not configured. Add them in Admin → Integrations.',
+    );
   }
 
-  const key = await getDecryptionKey();
-  const iv = Buffer.from(cred.iv, 'base64');
-  const ct = Buffer.from(cred.encryptedPayload, 'base64');
-  const tag = Buffer.from(cred.authTag, 'base64');
-  const combined = new Uint8Array(ct.length + tag.length);
-  combined.set(ct, 0);
-  combined.set(tag, ct.length);
-  const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, combined);
-  const parsed = JSON.parse(new TextDecoder().decode(decrypted));
+  const clientId = secretString(cred.secret, 'client_id', 'clientId');
+  const clientSecret = secretString(cred.secret, 'client_secret', 'clientSecret');
+  if (!clientId || !clientSecret) {
+    throw new Error('Google Workspace credentials are missing client_id or client_secret.');
+  }
 
   const appUrl = env.APP_URL ?? env.NEXT_PUBLIC_APP_URL;
   return {
-    clientId: parsed.client_id ?? parsed.clientId,
-    clientSecret: parsed.client_secret ?? parsed.clientSecret,
+    clientId,
+    clientSecret,
     redirectUri: `${appUrl}/api/connectors/callback`,
   };
-}
-
-async function getDecryptionKey(): Promise<CryptoKey> {
-  const raw = env.SESSION_SECRET;
-  if (!raw || raw.length < 32) throw new Error('SESSION_SECRET not configured');
-  return crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(raw.slice(0, 32)),
-    { name: 'AES-GCM' },
-    false,
-    ['decrypt'],
-  );
 }
 
 export const GoogleConnector = {
@@ -104,7 +83,10 @@ export const GoogleConnector = {
   /**
    * Exchange an authorization code for tokens.
    */
-  async exchangeCode(code: string, codeVerifier?: string): Promise<{
+  async exchangeCode(
+    code: string,
+    codeVerifier?: string,
+  ): Promise<{
     accessToken: string;
     refreshToken: string;
     expiresIn: number;
@@ -191,7 +173,9 @@ export const GoogleConnector = {
   /**
    * Test the connection by calling Google userinfo endpoint.
    */
-  async testConnection(accessToken: string): Promise<{ ok: boolean; email?: string; error?: string }> {
+  async testConnection(
+    accessToken: string,
+  ): Promise<{ ok: boolean; email?: string; error?: string }> {
     try {
       const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
         headers: { authorization: `Bearer ${accessToken}` },

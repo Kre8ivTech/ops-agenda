@@ -61,7 +61,7 @@ export interface UserInput {
 
 export interface AuditEventInput {
   id: string;
-  accountId: string;
+  accountId: string | null;
   accountName: string;
   action: string;
   targetType: string;
