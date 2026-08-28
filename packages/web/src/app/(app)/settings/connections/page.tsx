@@ -41,7 +41,7 @@ export default async function ConnectionsPage({
   const companies = entities.filter((item) => item.kind !== 'personal');
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
       <div>
         <nav className="text-[0.82rem] mb-3">
           <Link href="/settings" className="text-signal hover:text-ink font-bold">
@@ -123,7 +123,7 @@ export default async function ConnectionsPage({
             </h2>
           </div>
           <div className="overflow-x-auto">
-          <table className="w-full min-w-[820px] border-collapse text-[0.82rem]">
+          <table className="w-full border-collapse text-[0.82rem]">
             <thead>
               <tr className="bg-wash text-left">
                 <th className="px-5 py-2 font-extrabold text-ink">Account</th>
