@@ -201,10 +201,7 @@ export async function createAccount(input: z.input<typeof createAccountSchema>) 
     .from(platformAdmin)
     .where(eq(platformAdmin.cognitoSub, admin.cognitoSub));
 
-  const [newAccount] = await db
-    .insert(account)
-    .values({ name, plan })
-    .returning();
+  const [newAccount] = await db.insert(account).values({ name, plan }).returning();
 
   await withTenant(db, { accountId: newAccount.id, userId: '' }, async (tx) => {
     await tx.insert(auditEvent).values(
@@ -555,9 +552,7 @@ const revokePlatformAdminSchema = z.object({
 });
 
 /** Revoke a platform admin's access. */
-export async function revokePlatformAdminAccess(
-  input: z.input<typeof revokePlatformAdminSchema>,
-) {
+export async function revokePlatformAdminAccess(input: z.input<typeof revokePlatformAdminSchema>) {
   const admin = await requirePlatformAdmin();
   const { platformAdminId } = revokePlatformAdminSchema.parse(input);
   const db = getDb();
@@ -716,19 +711,13 @@ export async function getSystemHealth(): Promise<SystemHealthStatus> {
   let connectionCount = 0;
 
   if (dbOk) {
-    const [accResult] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(account);
+    const [accResult] = await db.select({ count: sql<number>`count(*)::int` }).from(account);
     accountCount = accResult?.count ?? 0;
 
-    const [userResult] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(user);
+    const [userResult] = await db.select({ count: sql<number>`count(*)::int` }).from(user);
     userCount = userResult?.count ?? 0;
 
-    const [connResult] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(connection);
+    const [connResult] = await db.select({ count: sql<number>`count(*)::int` }).from(connection);
     connectionCount = connResult?.count ?? 0;
   }
 

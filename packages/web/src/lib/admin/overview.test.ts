@@ -14,10 +14,42 @@ describe('summarizeConnectionHealth', () => {
   it('counts statuses and flags errors and stale syncs', () => {
     const summary = summarizeConnectionHealth(
       [
-        { id: '1', accountId: 'a', accountName: 'Acme', provider: 'plaid', status: 'healthy', lastErrorCode: null, lastSyncAt: new Date(now - 48 * 60 * 60 * 1000) },
-        { id: '2', accountId: 'a', accountName: 'Acme', provider: 'm365', status: 'degraded', lastErrorCode: 'token_expired', lastSyncAt: new Date(now) },
-        { id: '3', accountId: 'b', accountName: 'Beta', provider: 'imap', status: 'pending', lastErrorCode: null, lastSyncAt: null },
-        { id: '4', accountId: 'b', accountName: 'Beta', provider: 'google', status: 'revoked', lastErrorCode: null, lastSyncAt: null },
+        {
+          id: '1',
+          accountId: 'a',
+          accountName: 'Acme',
+          provider: 'plaid',
+          status: 'healthy',
+          lastErrorCode: null,
+          lastSyncAt: new Date(now - 48 * 60 * 60 * 1000),
+        },
+        {
+          id: '2',
+          accountId: 'a',
+          accountName: 'Acme',
+          provider: 'm365',
+          status: 'degraded',
+          lastErrorCode: 'token_expired',
+          lastSyncAt: new Date(now),
+        },
+        {
+          id: '3',
+          accountId: 'b',
+          accountName: 'Beta',
+          provider: 'imap',
+          status: 'pending',
+          lastErrorCode: null,
+          lastSyncAt: null,
+        },
+        {
+          id: '4',
+          accountId: 'b',
+          accountName: 'Beta',
+          provider: 'google',
+          status: 'revoked',
+          lastErrorCode: null,
+          lastSyncAt: null,
+        },
       ],
       now,
     );
@@ -55,9 +87,30 @@ describe('summarizeModuleAdoption', () => {
 describe('summarizeIntegrations', () => {
   it('tracks enabled state and test outcomes', () => {
     const summary = summarizeIntegrations([
-      { id: '1', provider: 'stripe', label: 'Stripe prod', enabled: true, lastTestResult: 'ok', lastTestedAt: new Date(now) },
-      { id: '2', provider: 'plaid', label: 'Plaid sandbox', enabled: true, lastTestResult: 'decrypt_failed', lastTestedAt: new Date(now) },
-      { id: '3', provider: 'openai', label: 'OpenAI', enabled: false, lastTestResult: null, lastTestedAt: null },
+      {
+        id: '1',
+        provider: 'stripe',
+        label: 'Stripe prod',
+        enabled: true,
+        lastTestResult: 'ok',
+        lastTestedAt: new Date(now),
+      },
+      {
+        id: '2',
+        provider: 'plaid',
+        label: 'Plaid sandbox',
+        enabled: true,
+        lastTestResult: 'decrypt_failed',
+        lastTestedAt: new Date(now),
+      },
+      {
+        id: '3',
+        provider: 'openai',
+        label: 'OpenAI',
+        enabled: false,
+        lastTestResult: null,
+        lastTestedAt: null,
+      },
     ]);
 
     expect(summary).toEqual({
