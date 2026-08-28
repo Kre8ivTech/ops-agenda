@@ -60,7 +60,7 @@ export default async function CapacityPage() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       {/* Header */}
       <div>
         <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>

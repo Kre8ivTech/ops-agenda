@@ -31,7 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         }}
       />
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
-        <main className="flex min-h-dvh min-w-0 flex-1 flex-col gap-[18px] bg-[linear-gradient(135deg,rgba(37,114,77,0.08),transparent_32rem),linear-gradient(315deg,rgba(49,93,143,0.09),transparent_34rem),var(--paper)] px-[26px] pb-[30px] pt-14 lg:pt-[22px]">
+        <main className="flex min-h-dvh min-w-0 w-full flex-1 flex-col gap-[18px] bg-[linear-gradient(135deg,rgba(37,114,77,0.08),transparent_32rem),linear-gradient(315deg,rgba(49,93,143,0.09),transparent_34rem),var(--paper)] p-[2%] max-lg:pt-14">
           <Suspense fallback={null}>
             <DegradedBannerSlot />
           </Suspense>

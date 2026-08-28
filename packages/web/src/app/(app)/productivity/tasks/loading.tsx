@@ -1,7 +1,7 @@
 export default function TasksLoading() {
   return (
     <div
-      className="mx-auto flex w-full max-w-[1400px] flex-col gap-6"
+      className="flex w-full flex-col gap-6"
       aria-busy="true"
       aria-live="polite"
     >

@@ -95,7 +95,7 @@ export default async function TimePage({
         : counts.all;
 
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] gap-6">
+    <div className="flex w-full gap-6">
       {/* Main content */}
       <div className="flex min-w-0 flex-1 flex-col gap-5">
         {/* Header */}

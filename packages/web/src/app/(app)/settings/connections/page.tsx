@@ -41,7 +41,7 @@ export default async function ConnectionsPage({
   const companies = entities.filter((item) => item.kind !== 'personal');
 
   return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       <div>
         <nav className="text-[0.82rem] mb-3">
           <Link href="/settings" className="text-signal hover:text-ink font-bold">

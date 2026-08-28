@@ -68,7 +68,7 @@ export default async function BusinessPage({
   const scopeLabel = data?.selectedBusiness?.name ?? 'All businesses';
 
   return (
-    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Finances</p>

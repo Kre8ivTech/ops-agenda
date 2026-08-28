@@ -255,7 +255,7 @@ async function DayView({
   const timedEvents = events.filter((e) => !e.isAllDay);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>

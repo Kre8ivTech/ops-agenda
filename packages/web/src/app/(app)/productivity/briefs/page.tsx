@@ -2,7 +2,7 @@ import { ButtonLink } from '@/components/ui/button';
 
 export default function BriefsPage() {
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       <div>
         <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>
         <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">Briefs</h1>

@@ -1,6 +1,6 @@
 export default function AlertsPage() {
   return (
-    <div className="max-w-2xl">
+    <div className="w-full">
       <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Alerts</p>
       <h1 className="text-ink m-0 text-[1.7rem] font-extrabold tracking-[-0.02em]">
         Cross-module inbox

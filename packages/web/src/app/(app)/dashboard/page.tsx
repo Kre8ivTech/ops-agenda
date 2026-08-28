@@ -68,7 +68,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-[18px]">
+    <div className="flex w-full flex-col gap-[18px]">
       <header className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">

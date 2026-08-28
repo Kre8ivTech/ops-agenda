@@ -97,7 +97,7 @@ export default async function TasksPage({
   const closedCount = allTasks.filter((t) => classifyTask(t) === 'done').length;
 
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-5">
+    <div className="flex w-full flex-col gap-5">
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>

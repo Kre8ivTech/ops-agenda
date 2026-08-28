@@ -47,7 +47,7 @@ export default async function AskPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[800px] flex-col gap-5">
+    <div className="flex w-full flex-col gap-5">
       <div>
         <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Ask</p>
         <h1 className="text-ink m-0 text-[1.7rem] font-extrabold tracking-[-0.02em]">
