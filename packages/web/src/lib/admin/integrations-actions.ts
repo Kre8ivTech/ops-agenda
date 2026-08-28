@@ -4,20 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { buildAuditEvent } from '@/lib/audit';
-import {
-  mapTestFailure,
-  probeIntegrationCredential,
-  type IntegrationTestOutcome,
-} from '@/lib/admin/integration-probes';
-import { summarizeIntegrations, type IntegrationSummary } from '@/lib/admin/overview';
+import { mapTestFailure, probeIntegrationCredential } from '@/lib/admin/integration-probes';
+import { summarizeIntegrations } from '@/lib/admin/overview';
 import { requirePlatformAdmin } from '@/lib/auth/platform-admin';
 import { createDb, withPlatformAdmin } from '@/lib/db';
 import { auditEvent, integrationCredential } from '@/lib/db/schema';
 import { env } from '@/lib/env';
-import {
-  decryptCredentialSecret,
-  encryptCredentialSecret,
-} from '@/lib/integrations/credentials';
+import { decryptCredentialSecret, encryptCredentialSecret } from '@/lib/integrations/credentials';
 
 function getDb() {
   return createDb(env.DATABASE_URL);
@@ -173,7 +166,7 @@ export async function listIntegrationCredentials(): Promise<IntegrationCredentia
 }
 
 /** Compact summary for Overview / header widgets. */
-export async function getIntegrationsSummary(): Promise<IntegrationSummary> {
+export async function getIntegrationsSummary() {
   const rows = await listIntegrationCredentials();
   return summarizeIntegrations(rows);
 }
@@ -329,9 +322,7 @@ export async function deleteIntegrationCredential(input: z.input<typeof deleteCr
  * Live-test a credential: decrypt, then run a provider probe.
  * Persists lastTestResult / lastTestedAt and returns a structured outcome.
  */
-export async function testIntegrationCredential(input: {
-  id: string;
-}): Promise<IntegrationTestOutcome> {
+export async function testIntegrationCredential(input: { id: string }) {
   const admin = await requirePlatformAdmin();
   const db = getDb();
 
@@ -342,7 +333,7 @@ export async function testIntegrationCredential(input: {
 
   if (!cred) throw new Error('Credential not found');
 
-  let outcome: IntegrationTestOutcome;
+  let outcome: Awaited<ReturnType<typeof probeIntegrationCredential>>;
   try {
     const plaintext = await decryptCredentialSecret(cred.encryptedPayload, cred.iv, cred.authTag);
     let secret: Record<string, unknown>;
@@ -400,5 +391,3 @@ export async function testIntegrationCredential(input: {
   revalidatePath('/admin');
   return outcome;
 }
-
-export type { IntegrationProvider, IntegrationTestOutcome };
