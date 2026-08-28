@@ -1,12 +1,13 @@
 import Link from 'next/link';
 
+import { ConnectionEntityAssigner } from '@/components/settings/connection-entity-assigner';
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { SelectField } from '@/components/ui/select';
 import { getSession } from '@/lib/auth';
 import { listConnections, deleteConnection, createImapConnection, testConnection, addSharedMailbox } from '@/lib/connectors/actions';
 import { PROVIDER_LIST } from '@/lib/connectors';
-import { assignConnectionEntity, createCompany } from '@/lib/entities/actions';
+import { createCompany } from '@/lib/entities/actions';
 import { listEntities } from '@/lib/entities/queries';
 
 const STATUS_STYLE: Record<string, string> = {
@@ -142,30 +143,12 @@ export default async function ConnectionsPage({
                   <td className="px-5 py-2.5 text-text-secondary capitalize">{conn.provider}</td>
                   <td className="px-5 py-2.5 text-text-secondary capitalize">{conn.kind}</td>
                   <td className="px-5 py-2.5">
-                    <form
-                      action={async (formData: FormData) => {
-                        'use server';
-                        await assignConnectionEntity({
-                          connectionId: conn.id,
-                          entityId: formData.get('entityId') as string,
-                        });
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <select
-                        name="entityId"
-                        defaultValue={conn.entityId ?? ''}
-                        aria-label={`Entity for ${conn.externalAccountRef ?? conn.provider} ${conn.kind}`}
-                        className="border-border text-ink focus:border-signal h-9 min-w-36 rounded-[8px] border bg-white px-2.5 text-[0.78rem] font-bold outline-none focus:shadow-[0_0_0_3px_var(--wash-green)]"
-                        required
-                      >
-                        <option value="" disabled>Unassigned</option>
-                        {entities.map((item) => (
-                          <option key={item.id} value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                      <Button type="submit" variant="secondary" size="small">Save</Button>
-                    </form>
+                    <ConnectionEntityAssigner
+                      connectionId={conn.id}
+                      accountLabel={`${conn.externalAccountRef ?? conn.provider} ${conn.kind}`}
+                      entityId={conn.entityId}
+                      entities={entities}
+                    />
                   </td>
                   <td className="px-5 py-2.5">
                     <span className={`rounded-full px-2.5 py-1 text-[0.72rem] font-extrabold ${STATUS_STYLE[conn.status] ?? 'bg-wash text-text-secondary'}`}>
