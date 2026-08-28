@@ -17,8 +17,10 @@ test.describe('smoke', () => {
     await expect(
       page.getByRole('heading', { name: 'Your day, already prioritized.' }),
     ).toBeVisible();
-    await expect(page.getByTestId('sign-in-cognito')).toHaveAttribute('href', '/api/auth/signin');
-    await expect(page.getByTestId('sign-in-microsoft')).toHaveAttribute('href', '/api/auth/signin');
+    await expect(page.getByTestId('signin-email')).toBeVisible();
+    await expect(page.getByTestId('signin-password')).toBeVisible();
+    await expect(page.getByTestId('sign-in-submit')).toBeEnabled();
+    await expect(page.getByTestId('sign-in-microsoft')).toBeDisabled();
     await expect(page.getByTestId('forgot-password-link')).toHaveAttribute(
       'href',
       '/auth/forgot-password',

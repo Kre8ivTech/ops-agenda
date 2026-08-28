@@ -21,7 +21,6 @@ export function Lockup({ mark = 'signal', className = '', size = 32 }: LockupPro
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       {/* Brand marks are SVG; use img so we never rasterize or redraw them. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={MARK_SRC[mark]}
         alt=""
