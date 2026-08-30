@@ -38,6 +38,9 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
         className="text-ink focus-visible:outline-signal flex min-w-0 items-baseline gap-2 text-left font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <span className="truncate">{task.title}</span>
+        {task.sourceConnectionId ? (
+          <span className="text-signal shrink-0 text-[0.76rem] font-extrabold">From mail</span>
+        ) : null}
         {flagLabel ? (
           <span className="text-risk shrink-0 text-[0.76rem] font-extrabold">{flagLabel}</span>
         ) : null}
@@ -52,11 +55,7 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
       </span>
 
       <div className="flex flex-wrap gap-2 lg:justify-end">
-        {handled ? (
-          <ReopenButton taskId={task.id} />
-        ) : flagLabel ? (
-          <MarkHandledButton taskId={task.id} />
-        ) : null}
+        {handled ? <ReopenButton taskId={task.id} /> : <MarkHandledButton taskId={task.id} />}
         <Button type="button" variant="quiet" size="small" onClick={() => setEditing((v) => !v)}>
           {editing ? 'Close' : 'Edit'}
         </Button>

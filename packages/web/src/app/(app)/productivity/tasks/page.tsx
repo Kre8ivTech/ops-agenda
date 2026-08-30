@@ -15,7 +15,7 @@ import { FilterChips, type FilterChipData } from '@/components/record-table/filt
 import { Pagination } from '@/components/record-table/pagination';
 import { SearchBox } from '@/components/record-table/search-box';
 import { TaskRow } from '@/components/record-table/task-row';
-import { Button, ButtonLink } from '@/components/ui/button';
+import { ButtonLink } from '@/components/ui/button';
 import { KanbanBoard } from '@/components/tasks/kanban-board';
 import { ExtractionBanner } from '@/components/tasks/extraction-banner';
 import { classifyTask } from '@/components/tasks/task-card';
@@ -83,13 +83,17 @@ export default async function TasksPage({
   // Compute board metrics
   const allTasks = result?.rows ?? [];
   const openCount = allTasks.filter((t) => !t.handledAt && t.flagState !== 'settled').length;
-  const extractedCount = allTasks.filter((t) => t.sourceConnectionId && !t.handledAt && t.status === 'open').length;
+  const extractedCount = allTasks.filter(
+    (t) => t.sourceConnectionId && !t.handledAt && t.status === 'open',
+  ).length;
 
   // Metrics matching design: Due Today, Awaiting Approval, In Progress, Closed
   const dueToday = allTasks.filter((t) => {
     if (!t.dueOn || t.handledAt) return false;
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const due = new Date(t.dueOn); due.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(t.dueOn);
+    due.setHours(0, 0, 0, 0);
     return due.getTime() === today.getTime();
   }).length;
   const awaitingApproval = extractedCount;
@@ -103,47 +107,76 @@ export default async function TasksPage({
         <div>
           <p className="text-signal mb-1.5 text-[0.76rem] font-extrabold uppercase">Productivity</p>
           <h1 className="text-ink m-0 text-[1.55rem] font-extrabold tracking-[-0.02em]">
-            Tasks — {openCount} open{awaitingApproval > 0 ? `, ${awaitingApproval} awaiting approval` : ''}
+            Tasks — {openCount} open
+            {awaitingApproval > 0 ? `, ${awaitingApproval} awaiting approval` : ''}
           </h1>
         </div>
         <div className="flex items-center gap-2.5">
           {/* View toggle */}
           <ViewToggle active={view} />
-          {/* Filter */}
-          <Button variant="secondary" size="medium">Filter</Button>
-          {/* New task */}
+          <ButtonLink
+            href={buildHref(params, { view: 'list', filter: 'needs_attention', page: '1' })}
+            variant="secondary"
+            size="medium"
+          >
+            Filter
+          </ButtonLink>
           <CreateTaskForm />
         </div>
       </div>
 
       {unavailable ? (
         <div className="border-border bg-info-wash text-ink rounded-[8px] border px-3.5 py-3 text-[0.85rem]">
-          Database is not connected. Set <code className="font-mono text-[0.8rem]">DATABASE_URL</code> to load tasks.
+          Database is not connected. Set{' '}
+          <code className="font-mono text-[0.8rem]">DATABASE_URL</code> to load tasks.
         </div>
       ) : (
         <>
           {/* Metric cards */}
           <div className="grid grid-cols-4 gap-3">
             <MetricCard label="Due Today" value={dueToday} subtitle="Scheduled for today" />
-            <MetricCard label="Awaiting Approval" value={awaitingApproval} subtitle="Extracted from mail" tone="signal" />
-            <MetricCard label="In Progress" value={inProgressCount} subtitle="Started, not finished" />
+            <MetricCard
+              label="Awaiting Approval"
+              value={awaitingApproval}
+              subtitle="Extracted from mail"
+              tone="signal"
+            />
+            <MetricCard
+              label="In Progress"
+              value={inProgressCount}
+              subtitle="Started, not finished"
+            />
             <MetricCard label="Closed" value={closedCount} subtitle="This week" />
           </div>
 
           {/* Extraction banner */}
           <ExtractionBanner count={awaitingApproval} />
 
-          {/* Board or List view */}
           {view === 'board' ? (
             <KanbanBoard tasks={allTasks} />
+          ) : view === 'timeline' ? (
+            <div className="border-border rounded-[8px] border bg-white px-4 py-8 text-center">
+              <p className="text-ink m-0 text-[0.95rem] font-bold">
+                Timeline view is not available yet.
+              </p>
+              <p className="text-text-secondary m-0 mt-1 text-[0.85rem]">
+                Use Board or List for now. Timeline will land with calendar-linked due sequencing.
+              </p>
+              <div className="mt-4 flex justify-center gap-2">
+                <ButtonLink href={buildHref(params, { view: 'board' })} size="small">
+                  Open board
+                </ButtonLink>
+                <ButtonLink
+                  href={buildHref(params, { view: 'list' })}
+                  variant="secondary"
+                  size="small"
+                >
+                  Open list
+                </ButtonLink>
+              </div>
+            </div>
           ) : (
-            <ListView
-              result={result}
-              params={params}
-              filter={filter}
-              search={search}
-              now={now}
-            />
+            <ListView result={result} params={params} filter={filter} search={search} now={now} />
           )}
         </>
       )}
@@ -157,13 +190,13 @@ export default async function TasksPage({
 
 function ViewToggle({ active }: { active: string }) {
   return (
-    <div className="flex items-center gap-0.5 rounded-[8px] border border-border bg-wash p-1">
+    <div className="border-border bg-wash flex items-center gap-0.5 rounded-[8px] border p-1">
       {(['board', 'list', 'timeline'] as const).map((v) => (
         <Link
           key={v}
           href={`/productivity/tasks?view=${v}`}
           className={`grid h-[30px] place-items-center rounded-[6px] px-3 text-[0.82rem] font-extrabold capitalize transition-colors ${
-            active === v ? 'bg-white text-ink shadow-sm' : 'text-text-secondary hover:text-ink'
+            active === v ? 'text-ink bg-white shadow-sm' : 'text-text-secondary hover:text-ink'
           }`}
         >
           {v === 'board' ? 'Board' : v === 'list' ? 'List' : 'Timeline'}
@@ -177,13 +210,23 @@ function ViewToggle({ active }: { active: string }) {
 // Metric Card
 // ---------------------------------------------------------------------------
 
-function MetricCard({ label, value, subtitle, tone }: { label: string; value: number; subtitle: string; tone?: string }) {
+function MetricCard({
+  label,
+  value,
+  subtitle,
+  tone,
+}: {
+  label: string;
+  value: number;
+  subtitle: string;
+  tone?: string;
+}) {
   const valueColor = tone === 'signal' ? 'text-signal' : tone === 'risk' ? 'text-risk' : 'text-ink';
   return (
-    <div className="rounded-[8px] border border-border bg-white px-4 py-3">
-      <p className="m-0 text-[0.68rem] font-extrabold uppercase text-text-secondary">{label}</p>
+    <div className="border-border rounded-[8px] border bg-white px-4 py-3">
+      <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">{label}</p>
       <p className={`m-0 mt-1 text-[1.5rem] font-extrabold ${valueColor}`}>{value}</p>
-      <p className="m-0 mt-0.5 text-[0.76rem] text-text-secondary">{subtitle}</p>
+      <p className="text-text-secondary m-0 mt-0.5 text-[0.76rem]">{subtitle}</p>
     </div>
   );
 }
@@ -228,10 +271,18 @@ function ListView({
       </div>
 
       <div className="border-border hidden rounded-t-[8px] border border-b-0 bg-[var(--wash)] px-4 py-2.5 lg:grid lg:grid-cols-[88px_minmax(0,1fr)_120px_auto] lg:gap-3">
-        <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">Priority</span>
-        <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">Title</span>
-        <span className="text-text-secondary text-right font-mono text-[0.72rem] font-extrabold uppercase">Due</span>
-        <span className="text-text-secondary text-right font-mono text-[0.72rem] font-extrabold uppercase">Actions</span>
+        <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
+          Priority
+        </span>
+        <span className="text-text-secondary font-mono text-[0.72rem] font-extrabold uppercase">
+          Title
+        </span>
+        <span className="text-text-secondary text-right font-mono text-[0.72rem] font-extrabold uppercase">
+          Due
+        </span>
+        <span className="text-text-secondary text-right font-mono text-[0.72rem] font-extrabold uppercase">
+          Actions
+        </span>
       </div>
 
       <ul className="divide-border border-border grid divide-y rounded-[8px] border bg-white lg:rounded-t-none">

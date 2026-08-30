@@ -1,15 +1,22 @@
 import Link from 'next/link';
 import { desc, eq, and, inArray, isNull, sql } from 'drizzle-orm';
 
-import { Button } from '@/components/ui/button';
+import { Button, ButtonLink } from '@/components/ui/button';
 import { getSession } from '@/lib/auth';
 import { createDb, withTenant } from '@/lib/db';
-import { connection, emailThread, emailExtraction, emailDraft, emailMessage } from '@/lib/db/schema';
+import {
+  connection,
+  emailThread,
+  emailExtraction,
+  emailDraft,
+  emailMessage,
+} from '@/lib/db/schema';
 import { getEntitySelection, getSelectedEntityId } from '@/lib/entities/queries';
 import { env } from '@/lib/env';
 import { syncEmails } from '@/lib/connectors/sync';
 import { extractCommitments } from '@/lib/ai/email-extract';
 import { generateReplyDraft } from '@/lib/ai/email-reply';
+import { acceptEmailExtraction, dismissEmailExtraction } from '@/lib/tasks/actions';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -65,7 +72,8 @@ function deadlineLabel(d: Date | null): string {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
-  if (diffDays === 0) return `Today, ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+  if (diffDays === 0)
+    return `Today, ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
   if (diffDays === 1) return 'Tomorrow';
   if (diffDays < 0) return `${Math.abs(diffDays)}d overdue`;
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -96,7 +104,7 @@ export default async function EmailPage({
   const { entities, selectedEntityId } = await getEntitySelection();
   const activeEntityId = selectedEntityId === 'all' ? null : selectedEntityId;
   const activeEntityName = activeEntityId
-    ? entities.find((item) => item.id === activeEntityId)?.name ?? 'Selected entity'
+    ? (entities.find((item) => item.id === activeEntityId)?.name ?? 'Selected entity')
     : 'All entities';
   const scopedConnectionIds = activeEntityId
     ? await withTenant(db, tenant, async (tx) =>
@@ -115,10 +123,7 @@ export default async function EmailPage({
     : null;
 
   const threadScope = () => {
-    const conditions = [
-      isNull(emailThread.handledAt),
-      eq(emailThread.accountId, tenant.accountId),
-    ];
+    const conditions = [isNull(emailThread.handledAt), eq(emailThread.accountId, tenant.accountId)];
     if (scopedConnectionIds) {
       conditions.push(
         scopedConnectionIds.length > 0
@@ -133,7 +138,9 @@ export default async function EmailPage({
   let threads: Thread[] = [];
   try {
     threads = await withTenant(db, tenant, async (tx) =>
-      tx.select().from(emailThread)
+      tx
+        .select()
+        .from(emailThread)
         .where(threadScope())
         .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
     );
@@ -144,19 +151,23 @@ export default async function EmailPage({
         await syncEmails(activeEntityId ? { entityId: activeEntityId } : undefined);
         // Re-fetch after sync
         threads = await withTenant(db, tenant, async (tx) =>
-          tx.select().from(emailThread)
+          tx
+            .select()
+            .from(emailThread)
             .where(threadScope())
             .orderBy(emailThread.rankScore, desc(emailThread.lastMessageAt)),
         );
-      } catch { /* sync failed silently */ }
+      } catch {
+        /* sync failed silently */
+      }
     }
-  } catch { /* DB unavailable */ }
+  } catch {
+    /* DB unavailable */
+  }
 
   // Filter
   const filter = params.filter ?? 'all';
-  const filteredThreads = filter === 'all'
-    ? threads
-    : threads.filter((t) => t.priority === filter);
+  const filteredThreads = filter === 'all' ? threads : threads.filter((t) => t.priority === filter);
 
   // Counts
   const counts = {
@@ -183,11 +194,15 @@ export default async function EmailPage({
       );
     }
     const [result] = await withTenant(db, tenant, async (tx) =>
-      tx.select({ count: sql<number>`count(*)::int` }).from(emailExtraction)
+      tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(emailExtraction)
         .where(and(...commitmentConditions)),
     );
     commitmentCount = result?.count ?? 0;
-  } catch { /* */ }
+  } catch {
+    /* */
+  }
 
   // Selected thread detail
   const requestedThread = params.thread
@@ -197,7 +212,15 @@ export default async function EmailPage({
   let selectedThread: Thread | null = null;
   let extractions: Extraction[] = [];
   let draft: Draft | null = null;
-  let threadMessages: { id: string; fromAddress: string; fromName: string | null; subject: string; bodyPreview: string | null; receivedAt: Date; isRead: boolean }[] = [];
+  let threadMessages: {
+    id: string;
+    fromAddress: string;
+    fromName: string | null;
+    subject: string;
+    bodyPreview: string | null;
+    receivedAt: Date;
+    isRead: boolean;
+  }[] = [];
 
   if (selectedId) {
     try {
@@ -211,8 +234,12 @@ export default async function EmailPage({
           tx.select().from(emailExtraction).where(eq(emailExtraction.threadId, selectedId)),
         );
         const [d] = await withTenant(db, tenant, async (tx) =>
-          tx.select().from(emailDraft)
-            .where(and(eq(emailDraft.threadId, selectedId), eq(emailDraft.status, 'pending_review')))
+          tx
+            .select()
+            .from(emailDraft)
+            .where(
+              and(eq(emailDraft.threadId, selectedId), eq(emailDraft.status, 'pending_review')),
+            )
             .orderBy(desc(emailDraft.createdAt))
             .limit(1),
         );
@@ -221,28 +248,46 @@ export default async function EmailPage({
         // Load individual messages for this thread (matched by subject similarity or connection)
         if (selectedThread.externalThreadId) {
           threadMessages = await withTenant(db, tenant, async (tx) =>
-            tx.select({
-              id: emailMessage.id,
-              fromAddress: emailMessage.fromAddress,
-              fromName: emailMessage.fromName,
-              subject: emailMessage.subject,
-              bodyPreview: emailMessage.bodyPreview,
-              receivedAt: emailMessage.receivedAt,
-              isRead: emailMessage.isRead,
-            }).from(emailMessage)
+            tx
+              .select({
+                id: emailMessage.id,
+                fromAddress: emailMessage.fromAddress,
+                fromName: emailMessage.fromName,
+                subject: emailMessage.subject,
+                bodyPreview: emailMessage.bodyPreview,
+                receivedAt: emailMessage.receivedAt,
+                isRead: emailMessage.isRead,
+              })
+              .from(emailMessage)
               .where(eq(emailMessage.accountId, tenant.accountId))
               .orderBy(desc(emailMessage.receivedAt))
               .limit(20),
           );
           // Filter messages that match this thread's subject (conversation grouping)
-          const threadSubject = selectedThread.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase();
-          threadMessages = threadMessages.filter((m) =>
-            m.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase().includes(threadSubject.slice(0, 30)) ||
-            threadSubject.includes(m.subject.replace(/^(Re:|Fwd?:)\s*/i, '').trim().toLowerCase().slice(0, 30))
+          const threadSubject = selectedThread.subject
+            .replace(/^(Re:|Fwd?:)\s*/i, '')
+            .trim()
+            .toLowerCase();
+          threadMessages = threadMessages.filter(
+            (m) =>
+              m.subject
+                .replace(/^(Re:|Fwd?:)\s*/i, '')
+                .trim()
+                .toLowerCase()
+                .includes(threadSubject.slice(0, 30)) ||
+              threadSubject.includes(
+                m.subject
+                  .replace(/^(Re:|Fwd?:)\s*/i, '')
+                  .trim()
+                  .toLowerCase()
+                  .slice(0, 30),
+              ),
           );
         }
       }
-    } catch { /* */ }
+    } catch {
+      /* */
+    }
   }
 
   // Server actions
@@ -268,6 +313,20 @@ export default async function EmailPage({
     await generateReplyDraft({ accountId: sess.accountId, userId: sess.userId }, threadId);
   }
 
+  async function handleAcceptExtraction(formData: FormData) {
+    'use server';
+    const extractionId = String(formData.get('extractionId') ?? '');
+    if (!extractionId) return;
+    await acceptEmailExtraction({ extractionId });
+  }
+
+  async function handleDismissExtraction(formData: FormData) {
+    'use server';
+    const extractionId = String(formData.get('extractionId') ?? '');
+    if (!extractionId) return;
+    await dismissEmailExtraction({ extractionId });
+  }
+
   return (
     <div className="flex h-[calc(100dvh-120px)] flex-col gap-0">
       {/* Top bar */}
@@ -281,7 +340,9 @@ export default async function EmailPage({
         </div>
         <div className="flex items-center gap-3">
           <form action={handleSync}>
-            <Button type="submit" variant="secondary" size="medium">Re-scan</Button>
+            <Button type="submit" variant="secondary" size="medium">
+              Re-scan
+            </Button>
           </form>
         </div>
       </header>
@@ -301,11 +362,13 @@ export default async function EmailPage({
             className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.82rem] font-bold transition-colors ${
               filter === chip.key
                 ? 'border-ink bg-ink text-white'
-                : 'border-border bg-white text-ink hover:border-ink'
+                : 'border-border text-ink hover:border-ink bg-white'
             }`}
           >
             {chip.label}
-            <span className={`text-[0.72rem] ${filter === chip.key ? 'text-white/70' : 'text-text-secondary'}`}>
+            <span
+              className={`text-[0.72rem] ${filter === chip.key ? 'text-white/70' : 'text-text-secondary'}`}
+            >
               {chip.count}
             </span>
           </Link>
@@ -325,11 +388,15 @@ export default async function EmailPage({
 
           {filteredThreads.length === 0 ? (
             <div className="px-4 py-8 text-center">
-              <p className="text-text-secondary text-[0.88rem]">No emails for {activeEntityName} yet.</p>
+              <p className="text-text-secondary text-[0.88rem]">
+                No emails for {activeEntityName} yet.
+              </p>
               <p className="text-text-secondary mt-1 text-[0.82rem]">
                 Connect an account in{' '}
-                <Link href="/settings/connections" className="text-signal font-bold">Settings → Connections</Link>
-                {' '}then click Re-scan.
+                <Link href="/settings/connections" className="text-signal font-bold">
+                  Settings → Connections
+                </Link>{' '}
+                then click Re-scan.
               </p>
             </div>
           ) : null}
@@ -338,7 +405,7 @@ export default async function EmailPage({
             <Link
               key={t.id}
               href={`/productivity/email?filter=${filter}&thread=${t.id}`}
-              className={`flex gap-3 border-b border-border/50 px-4 py-3 transition-colors ${
+              className={`border-border/50 flex gap-3 border-b px-4 py-3 transition-colors ${
                 selectedId === t.id ? 'bg-wash' : 'hover:bg-wash/50'
               }`}
             >
@@ -358,11 +425,15 @@ export default async function EmailPage({
                 </div>
                 <p className="text-ink m-0 truncate text-[0.82rem] font-semibold">{t.subject}</p>
                 {t.bodyPreview ? (
-                  <p className="text-text-secondary m-0 truncate text-[0.78rem] font-normal leading-[1.3]">{t.bodyPreview}</p>
+                  <p className="text-text-secondary m-0 truncate text-[0.78rem] font-normal leading-[1.3]">
+                    {t.bodyPreview}
+                  </p>
                 ) : null}
                 {/* Signal tag */}
                 <div className="mt-1 flex items-center gap-2">
-                  <span className={`rounded-full border px-2 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_BADGE[t.priority ?? 'fysa']}`}>
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_BADGE[t.priority ?? 'fysa']}`}
+                  >
                     {priorityLabel(t.priority)}
                   </span>
                   {t.signalTag ? (
@@ -382,23 +453,34 @@ export default async function EmailPage({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="mb-2 flex items-center gap-2">
-                    <span className={`rounded-full border px-2.5 py-1 text-[0.72rem] font-extrabold ${PRIORITY_BADGE[selectedThread.priority ?? 'fysa']}`}>
+                    <span
+                      className={`rounded-full border px-2.5 py-1 text-[0.72rem] font-extrabold ${PRIORITY_BADGE[selectedThread.priority ?? 'fysa']}`}
+                    >
                       {priorityLabel(selectedThread.priority)}
                     </span>
                     {selectedThread.signalTag ? (
-                      <span className="text-[0.78rem] font-bold text-red-700">{selectedThread.signalTag}</span>
+                      <span className="text-[0.78rem] font-bold text-red-700">
+                        {selectedThread.signalTag}
+                      </span>
                     ) : null}
                   </div>
                   <h2 className="text-ink m-0 text-[1.25rem] font-extrabold leading-tight">
                     {selectedThread.subject}
                   </h2>
                   <p className="text-text-secondary m-0 mt-1.5 text-[0.82rem]">
-                    {selectedThread.participants?.split(',')[0] ?? 'Unknown'} · {selectedThread.messageCount} messages · last reply {timeAgo(selectedThread.lastMessageAt)}
+                    {selectedThread.participants?.split(',')[0] ?? 'Unknown'} ·{' '}
+                    {selectedThread.messageCount} messages · last reply{' '}
+                    {timeAgo(selectedThread.lastMessageAt)}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   {selectedThread.webLink ? (
-                    <a href={selectedThread.webLink} target="_blank" rel="noopener" className="border-border inline-flex h-9 items-center rounded-[8px] border bg-white px-4 text-[0.82rem] font-bold text-ink hover:border-ink">
+                    <a
+                      href={selectedThread.webLink}
+                      target="_blank"
+                      rel="noopener"
+                      className="border-border text-ink hover:border-ink inline-flex h-9 items-center rounded-[8px] border bg-white px-4 text-[0.82rem] font-bold"
+                    >
                       Open in Outlook
                     </a>
                   ) : null}
@@ -408,43 +490,82 @@ export default async function EmailPage({
               {/* Extraction card */}
               {extractions.length > 0 ? (
                 <div className="border-border rounded-[8px] border bg-[#f8faf8]">
-                  <div className="flex items-center justify-between border-b border-border/50 px-4 py-2.5">
-                    <span className="text-[0.76rem] font-extrabold uppercase text-signal">
+                  <div className="border-border/50 flex items-center justify-between border-b px-4 py-2.5">
+                    <span className="text-signal text-[0.76rem] font-extrabold uppercase">
                       Extracted from this thread
                     </span>
-                    <span className="text-text-secondary text-[0.72rem] font-mono">
+                    <span className="text-text-secondary font-mono text-[0.72rem]">
                       {extractions[0]?.confidence}% confidence
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-px bg-border/30">
+                  <div className="bg-border/30 grid grid-cols-3 gap-px">
                     {extractions.slice(0, 1).map((ext) => (
                       <>
                         <div key={`${ext.id}-dueout`} className="bg-white px-4 py-3">
-                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Due-out</p>
-                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold">{ext.title}</p>
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">
+                            Due-out
+                          </p>
+                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold">
+                            {ext.title}
+                          </p>
                         </div>
                         <div key={`${ext.id}-deadline`} className="bg-white px-4 py-3">
-                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Deadline</p>
-                          <p className={`m-0 mt-0.5 text-[0.88rem] font-bold ${ext.deadline && ext.deadline <= new Date() ? 'text-red-700' : 'text-ink'}`}>
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">
+                            Deadline
+                          </p>
+                          <p
+                            className={`m-0 mt-0.5 text-[0.88rem] font-bold ${ext.deadline && ext.deadline <= new Date() ? 'text-red-700' : 'text-ink'}`}
+                          >
                             {deadlineLabel(ext.deadline)}
                           </p>
                         </div>
                         <div key={`${ext.id}-owner`} className="bg-white px-4 py-3">
-                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">Owner</p>
-                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold capitalize">{ext.owner ?? '—'}</p>
+                          <p className="text-text-secondary m-0 text-[0.68rem] font-extrabold uppercase">
+                            Owner
+                          </p>
+                          <p className="text-ink m-0 mt-0.5 text-[0.88rem] font-bold capitalize">
+                            {ext.owner ?? '—'}
+                          </p>
                         </div>
                       </>
                     ))}
                   </div>
                   {extractions[0]?.reasoning ? (
-                    <p className="text-text-secondary m-0 border-t border-border/50 px-4 py-2.5 text-[0.8rem] leading-[1.4]">
+                    <p className="text-text-secondary border-border/50 m-0 border-t px-4 py-2.5 text-[0.8rem] leading-[1.4]">
                       {extractions[0].reasoning}
                     </p>
                   ) : null}
-                  <div className="flex gap-2 border-t border-border/50 px-4 py-3">
-                    <Button variant="primary" size="small">Add to due-outs</Button>
-                    <Button variant="secondary" size="small">Edit extraction</Button>
-                    <Button variant="ghost" size="small">Not a commitment</Button>
+                  <div className="border-border/50 flex gap-2 border-t px-4 py-3">
+                    {extractions[0]?.status === 'accepted' ? (
+                      <ButtonLink href="/productivity/tasks" variant="secondary" size="small">
+                        View on Tasks
+                      </ButtonLink>
+                    ) : extractions[0]?.status === 'dismissed' ? (
+                      <span className="text-text-secondary text-[0.82rem]">Dismissed</span>
+                    ) : (
+                      <>
+                        <form action={handleAcceptExtraction}>
+                          <input
+                            type="hidden"
+                            name="extractionId"
+                            value={extractions[0]?.id ?? ''}
+                          />
+                          <Button type="submit" variant="primary" size="small">
+                            Add to due-outs
+                          </Button>
+                        </form>
+                        <form action={handleDismissExtraction}>
+                          <input
+                            type="hidden"
+                            name="extractionId"
+                            value={extractions[0]?.id ?? ''}
+                          />
+                          <Button type="submit" variant="ghost" size="small">
+                            Not a commitment
+                          </Button>
+                        </form>
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -459,26 +580,38 @@ export default async function EmailPage({
               {/* Thread messages */}
               {threadMessages.length > 0 ? (
                 <div className="flex flex-col gap-2">
-                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">Messages in this thread</p>
+                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">
+                    Messages in this thread
+                  </p>
                   {threadMessages.map((msg) => (
-                    <div key={msg.id} className="border-border rounded-[8px] border px-4 py-3 bg-white">
+                    <div
+                      key={msg.id}
+                      className="border-border rounded-[8px] border bg-white px-4 py-3"
+                    >
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
                           <span className="bg-wash text-text-secondary grid size-8 place-items-center rounded-full text-[0.68rem] font-extrabold">
                             {senderInitials(msg.fromName, msg.fromAddress)}
                           </span>
                           <div>
-                            <p className="text-ink m-0 text-[0.85rem] font-bold">{msg.fromName || msg.fromAddress.split('@')[0]}</p>
-                            <p className="text-text-secondary m-0 text-[0.72rem]">{msg.fromAddress}</p>
+                            <p className="text-ink m-0 text-[0.85rem] font-bold">
+                              {msg.fromName || msg.fromAddress.split('@')[0]}
+                            </p>
+                            <p className="text-text-secondary m-0 text-[0.72rem]">
+                              {msg.fromAddress}
+                            </p>
                           </div>
                         </div>
                         <span className="text-text-secondary shrink-0 font-mono text-[0.72rem]">
                           {timeAgo(msg.receivedAt)}
                         </span>
                       </div>
-                      <div className="mt-3 border-t border-border/40 pt-3">
-                        <p className="text-ink m-0 text-[0.88rem] leading-[1.55] whitespace-pre-wrap">
-                          {msg.bodyPreview || selectedThread.bodyPreview || selectedThread.signalDetail || selectedThread.subject}
+                      <div className="border-border/40 mt-3 border-t pt-3">
+                        <p className="text-ink m-0 whitespace-pre-wrap text-[0.88rem] leading-[1.55]">
+                          {msg.bodyPreview ||
+                            selectedThread.bodyPreview ||
+                            selectedThread.signalDetail ||
+                            selectedThread.subject}
                         </p>
                       </div>
                     </div>
@@ -489,8 +622,10 @@ export default async function EmailPage({
                 </div>
               ) : (
                 <div className="flex flex-col gap-2">
-                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">Message preview</p>
-                  <div className="border-border rounded-[8px] border px-4 py-3 bg-white">
+                  <p className="text-text-secondary m-0 text-[0.72rem] font-extrabold uppercase">
+                    Message preview
+                  </p>
+                  <div className="border-border rounded-[8px] border bg-white px-4 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5">
                         <span className="bg-wash text-text-secondary grid size-8 place-items-center rounded-full text-[0.68rem] font-extrabold">
@@ -509,9 +644,11 @@ export default async function EmailPage({
                         {timeAgo(selectedThread.lastMessageAt)}
                       </span>
                     </div>
-                    <div className="mt-3 border-t border-border/40 pt-3">
-                      <p className="text-ink m-0 text-[0.88rem] leading-[1.55] whitespace-pre-wrap">
-                        {selectedThread.bodyPreview || selectedThread.signalDetail || selectedThread.subject}
+                    <div className="border-border/40 mt-3 border-t pt-3">
+                      <p className="text-ink m-0 whitespace-pre-wrap text-[0.88rem] leading-[1.55]">
+                        {selectedThread.bodyPreview ||
+                          selectedThread.signalDetail ||
+                          selectedThread.subject}
                       </p>
                     </div>
                   </div>
@@ -526,8 +663,8 @@ export default async function EmailPage({
               {/* Suggested reply */}
               {draft ? (
                 <div className="border-border rounded-[8px] border">
-                  <div className="flex items-center justify-between border-b border-border/50 px-4 py-2.5">
-                    <span className="text-[0.76rem] font-extrabold uppercase text-signal">
+                  <div className="border-border/50 flex items-center justify-between border-b px-4 py-2.5">
+                    <span className="text-signal text-[0.76rem] font-extrabold uppercase">
                       Suggested Reply
                     </span>
                     <span className="text-text-secondary text-[0.72rem]">
@@ -537,13 +674,19 @@ export default async function EmailPage({
                   <div className="px-4 py-3">
                     <p className="text-ink m-0 text-[0.88rem] leading-[1.5]">{draft.content}</p>
                   </div>
-                  <div className="flex items-center justify-between border-t border-border/50 px-4 py-3">
+                  <div className="border-border/50 flex items-center justify-between border-t px-4 py-3">
                     <div className="flex gap-2">
-                      <Button variant="primary" size="small">Review and send</Button>
-                      <Button variant="secondary" size="small">Edit draft</Button>
+                      <Button variant="primary" size="small">
+                        Review and send
+                      </Button>
+                      <Button variant="secondary" size="small">
+                        Edit draft
+                      </Button>
                       <form action={handleGenerateDraft} className="inline">
                         <input type="hidden" name="threadId" value={selectedThread.id} />
-                        <Button type="submit" variant="ghost" size="small">Regenerate</Button>
+                        <Button type="submit" variant="ghost" size="small">
+                          Regenerate
+                        </Button>
                       </form>
                     </div>
                     <span className="text-text-secondary text-[0.72rem]">

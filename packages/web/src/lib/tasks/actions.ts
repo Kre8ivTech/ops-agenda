@@ -5,7 +5,7 @@ import { and, asc, desc, eq, ilike, inArray, isNotNull, isNull, lte, or, sql } f
 import { z } from 'zod';
 import { buildAuditEvent } from '@/lib/audit';
 import { getSession } from '@/lib/auth';
-import { auditEvent, task, type TaskSelect } from '@/lib/db/schema';
+import { auditEvent, emailExtraction, emailThread, task, type TaskSelect } from '@/lib/db/schema';
 import { createDb, withTenant } from '@/lib/db';
 import { env } from '@/lib/env';
 import { classifyAndUpdateTask } from '@/lib/ai/classify';
@@ -27,6 +27,8 @@ const createTaskSchema = z.object({
   flagState: flagStateSchema.optional(),
   flagReasonCode: z.string().max(100).optional(),
   flagReasonText: z.string().max(2000).optional(),
+  sourceConnectionId: z.string().uuid().optional(),
+  sourceExternalId: z.string().max(255).optional(),
 });
 
 const updateTaskSchema = createTaskSchema.partial().extend({
@@ -68,6 +70,7 @@ async function requireTenantSession() {
 function revalidateTaskSurfaces() {
   revalidatePath('/productivity/tasks');
   revalidatePath('/dashboard');
+  revalidatePath('/productivity/email');
 }
 
 function sortForDashboard(a: TaskSelect, b: TaskSelect): number {
@@ -228,6 +231,8 @@ export async function createTask(input: z.input<typeof createTaskSchema>) {
         flagState: data.flagState ?? 'none',
         flagReasonCode: data.flagReasonCode,
         flagReasonText: data.flagReasonText,
+        sourceConnectionId: data.sourceConnectionId,
+        sourceExternalId: data.sourceExternalId,
       })
       .returning();
 
@@ -300,6 +305,46 @@ export async function updateTask(input: z.input<typeof updateTaskSchema>) {
   });
 }
 
+export async function startTask(input: z.infer<typeof taskIdSchema>) {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, input);
+  const { id } = taskIdSchema.parse(input);
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const [existing] = await tx.select().from(task).where(eq(task.id, id));
+    if (!existing) throw new Error('Task not found');
+
+    const [updated] = await tx
+      .update(task)
+      .set({
+        status: 'in_progress',
+        handledAt: null,
+        handledBy: null,
+        flagState: existing.flagState === 'settled' ? 'attention' : existing.flagState,
+        updatedAt: new Date(),
+      })
+      .where(eq(task.id, id))
+      .returning();
+
+    await tx.insert(auditEvent).values(
+      buildAuditEvent(
+        { accountId: tenant.accountId, userId: tenant.userId },
+        {
+          action: 'task.start',
+          targetType: 'task',
+          targetId: updated.id,
+          before: existing,
+          after: updated,
+        },
+      ),
+    );
+
+    revalidateTaskSurfaces();
+    return updated;
+  });
+}
+
 export async function markTaskHandled(input: z.infer<typeof taskIdSchema>) {
   const tenant = await requireTenantSession();
   await authorize(tenant, input);
@@ -313,6 +358,7 @@ export async function markTaskHandled(input: z.infer<typeof taskIdSchema>) {
     const [updated] = await tx
       .update(task)
       .set({
+        status: 'done',
         handledAt: new Date(),
         handledBy: tenant.userId,
         flagState: 'settled',
@@ -352,6 +398,7 @@ export async function reopenTask(input: z.infer<typeof taskIdSchema>) {
     const [updated] = await tx
       .update(task)
       .set({
+        status: 'open',
         handledAt: null,
         handledBy: null,
         flagState: existing.flagState === 'settled' ? 'attention' : existing.flagState,
@@ -375,6 +422,94 @@ export async function reopenTask(input: z.infer<typeof taskIdSchema>) {
 
     revalidateTaskSurfaces();
     return updated;
+  });
+}
+
+/** Approve all mail-extracted tasks still sitting in inbox (status open). */
+export async function approveExtractedTasks() {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, {});
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const pending = await tx
+      .select()
+      .from(task)
+      .where(
+        and(
+          isNull(task.deletedAt),
+          isNull(task.handledAt),
+          isNotNull(task.sourceConnectionId),
+          eq(task.status, 'open'),
+        ),
+      );
+
+    for (const row of pending) {
+      await tx
+        .update(task)
+        .set({
+          status: 'in_progress',
+          updatedAt: new Date(),
+        })
+        .where(eq(task.id, row.id));
+
+      await tx.insert(auditEvent).values(
+        buildAuditEvent(
+          { accountId: tenant.accountId, userId: tenant.userId },
+          {
+            action: 'task.approve_extracted',
+            targetType: 'task',
+            targetId: row.id,
+            before: row,
+            after: { ...row, status: 'in_progress' },
+          },
+        ),
+      );
+    }
+
+    revalidateTaskSurfaces();
+    return { approved: pending.length };
+  });
+}
+
+/** Soft-delete mail-extracted inbox tasks the user does not want on the board. */
+export async function dismissExtractedTasks() {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, {});
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const pending = await tx
+      .select()
+      .from(task)
+      .where(
+        and(
+          isNull(task.deletedAt),
+          isNull(task.handledAt),
+          isNotNull(task.sourceConnectionId),
+          eq(task.status, 'open'),
+        ),
+      );
+
+    const now = new Date();
+    for (const row of pending) {
+      await tx.update(task).set({ deletedAt: now, updatedAt: now }).where(eq(task.id, row.id));
+
+      await tx.insert(auditEvent).values(
+        buildAuditEvent(
+          { accountId: tenant.accountId, userId: tenant.userId },
+          {
+            action: 'task.dismiss_extracted',
+            targetType: 'task',
+            targetId: row.id,
+            before: row,
+          },
+        ),
+      );
+    }
+
+    revalidateTaskSurfaces();
+    return { dismissed: pending.length };
   });
 }
 
@@ -408,6 +543,125 @@ export async function deleteTask(input: z.infer<typeof deleteTaskSchema>) {
 
     revalidateTaskSurfaces();
     return deleted;
+  });
+}
+
+const extractionIdSchema = z.object({
+  extractionId: z.string().uuid(),
+});
+
+/**
+ * Promote a pending email extraction into a task so it appears on the Tasks board.
+ * Links sourceConnectionId / sourceExternalId for "From mail" badges.
+ */
+export async function acceptEmailExtraction(input: z.infer<typeof extractionIdSchema>) {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, input);
+  const { extractionId } = extractionIdSchema.parse(input);
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const [extraction] = await tx
+      .select()
+      .from(emailExtraction)
+      .where(eq(emailExtraction.id, extractionId));
+
+    if (!extraction) throw new Error('Extraction not found');
+    if (extraction.status === 'accepted' && extraction.linkedTaskId) {
+      const [existingTask] = await tx
+        .select()
+        .from(task)
+        .where(eq(task.id, extraction.linkedTaskId));
+      return existingTask;
+    }
+    if (extraction.status === 'dismissed') {
+      throw new Error('Extraction was dismissed');
+    }
+
+    const [thread] = await tx
+      .select()
+      .from(emailThread)
+      .where(eq(emailThread.id, extraction.threadId));
+
+    const [created] = await tx
+      .insert(task)
+      .values({
+        accountId: tenant.accountId,
+        title: extraction.title,
+        description: extraction.reasoning ?? undefined,
+        priority: extraction.kind === 'due_out' ? 'p2' : 'p3',
+        dueOn: extraction.deadline ?? undefined,
+        status: 'open',
+        flagState: 'none',
+        sourceConnectionId: thread?.connectionId ?? undefined,
+        sourceExternalId: extraction.id,
+      })
+      .returning();
+
+    await tx
+      .update(emailExtraction)
+      .set({
+        status: 'accepted',
+        linkedTaskId: created.id,
+      })
+      .where(eq(emailExtraction.id, extractionId));
+
+    await tx.insert(auditEvent).values(
+      buildAuditEvent(
+        { accountId: tenant.accountId, userId: tenant.userId },
+        {
+          action: 'task.create_from_extraction',
+          targetType: 'task',
+          targetId: created.id,
+          after: {
+            extractionId,
+            threadId: extraction.threadId,
+            title: created.title,
+          },
+        },
+      ),
+    );
+
+    revalidateTaskSurfaces();
+    return created;
+  });
+}
+
+export async function dismissEmailExtraction(input: z.infer<typeof extractionIdSchema>) {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, input);
+  const { extractionId } = extractionIdSchema.parse(input);
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const [extraction] = await tx
+      .select()
+      .from(emailExtraction)
+      .where(eq(emailExtraction.id, extractionId));
+
+    if (!extraction) throw new Error('Extraction not found');
+
+    const [updated] = await tx
+      .update(emailExtraction)
+      .set({ status: 'dismissed' })
+      .where(eq(emailExtraction.id, extractionId))
+      .returning();
+
+    await tx.insert(auditEvent).values(
+      buildAuditEvent(
+        { accountId: tenant.accountId, userId: tenant.userId },
+        {
+          action: 'email_extraction.dismiss',
+          targetType: 'email_extraction',
+          targetId: extractionId,
+          before: extraction,
+          after: updated,
+        },
+      ),
+    );
+
+    revalidateTaskSurfaces();
+    return updated;
   });
 }
 

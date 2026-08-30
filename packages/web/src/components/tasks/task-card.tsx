@@ -1,5 +1,6 @@
 import type { TaskSelect } from '@/lib/db/schema';
 import { Button } from '@/components/ui/button';
+import { markHandledAction, reopenAction, startTaskAction } from '@/lib/dashboard/actions';
 
 // ---------------------------------------------------------------------------
 // Priority badge
@@ -54,12 +55,25 @@ function statusTagLabel(tag: StatusTag, task: TaskSelect): string {
 
 export type KanbanColumn = 'inbox' | 'today' | 'in_progress' | 'done';
 
+export type KanbanCardAction = 'reopen' | 'complete' | 'start';
+
+/** Maps a board column to the status transition the card button performs. */
+export function kanbanActionForColumn(column: KanbanColumn): KanbanCardAction {
+  if (column === 'done') return 'reopen';
+  if (column === 'in_progress') return 'complete';
+  return 'start';
+}
+
 export function classifyTask(task: TaskSelect): KanbanColumn {
   // Done = handled or settled
   if (task.handledAt || task.flagState === 'settled') return 'done';
 
   // In Progress = status is 'in_progress' or flagState is attention/at_risk
-  if (task.status === 'in_progress' || task.flagState === 'attention' || task.flagState === 'at_risk') {
+  if (
+    task.status === 'in_progress' ||
+    task.flagState === 'attention' ||
+    task.flagState === 'at_risk'
+  ) {
     return 'in_progress';
   }
 
@@ -92,6 +106,13 @@ function actionVariant(column: KanbanColumn, task: TaskSelect): 'primary' | 'sec
   if (column === 'inbox' && task.sourceConnectionId) return 'primary';
   if (column === 'done') return 'ghost';
   return 'secondary';
+}
+
+function actionForForm(column: KanbanColumn) {
+  const kind = kanbanActionForColumn(column);
+  if (kind === 'reopen') return reopenAction;
+  if (kind === 'complete') return markHandledAction;
+  return startTaskAction;
 }
 
 // ---------------------------------------------------------------------------
@@ -149,38 +170,41 @@ export function TaskCard({ task, column }: TaskCardProps) {
   const isP1Inbox = column === 'inbox' && task.priority === 'p1';
 
   return (
-    <div className={`rounded-[8px] border bg-white p-3.5 ${isP1Inbox ? 'border-risk/40' : 'border-border'}`}>
+    <div
+      className={`rounded-[8px] border bg-white p-3.5 ${isP1Inbox ? 'border-risk/40' : 'border-border'}`}
+    >
       {/* Priority + Status tag row */}
       <div className="mb-2 flex items-center gap-2">
-        <span className={`rounded-[4px] border px-1.5 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_STYLE[task.priority]}`}>
+        <span
+          className={`rounded-[4px] border px-1.5 py-0.5 text-[0.68rem] font-extrabold ${PRIORITY_STYLE[task.priority]}`}
+        >
           {priorityLabel(task.priority)}
         </span>
         {tag && (
-          <span className={`rounded-[4px] px-1.5 py-0.5 text-[0.68rem] font-bold ${STATUS_TAG_STYLE[tag]}`}>
+          <span
+            className={`rounded-[4px] px-1.5 py-0.5 text-[0.68rem] font-bold ${STATUS_TAG_STYLE[tag]}`}
+          >
             {statusTagLabel(tag, task)}
           </span>
         )}
       </div>
 
       {/* Title */}
-      <p className="m-0 text-[0.88rem] font-bold leading-tight text-ink">{task.title}</p>
+      <p className="text-ink m-0 text-[0.88rem] font-bold leading-tight">{task.title}</p>
 
       {/* Source / description */}
-      {source && (
-        <p className="m-0 mt-1 text-[0.78rem] text-text-secondary">{source}</p>
-      )}
+      {source && <p className="text-text-secondary m-0 mt-1 text-[0.78rem]">{source}</p>}
 
       {/* Due + Action row */}
       <div className="mt-3 flex items-center justify-between">
-        <span className={`text-[0.78rem] font-bold ${isUrgent ? 'text-risk' : 'text-text-secondary'}`}>
+        <span
+          className={`text-[0.78rem] font-bold ${isUrgent ? 'text-risk' : 'text-text-secondary'}`}
+        >
           {due ?? ''}
         </span>
-        <form action={`/productivity/tasks?action=${column === 'done' ? 'reopen' : column === 'in_progress' ? 'complete' : 'start'}&id=${task.id}`}>
-          <Button
-            type="submit"
-            variant={actionVariant(column, task)}
-            size="small"
-          >
+        <form action={actionForForm(column)}>
+          <input type="hidden" name="id" value={task.id} />
+          <Button type="submit" variant={actionVariant(column, task)} size="small">
             {actionLabel(column, task)}
           </Button>
         </form>
