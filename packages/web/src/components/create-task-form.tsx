@@ -106,9 +106,7 @@ export function CreateTaskForm({
             <p
               role={state.ok ? 'status' : 'alert'}
               className={`m-0 rounded-[8px] px-3 py-2.5 text-[0.85rem] ${
-                state.ok
-                  ? 'bg-info-wash text-ink'
-                  : 'bg-risk-wash text-risk'
+                state.ok ? 'bg-info-wash text-ink' : 'bg-risk-wash text-risk'
               }`}
             >
               {state.message}

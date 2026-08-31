@@ -579,9 +579,7 @@ export async function deleteTask(input: z.infer<typeof deleteTaskSchema>) {
 }
 
 /** Match an assignee email to an active account user (case-insensitive). */
-export async function resolveAssignableUserByEmail(
-  email: string,
-): Promise<AssignableUser | null> {
+export async function resolveAssignableUserByEmail(email: string): Promise<AssignableUser | null> {
   const normalized = email.trim().toLowerCase();
   if (!normalized) return null;
 

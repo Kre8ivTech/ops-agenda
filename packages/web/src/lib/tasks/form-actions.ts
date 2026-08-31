@@ -71,7 +71,10 @@ export async function createTaskAction(
     return { ok: false, fieldErrors: fieldErrorsFromZod(parsed.error) };
   }
 
-  if (parsed.data.assigneeEmail && !z.string().email().safeParse(parsed.data.assigneeEmail).success) {
+  if (
+    parsed.data.assigneeEmail &&
+    !z.string().email().safeParse(parsed.data.assigneeEmail).success
+  ) {
     return {
       ok: false,
       fieldErrors: { assigneeEmail: ['Enter a valid email address.'] },

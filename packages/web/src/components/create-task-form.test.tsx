@@ -38,7 +38,11 @@ describe('CreateTaskForm', () => {
   it('opens the task form in a named modal', async () => {
     const user = userEvent.setup();
     render(
-      <CreateTaskForm assignableUsers={assignableUsers} entities={entities} defaultEntityId={entities[0].id} />,
+      <CreateTaskForm
+        assignableUsers={assignableUsers}
+        entities={entities}
+        defaultEntityId={entities[0].id}
+      />,
     );
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -52,7 +56,11 @@ describe('CreateTaskForm', () => {
   it('shows assignee email and company fields', async () => {
     const user = userEvent.setup();
     render(
-      <CreateTaskForm assignableUsers={assignableUsers} entities={entities} defaultEntityId={entities[0].id} />,
+      <CreateTaskForm
+        assignableUsers={assignableUsers}
+        entities={entities}
+        defaultEntityId={entities[0].id}
+      />,
     );
 
     await user.click(screen.getByRole('button', { name: 'New task' }));
