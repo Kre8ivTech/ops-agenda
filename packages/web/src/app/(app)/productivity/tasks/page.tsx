@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
 import { getSession } from '@/lib/auth';
-import { queryTasks } from '@/lib/tasks/actions';
+import { listAssignableUsers, queryTasks } from '@/lib/tasks/actions';
+import type { AssignableUser } from '@/lib/tasks/actions';
 import {
   TASK_FILTER_LABELS,
   TASK_FILTERS,
@@ -73,9 +74,15 @@ export default async function TasksPage({
   const now = new Date();
 
   let result: Awaited<ReturnType<typeof queryTasks>> | null = null;
+  let assignableUsers: AssignableUser[] = [];
   let unavailable = false;
   try {
-    result = await queryTasks(tenant, { filter, search, sort, direction, page, pageSize: 100 });
+    const [taskResult, users] = await Promise.all([
+      queryTasks(tenant, { filter, search, sort, direction, page, pageSize: 100 }),
+      listAssignableUsers(),
+    ]);
+    result = taskResult;
+    assignableUsers = users;
   } catch {
     unavailable = true;
   }
@@ -153,7 +160,7 @@ export default async function TasksPage({
           <ExtractionBanner count={awaitingApproval} />
 
           {view === 'board' ? (
-            <KanbanBoard tasks={allTasks} />
+            <KanbanBoard tasks={allTasks} assignableUsers={assignableUsers} />
           ) : view === 'timeline' ? (
             <div className="border-border rounded-[8px] border bg-white px-4 py-8 text-center">
               <p className="text-ink m-0 text-[0.95rem] font-bold">
@@ -176,7 +183,14 @@ export default async function TasksPage({
               </div>
             </div>
           ) : (
-            <ListView result={result} params={params} filter={filter} search={search} now={now} />
+            <ListView
+              result={result}
+              params={params}
+              filter={filter}
+              search={search}
+              now={now}
+              assignableUsers={assignableUsers}
+            />
           )}
         </>
       )}
@@ -241,12 +255,14 @@ function ListView({
   filter,
   search,
   now,
+  assignableUsers,
 }: {
   result: Awaited<ReturnType<typeof queryTasks>> | null;
   params: TasksSearchParams;
   filter: ReturnType<typeof parseTaskFilter>;
   search: string | undefined;
   now: Date;
+  assignableUsers: AssignableUser[];
 }) {
   const chips: FilterChipData[] = TASK_FILTERS.map((key) => ({
     key,
@@ -287,7 +303,9 @@ function ListView({
 
       <ul className="divide-border border-border grid divide-y rounded-[8px] border bg-white lg:rounded-t-none">
         {result && result.rows.length > 0 ? (
-          result.rows.map((task) => <TaskRow key={task.id} task={task} now={now} />)
+          result.rows.map((task) => (
+            <TaskRow key={task.id} task={task} now={now} assignableUsers={assignableUsers} />
+          ))
         ) : (
           <li className="text-text-secondary px-4 py-8 text-center text-[0.88rem]">
             {search || filter !== 'all'

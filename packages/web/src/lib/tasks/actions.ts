@@ -5,10 +5,19 @@ import { and, asc, desc, eq, ilike, inArray, isNotNull, isNull, lte, or, sql } f
 import { z } from 'zod';
 import { buildAuditEvent } from '@/lib/audit';
 import { getSession } from '@/lib/auth';
-import { auditEvent, emailExtraction, emailThread, task, type TaskSelect } from '@/lib/db/schema';
+import {
+  auditEvent,
+  emailExtraction,
+  emailThread,
+  task,
+  user,
+  type TaskSelect,
+} from '@/lib/db/schema';
 import { createDb, withTenant } from '@/lib/db';
 import { env } from '@/lib/env';
 import { classifyAndUpdateTask } from '@/lib/ai/classify';
+import { sendTransactionalEmail } from '@/lib/email/sendgrid';
+import { buildAssignmentEmail } from '@/lib/tasks/assignment-email';
 import type { SortDirection, TaskFilter, TaskSort } from '@/lib/tasks/filters';
 
 const tenantSchema = z.object({
@@ -39,9 +48,31 @@ const deleteTaskSchema = z.object({
   id: z.string().uuid(),
 });
 
+const assignTaskSchema = z.object({
+  id: z.string().uuid(),
+  /** Null / empty clears the assignee. */
+  ownerUserId: z.string().uuid().nullable(),
+});
+
 const taskIdSchema = z.object({
   id: z.string().uuid(),
 });
+
+export interface AssignableUser {
+  id: string;
+  name: string | null;
+  email: string;
+}
+
+export interface AssignTaskResult {
+  task: TaskSelect;
+  emailSent: boolean;
+  emailSkippedReason?: 'cleared' | 'unchanged' | 'no_email' | 'not_configured' | 'missing_from' | 'send_failed';
+}
+
+function appOrigin(): string {
+  return env.APP_URL ?? env.NEXT_PUBLIC_APP_URL;
+}
 
 const PRIORITY_RANK: Record<string, number> = { p1: 0, p2: 1, p3: 2, fysa: 3 };
 
@@ -544,6 +575,130 @@ export async function deleteTask(input: z.infer<typeof deleteTaskSchema>) {
     revalidateTaskSurfaces();
     return deleted;
   });
+}
+
+/** Active users in the current tenant — for the assignee picker. */
+export async function listAssignableUsers(): Promise<AssignableUser[]> {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, {});
+  const db = getDb();
+
+  return withTenant(db, tenant, async (tx) => {
+    const rows = await tx
+      .select({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      })
+      .from(user)
+      .where(and(eq(user.accountId, tenant.accountId), eq(user.status, 'active')))
+      .orderBy(asc(user.name), asc(user.email));
+
+    return rows;
+  });
+}
+
+/**
+ * Assign (or clear) a task owner. On a new assignee, attempt a SendGrid
+ * notification — assignment always persists even if email fails.
+ */
+export async function assignTask(
+  input: z.input<typeof assignTaskSchema>,
+): Promise<AssignTaskResult> {
+  const tenant = await requireTenantSession();
+  await authorize(tenant, input);
+  const data = assignTaskSchema.parse(input);
+  const db = getDb();
+
+  const session = await getSession();
+  const assignerName = session?.name?.trim() || session?.email || 'A teammate';
+
+  const result = await withTenant(db, tenant, async (tx) => {
+    const [existing] = await tx.select().from(task).where(eq(task.id, data.id));
+    if (!existing) throw new Error('Task not found');
+
+    let assignee: AssignableUser | null = null;
+    if (data.ownerUserId) {
+      const [found] = await tx
+        .select({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        })
+        .from(user)
+        .where(
+          and(
+            eq(user.id, data.ownerUserId),
+            eq(user.accountId, tenant.accountId),
+            eq(user.status, 'active'),
+          ),
+        );
+      if (!found) throw new Error('Assignee not found in this account');
+      assignee = found;
+    }
+
+    const [updated] = await tx
+      .update(task)
+      .set({
+        ownerUserId: data.ownerUserId,
+        updatedAt: new Date(),
+      })
+      .where(eq(task.id, data.id))
+      .returning();
+
+    await tx.insert(auditEvent).values(
+      buildAuditEvent(
+        { accountId: tenant.accountId, userId: tenant.userId },
+        {
+          action: 'task.assign',
+          targetType: 'task',
+          targetId: updated.id,
+          before: { ownerUserId: existing.ownerUserId },
+          after: { ownerUserId: updated.ownerUserId },
+        },
+      ),
+    );
+
+    return { existing, updated, assignee };
+  });
+
+  revalidateTaskSurfaces();
+
+  if (!result.assignee) {
+    return { task: result.updated, emailSent: false, emailSkippedReason: 'cleared' };
+  }
+
+  if (result.existing.ownerUserId === result.assignee.id) {
+    return { task: result.updated, emailSent: false, emailSkippedReason: 'unchanged' };
+  }
+
+  if (!result.assignee.email?.trim()) {
+    return { task: result.updated, emailSent: false, emailSkippedReason: 'no_email' };
+  }
+
+  const content = buildAssignmentEmail({
+    taskTitle: result.updated.title,
+    dueOn: result.updated.dueOn,
+    assignerName,
+    tasksUrl: `${appOrigin()}/productivity/tasks`,
+  });
+
+  const mail = await sendTransactionalEmail({
+    to: result.assignee.email,
+    subject: content.subject,
+    text: content.text,
+    html: content.html,
+  });
+
+  if (mail.ok) {
+    return { task: result.updated, emailSent: true };
+  }
+
+  return {
+    task: result.updated,
+    emailSent: false,
+    emailSkippedReason: mail.reason,
+  };
 }
 
 const extractionIdSchema = z.object({

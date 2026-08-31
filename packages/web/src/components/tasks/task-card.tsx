@@ -1,6 +1,9 @@
 import type { TaskSelect } from '@/lib/db/schema';
 import { Button } from '@/components/ui/button';
+import { AssignTaskControl } from '@/components/tasks/assign-task-control';
+import { DeleteTaskButton } from '@/components/tasks/delete-task-button';
 import { markHandledAction, reopenAction, startTaskAction } from '@/lib/dashboard/actions';
+import type { AssignableUser } from '@/lib/tasks/actions';
 
 // ---------------------------------------------------------------------------
 // Priority badge
@@ -160,14 +163,21 @@ function sourceLabel(task: TaskSelect): string | null {
 export interface TaskCardProps {
   task: TaskSelect;
   column: KanbanColumn;
+  assignableUsers?: AssignableUser[];
 }
 
-export function TaskCard({ task, column }: TaskCardProps) {
+export function TaskCard({ task, column, assignableUsers = [] }: TaskCardProps) {
   const tag = getStatusTag(task, column);
   const due = dueLabel(task);
   const source = sourceLabel(task);
   const isUrgent = due && (due.includes('overdue') || due.includes('AM') || due.includes('PM'));
   const isP1Inbox = column === 'inbox' && task.priority === 'p1';
+  const assignee = assignableUsers.find((u) => u.id === task.ownerUserId);
+  const assigneeLabel = assignee
+    ? assignee.name?.trim() || assignee.email
+    : task.ownerUserId
+      ? 'Assigned'
+      : null;
 
   return (
     <div
@@ -187,6 +197,11 @@ export function TaskCard({ task, column }: TaskCardProps) {
             {statusTagLabel(tag, task)}
           </span>
         )}
+        {assigneeLabel ? (
+          <span className="text-text-secondary ml-auto truncate text-[0.68rem] font-bold">
+            {assigneeLabel}
+          </span>
+        ) : null}
       </div>
 
       {/* Title */}
@@ -196,19 +211,33 @@ export function TaskCard({ task, column }: TaskCardProps) {
       {source && <p className="text-text-secondary m-0 mt-1 text-[0.78rem]">{source}</p>}
 
       {/* Due + Action row */}
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-3 flex items-center justify-between gap-2">
         <span
           className={`text-[0.78rem] font-bold ${isUrgent ? 'text-risk' : 'text-text-secondary'}`}
         >
           {due ?? ''}
         </span>
-        <form action={actionForForm(column)}>
-          <input type="hidden" name="id" value={task.id} />
-          <Button type="submit" variant={actionVariant(column, task)} size="small">
-            {actionLabel(column, task)}
-          </Button>
-        </form>
+        <div className="flex flex-wrap items-center justify-end gap-1.5">
+          <DeleteTaskButton taskId={task.id} compact />
+          <form action={actionForForm(column)}>
+            <input type="hidden" name="id" value={task.id} />
+            <Button type="submit" variant={actionVariant(column, task)} size="small">
+              {actionLabel(column, task)}
+            </Button>
+          </form>
+        </div>
       </div>
+
+      {assignableUsers.length > 0 ? (
+        <div className="border-border mt-3 border-t pt-3">
+          <AssignTaskControl
+            taskId={task.id}
+            ownerUserId={task.ownerUserId}
+            users={assignableUsers}
+            compact
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

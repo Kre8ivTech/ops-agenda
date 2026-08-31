@@ -1,4 +1,5 @@
 import type { TaskSelect } from '@/lib/db/schema';
+import type { AssignableUser } from '@/lib/tasks/actions';
 import { TaskCard, classifyTask, type KanbanColumn } from './task-card';
 
 // ---------------------------------------------------------------------------
@@ -24,13 +25,14 @@ const COLUMNS: ColumnDef[] = [
 
 export interface KanbanBoardProps {
   tasks: TaskSelect[];
+  assignableUsers?: AssignableUser[];
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function KanbanBoard({ tasks }: KanbanBoardProps) {
+export function KanbanBoard({ tasks, assignableUsers = [] }: KanbanBoardProps) {
   // Classify tasks into columns
   const columns: Record<KanbanColumn, TaskSelect[]> = {
     inbox: [],
@@ -62,7 +64,12 @@ export function KanbanBoard({ tasks }: KanbanBoardProps) {
           {/* Cards */}
           <div className="flex flex-col gap-3">
             {columns[col.key].map((task) => (
-              <TaskCard key={task.id} task={task} column={col.key} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                column={col.key}
+                assignableUsers={assignableUsers}
+              />
             ))}
             {columns[col.key].length === 0 && (
               <div className="rounded-[8px] border border-dashed border-border px-3 py-6 text-center text-[0.82rem] text-text-secondary">

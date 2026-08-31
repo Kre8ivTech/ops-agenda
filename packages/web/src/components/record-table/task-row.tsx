@@ -5,13 +5,24 @@ import { useState } from 'react';
 import { PRIORITY_PILL } from '@/components/dashboard/priority-card';
 import { MarkHandledButton, ReopenButton } from '@/components/dashboard/mark-handled-button';
 import { TaskEditForm } from '@/components/record-table/task-edit-form';
+import { AssignTaskControl } from '@/components/tasks/assign-task-control';
+import { DeleteTaskButton } from '@/components/tasks/delete-task-button';
 import { Button } from '@/components/ui/button';
 import type { TaskSelect } from '@/lib/db/schema';
 import { formatDueLabel, priorityLabel, whyLine } from '@/lib/dashboard/brief';
+import type { AssignableUser } from '@/lib/tasks/actions';
 import { taskFlagBorderClass, taskFlagLabel } from '@/lib/tasks/filters';
 
 /** ST-05/06/07/10: flagged border, row expansion, contextual actions, mobile stacking. */
-export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
+export function TaskRow({
+  task,
+  now,
+  assignableUsers = [],
+}: {
+  task: TaskSelect;
+  now: Date;
+  assignableUsers?: AssignableUser[];
+}) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -20,6 +31,8 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
   const handled = task.handledAt !== null;
   const dueLabel = formatDueLabel(task, now);
   const showPanel = expanded || editing;
+  const assignee = assignableUsers.find((u) => u.id === task.ownerUserId);
+  const assigneeLabel = assignee ? assignee.name?.trim() || assignee.email : null;
 
   return (
     <li
@@ -41,6 +54,11 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
         {task.sourceConnectionId ? (
           <span className="text-signal shrink-0 text-[0.76rem] font-extrabold">From mail</span>
         ) : null}
+        {assigneeLabel ? (
+          <span className="text-text-secondary shrink-0 text-[0.76rem] font-extrabold">
+            {assigneeLabel}
+          </span>
+        ) : null}
         {flagLabel ? (
           <span className="text-risk shrink-0 text-[0.76rem] font-extrabold">{flagLabel}</span>
         ) : null}
@@ -59,6 +77,7 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
         <Button type="button" variant="quiet" size="small" onClick={() => setEditing((v) => !v)}>
           {editing ? 'Close' : 'Edit'}
         </Button>
+        <DeleteTaskButton taskId={task.id} />
       </div>
 
       {showPanel ? (
@@ -73,7 +92,19 @@ export function TaskRow({ task, now }: { task: TaskSelect; now: Date }) {
           ) : (
             <p className="text-text-secondary m-0 text-[0.82rem]">No flags on this task.</p>
           )}
-          {editing ? <TaskEditForm task={task} onDone={() => setEditing(false)} /> : null}
+          {editing ? (
+            <TaskEditForm
+              task={task}
+              assignableUsers={assignableUsers}
+              onDone={() => setEditing(false)}
+            />
+          ) : (
+            <AssignTaskControl
+              taskId={task.id}
+              ownerUserId={task.ownerUserId}
+              users={assignableUsers}
+            />
+          )}
         </div>
       ) : null}
     </li>

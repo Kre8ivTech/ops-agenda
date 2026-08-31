@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createTask, updateTask } from '@/lib/tasks/actions';
+import { assignTask, createTask, deleteTask, updateTask } from '@/lib/tasks/actions';
 
 export type TaskActionState = {
   ok: boolean;
@@ -93,4 +93,84 @@ export async function updateTaskAction(
   }
 
   return { ok: true };
+}
+
+const deleteTaskFormSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export async function deleteTaskAction(
+  _prev: TaskActionState,
+  formData: FormData,
+): Promise<TaskActionState> {
+  const parsed = deleteTaskFormSchema.safeParse({
+    id: formString(formData, 'id'),
+  });
+
+  if (!parsed.success) {
+    return { ok: false, message: 'Invalid task.' };
+  }
+
+  try {
+    await deleteTask(parsed.data);
+  } catch {
+    return { ok: false, message: 'Could not delete the task. Try again.' };
+  }
+
+  return { ok: true };
+}
+
+const assignTaskFormSchema = z.object({
+  id: z.string().uuid(),
+  ownerUserId: z
+    .string()
+    .optional()
+    .transform((v) => (v && v.trim() ? v.trim() : null)),
+});
+
+function assignEmailMessage(emailSent: boolean, reason?: string): string | undefined {
+  if (emailSent) return 'Assigned and notification emailed.';
+  switch (reason) {
+    case 'cleared':
+      return 'Assignee cleared.';
+    case 'unchanged':
+      return 'Assignee unchanged.';
+    case 'not_configured':
+      return 'Assigned. Email not sent — SendGrid is not configured.';
+    case 'missing_from':
+      return 'Assigned. Email not sent — SendGrid from_email is missing.';
+    case 'send_failed':
+      return 'Assigned. Email notification failed to send.';
+    case 'no_email':
+      return 'Assigned. Email not sent — assignee has no email.';
+    default:
+      return 'Assigned.';
+  }
+}
+
+export async function assignTaskAction(
+  _prev: TaskActionState,
+  formData: FormData,
+): Promise<TaskActionState> {
+  const parsed = assignTaskFormSchema.safeParse({
+    id: formString(formData, 'id'),
+    ownerUserId: formString(formData, 'ownerUserId') || undefined,
+  });
+
+  if (!parsed.success) {
+    return { ok: false, fieldErrors: fieldErrorsFromZod(parsed.error) };
+  }
+
+  try {
+    const result = await assignTask({
+      id: parsed.data.id,
+      ownerUserId: parsed.data.ownerUserId,
+    });
+    return {
+      ok: true,
+      message: assignEmailMessage(result.emailSent, result.emailSkippedReason),
+    };
+  } catch {
+    return { ok: false, message: 'Could not assign the task. Try again.' };
+  }
 }

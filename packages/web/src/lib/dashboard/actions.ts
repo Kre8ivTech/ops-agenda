@@ -2,6 +2,7 @@
 
 import {
   approveExtractedTasks,
+  deleteTask,
   dismissExtractedTasks,
   markTaskHandled,
   refreshDashboard,
@@ -22,6 +23,11 @@ export async function reopenAction(formData: FormData) {
 export async function startTaskAction(formData: FormData) {
   const id = String(formData.get('id') ?? '');
   await startTask({ id });
+}
+
+export async function deleteTaskFormAction(formData: FormData) {
+  const id = String(formData.get('id') ?? '');
+  await deleteTask({ id });
 }
 
 export async function approveExtractedAction() {
