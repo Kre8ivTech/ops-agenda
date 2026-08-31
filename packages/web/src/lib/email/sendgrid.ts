@@ -6,8 +6,7 @@
 import { loadEnabledCredential, secretString } from '@/lib/integrations/credentials';
 
 export type SendMailResult =
-  | { ok: true }
-  | { ok: false; reason: 'not_configured' | 'missing_from' | 'send_failed' };
+  { ok: true } | { ok: false; reason: 'not_configured' | 'missing_from' | 'send_failed' };
 
 export interface TransactionalEmailInput {
   to: string;

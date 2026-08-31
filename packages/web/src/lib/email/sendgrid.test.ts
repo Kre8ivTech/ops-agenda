@@ -2,15 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/integrations/credentials', () => ({
   loadEnabledCredential: vi.fn(),
-  secretString: vi.fn(
-    (secret: Record<string, unknown>, ...keys: string[]) => {
-      for (const key of keys) {
-        const value = secret[key];
-        if (typeof value === 'string' && value.trim()) return value;
-      }
-      return undefined;
-    },
-  ),
+  secretString: vi.fn((secret: Record<string, unknown>, ...keys: string[]) => {
+    for (const key of keys) {
+      const value = secret[key];
+      if (typeof value === 'string' && value.trim()) return value;
+    }
+    return undefined;
+  }),
 }));
 
 import { loadEnabledCredential } from '@/lib/integrations/credentials';

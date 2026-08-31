@@ -50,13 +50,16 @@ export function AssignTaskControl({
         ))}
       </SelectField>
       <div className="flex flex-wrap items-center gap-2">
-        <Button type="submit" variant="secondary" size="small" disabled={pending || users.length === 0}>
+        <Button
+          type="submit"
+          variant="secondary"
+          size="small"
+          disabled={pending || users.length === 0}
+        >
           {pending ? 'Saving…' : 'Assign'}
         </Button>
         {state.message ? (
-          <p
-            className={`m-0 text-[0.78rem] ${state.ok ? 'text-text-secondary' : 'text-risk'}`}
-          >
+          <p className={`m-0 text-[0.78rem] ${state.ok ? 'text-text-secondary' : 'text-risk'}`}>
             {state.message}
           </p>
         ) : null}

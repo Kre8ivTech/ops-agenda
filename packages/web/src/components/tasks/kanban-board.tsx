@@ -47,16 +47,16 @@ export function KanbanBoard({ tasks, assignableUsers = [] }: KanbanBoardProps) {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4 items-start">
+    <div className="grid grid-cols-4 items-start gap-4">
       {COLUMNS.map((col) => (
         <div key={col.key} className="flex flex-col gap-3">
           {/* Column header */}
-          <div className="flex items-center justify-between rounded-[8px] bg-wash px-3.5 py-2.5">
+          <div className="bg-wash flex items-center justify-between rounded-[8px] px-3.5 py-2.5">
             <div className="flex items-center gap-2">
               <span className={`inline-block h-[10px] w-[10px] rounded-full ${col.dotColor}`} />
-              <span className="text-[0.88rem] font-extrabold text-ink">{col.label}</span>
+              <span className="text-ink text-[0.88rem] font-extrabold">{col.label}</span>
             </div>
-            <span className="font-mono text-[0.78rem] font-bold text-text-secondary">
+            <span className="text-text-secondary font-mono text-[0.78rem] font-bold">
               {columns[col.key].length}
             </span>
           </div>
@@ -72,7 +72,7 @@ export function KanbanBoard({ tasks, assignableUsers = [] }: KanbanBoardProps) {
               />
             ))}
             {columns[col.key].length === 0 && (
-              <div className="rounded-[8px] border border-dashed border-border px-3 py-6 text-center text-[0.82rem] text-text-secondary">
+              <div className="border-border text-text-secondary rounded-[8px] border border-dashed px-3 py-6 text-center text-[0.82rem]">
                 No tasks
               </div>
             )}

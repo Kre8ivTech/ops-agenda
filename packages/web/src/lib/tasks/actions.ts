@@ -67,7 +67,8 @@ export interface AssignableUser {
 export interface AssignTaskResult {
   task: TaskSelect;
   emailSent: boolean;
-  emailSkippedReason?: 'cleared' | 'unchanged' | 'no_email' | 'not_configured' | 'missing_from' | 'send_failed';
+  emailSkippedReason?:
+    'cleared' | 'unchanged' | 'no_email' | 'not_configured' | 'missing_from' | 'send_failed';
 }
 
 function appOrigin(): string {
