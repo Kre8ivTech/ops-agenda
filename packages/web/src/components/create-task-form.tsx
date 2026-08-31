@@ -1,22 +1,33 @@
 'use client';
 
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useId, useRef, useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { SelectField } from '@/components/ui/select';
 import { TextField } from '@/components/ui/text-field';
 import { TextareaField } from '@/components/ui/textarea';
+import type { EntityOption } from '@/lib/entities/queries';
+import type { AssignableUser } from '@/lib/tasks/actions';
 import { createTaskAction, type TaskActionState } from '@/lib/tasks/form-actions';
 
 const initialState: TaskActionState = { ok: false };
 
-export function CreateTaskForm() {
+export function CreateTaskForm({
+  assignableUsers = [],
+  entities = [],
+  defaultEntityId,
+}: {
+  assignableUsers?: AssignableUser[];
+  entities?: EntityOption[];
+  defaultEntityId?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<TaskActionState>(initialState);
   const [pending, startTransition] = useTransition();
   const errors = state.fieldErrors ?? {};
   const formRef = useRef<HTMLFormElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const assigneeListId = useId();
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -41,10 +52,19 @@ export function CreateTaskForm() {
       setState(result);
       if (result.ok) {
         formRef.current?.reset();
+        if (result.message) {
+          return;
+        }
         setOpen(false);
       }
     });
   }
+
+  const showEntityField = entities.length > 0;
+  const entityDefault =
+    defaultEntityId && entities.some((entity) => entity.id === defaultEntityId)
+      ? defaultEntityId
+      : '';
 
   return (
     <>
@@ -84,8 +104,12 @@ export function CreateTaskForm() {
         <form ref={formRef} action={handleSubmit} className="grid gap-4 p-5">
           {state.message ? (
             <p
-              role="alert"
-              className="bg-risk-wash text-risk m-0 rounded-[8px] px-3 py-2.5 text-[0.85rem]"
+              role={state.ok ? 'status' : 'alert'}
+              className={`m-0 rounded-[8px] px-3 py-2.5 text-[0.85rem] ${
+                state.ok
+                  ? 'bg-info-wash text-ink'
+                  : 'bg-risk-wash text-risk'
+              }`}
             >
               {state.message}
             </p>
@@ -101,13 +125,59 @@ export function CreateTaskForm() {
             </SelectField>
             <TextField label="Due date" name="dueOn" type="date" />
           </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-1">
+              <TextField
+                label="Assignee email"
+                name="assigneeEmail"
+                type="email"
+                autoComplete="off"
+                list={assignableUsers.length > 0 ? assigneeListId : undefined}
+                placeholder="name@company.com"
+                error={errors.assigneeEmail?.[0]}
+              />
+              {assignableUsers.length > 0 ? (
+                <datalist id={assigneeListId}>
+                  {assignableUsers.map((user) => (
+                    <option key={user.id} value={user.email} />
+                  ))}
+                </datalist>
+              ) : null}
+              <p className="text-text-secondary m-0 text-[0.76rem]">
+                Must match an active account member to assign and notify.
+              </p>
+            </div>
+            {showEntityField ? (
+              <SelectField
+                label="Company"
+                name="entityId"
+                defaultValue={entityDefault}
+                error={errors.entityId?.[0]}
+              >
+                <option value="">No company</option>
+                {entities.map((entity) => (
+                  <option key={entity.id} value={entity.id}>
+                    {entity.name}
+                  </option>
+                ))}
+              </SelectField>
+            ) : null}
+          </div>
           <div className="border-border mt-1 flex justify-end gap-2 border-t pt-4">
-            <Button type="button" variant="ghost" size="medium" onClick={closeDialog}>
-              Cancel
-            </Button>
-            <Button type="submit" size="medium" disabled={pending}>
-              {pending ? 'Adding…' : 'Add task'}
-            </Button>
+            {state.ok && state.message ? (
+              <Button type="button" variant="secondary" size="medium" onClick={closeDialog}>
+                Done
+              </Button>
+            ) : (
+              <>
+                <Button type="button" variant="ghost" size="medium" onClick={closeDialog}>
+                  Cancel
+                </Button>
+                <Button type="submit" size="medium" disabled={pending}>
+                  {pending ? 'Adding…' : 'Add task'}
+                </Button>
+              </>
+            )}
           </div>
         </form>
       </dialog>

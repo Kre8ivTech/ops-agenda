@@ -1,7 +1,14 @@
 'use server';
 
 import { z } from 'zod';
-import { assignTask, createTask, deleteTask, updateTask } from '@/lib/tasks/actions';
+import {
+  assignTask,
+  createTask,
+  deleteTask,
+  resolveAssignableUserByEmail,
+  updateTask,
+  type AssignTaskResult,
+} from '@/lib/tasks/actions';
 
 export type TaskActionState = {
   ok: boolean;
@@ -31,7 +38,21 @@ const createTaskFormSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v ? v : undefined)),
+  entityId: z
+    .string()
+    .optional()
+    .transform((v) => (v?.trim() ? v.trim() : undefined)),
+  assigneeEmail: z
+    .string()
+    .optional()
+    .transform((v) => (v?.trim() ? v.trim() : undefined)),
 });
+
+function createTaskSuccessMessage(assignResult?: AssignTaskResult): string | undefined {
+  if (!assignResult) return undefined;
+  const assignMsg = assignEmailMessage(assignResult.emailSent, assignResult.emailSkippedReason);
+  return assignMsg ? `Task created. ${assignMsg}` : 'Task created.';
+}
 
 export async function createTaskAction(
   _prev: TaskActionState,
@@ -42,21 +63,62 @@ export async function createTaskAction(
     description: formString(formData, 'description') || undefined,
     priority: formString(formData, 'priority') || 'p3',
     dueOn: formString(formData, 'dueOn') || undefined,
+    entityId: formString(formData, 'entityId') || undefined,
+    assigneeEmail: formString(formData, 'assigneeEmail') || undefined,
   });
 
   if (!parsed.success) {
     return { ok: false, fieldErrors: fieldErrorsFromZod(parsed.error) };
   }
 
+  if (parsed.data.assigneeEmail && !z.string().email().safeParse(parsed.data.assigneeEmail).success) {
+    return {
+      ok: false,
+      fieldErrors: { assigneeEmail: ['Enter a valid email address.'] },
+    };
+  }
+
+  if (parsed.data.entityId && !z.string().uuid().safeParse(parsed.data.entityId).success) {
+    return {
+      ok: false,
+      fieldErrors: { entityId: ['Select a valid company.'] },
+    };
+  }
+
+  let assigneeUserId: string | undefined;
+  if (parsed.data.assigneeEmail) {
+    const assignee = await resolveAssignableUserByEmail(parsed.data.assigneeEmail);
+    if (!assignee) {
+      return {
+        ok: false,
+        fieldErrors: {
+          assigneeEmail: ['No active account member matches this email.'],
+        },
+      };
+    }
+    assigneeUserId = assignee.id;
+  }
+
   try {
     // z.coerce.date() accepts a date string at runtime, but its inferred
     // input type is `Date` — cast through `unknown` for the string we hold.
-    await createTask({ ...parsed.data, dueOn: parsed.data.dueOn as unknown as Date | undefined });
+    const created = await createTask({
+      title: parsed.data.title,
+      description: parsed.data.description,
+      priority: parsed.data.priority,
+      entityId: parsed.data.entityId,
+      dueOn: parsed.data.dueOn as unknown as Date | undefined,
+    });
+
+    let assignResult: AssignTaskResult | undefined;
+    if (assigneeUserId) {
+      assignResult = await assignTask({ id: created.id, ownerUserId: assigneeUserId });
+    }
+
+    return { ok: true, message: createTaskSuccessMessage(assignResult) };
   } catch {
     return { ok: false, message: 'Could not create the task. Try again.' };
   }
-
-  return { ok: true };
 }
 
 const updateTaskFormSchema = z.object({

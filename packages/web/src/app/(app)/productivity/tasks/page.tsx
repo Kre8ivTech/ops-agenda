@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { getSession } from '@/lib/auth';
+import { getSelectedEntityId, listEntities } from '@/lib/entities/queries';
 import { listAssignableUsers, queryTasks } from '@/lib/tasks/actions';
 import type { AssignableUser } from '@/lib/tasks/actions';
 import {
@@ -75,14 +76,20 @@ export default async function TasksPage({
 
   let result: Awaited<ReturnType<typeof queryTasks>> | null = null;
   let assignableUsers: AssignableUser[] = [];
+  let entities: Awaited<ReturnType<typeof listEntities>> = [];
+  let defaultEntityId: string | undefined;
   let unavailable = false;
   try {
-    const [taskResult, users] = await Promise.all([
+    const [taskResult, users, entityList, selectedEntityId] = await Promise.all([
       queryTasks(tenant, { filter, search, sort, direction, page, pageSize: 100 }),
       listAssignableUsers(),
+      listEntities(),
+      getSelectedEntityId(),
     ]);
     result = taskResult;
     assignableUsers = users;
+    entities = entityList;
+    defaultEntityId = selectedEntityId ?? undefined;
   } catch {
     unavailable = true;
   }
@@ -128,7 +135,11 @@ export default async function TasksPage({
           >
             Filter
           </ButtonLink>
-          <CreateTaskForm />
+          <CreateTaskForm
+            assignableUsers={assignableUsers}
+            entities={entities}
+            defaultEntityId={defaultEntityId}
+          />
         </div>
       </div>
 

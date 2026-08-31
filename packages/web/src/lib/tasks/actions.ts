@@ -578,6 +578,17 @@ export async function deleteTask(input: z.infer<typeof deleteTaskSchema>) {
   });
 }
 
+/** Match an assignee email to an active account user (case-insensitive). */
+export async function resolveAssignableUserByEmail(
+  email: string,
+): Promise<AssignableUser | null> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return null;
+
+  const users = await listAssignableUsers();
+  return users.find((u) => u.email.toLowerCase() === normalized) ?? null;
+}
+
 /** Active users in the current tenant — for the assignee picker. */
 export async function listAssignableUsers(): Promise<AssignableUser[]> {
   const tenant = await requireTenantSession();
