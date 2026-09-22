@@ -23,7 +23,7 @@
     "aws-cdk": "^2.177.0",
     "esbuild": "^0.28.1",
     "eslint": "^9.39.5",
-    "tsx": "^4.19.0",
+    "tsx": "^4.23.5",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.65.0"
   },
