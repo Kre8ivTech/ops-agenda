@@ -30,7 +30,7 @@
     "@ops-agenda/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.12.0",
     "drizzle-orm": "^0.40.0",
-    "iron-webcrypto": "^1.2.1",
+    "iron-webcrypto": "^2.0.0",
     "jose": "^5.9.6",
     "next": "16.2.12",
     "pg": "^8.13.3",
